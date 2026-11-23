@@ -1272,17 +1272,19 @@ const ROZVRH = {
   0:[["volno",0,"Odpočinek. Kdo chce, poslechne si frázi dne."]]
 };
 const DNY_JMENA = ["Neděle","Pondělí","Úterý","Středa","Čtvrtek","Pátek","Sobota"];
-/* 23. 11.: 30 minut denně po–pá → dvě témata týdně (po–út první, st–čt druhé, pá opakování). Celé A1 (33 témat) za 17 týdnů.
-   Dvojice se berou postupně přes celý plán, týden patří do fáze svého prvního tématu. Telefonát zrušen 22. 11. */
+/* 23. 11. večer: 40 minut denně po–pá → tři témata týdně (viz DEN_PROGRAM). Celé A1 (33 témat) za 11 týdnů.
+   Trojice se berou postupně přes celý plán, týden patří do fáze svého prvního tématu. A1 a A2 se v jednom týdnu nemíchají. Telefonát zrušen 22. 11. */
+const TEMAT_TYDNE = 3;
 const TYDNY = []; (() => {
   const vse = []; PLAN.forEach((f, fi) => f.t.forEach(x => vse.push(Object.assign({ faze:f.f, fi, uroven:f.a2 ? "A2" : "A1" }, x, { u:x.u.filter(u => u.typ !== "hovor") }))));
-  for (let i = 0; i < vse.length; i += 2){
-    const a = vse[i]; let b = vse[i + 1];
-    if (b && b.uroven !== a.uroven){ b = null; i--; }   /* A1 a A2 se v jednom týdnu nemíchají */
-    TYDNY.push(b ? { faze:a.faze, fi:a.fi, n:a.n + " + " + b.n, cil:a.cil + " " + b.cil, u:a.u.concat(b.u.filter(x => x.typ !== "karty")) } : a);
+  for (let i = 0; i < vse.length; ){
+    const g = [vse[i++]];
+    while (g.length < TEMAT_TYDNE && i < vse.length && vse[i].uroven === g[0].uroven) g.push(vse[i++]);
+    TYDNY.push(g.length === 1 ? g[0] : { faze:g[0].faze, fi:g[0].fi, uroven:g[0].uroven, n:g.map(x => x.n).join(" + "), cil:g.map(x => x.cil).join(" "),
+      u:g[0].u.concat(...g.slice(1).map(x => x.u.filter(y => y.typ !== "karty"))) });
   }
 })();
-const CIL_DNE = 30;
+const CIL_DNE = 40;
 const INTERVALY = [0, 1, 2, 4, 7, 15];   /* dny do dalšího opakování podle krabičky 0–5 */
 
 /* ===================== pomocné funkce ===================== */
@@ -1518,7 +1520,7 @@ function vyberKviz(id){
   zapis(o.id, ok);
   if (Q.i === Q.otazky.length - 1){
     const proc = Math.round(Q.body / Q.otazky.length * 100);
-    S.p.kvizy[Q.k] = Math.max(S.p.kvizy[Q.k] || 0, proc); pridejXp(Q.body * 2); if (Q.k === temaTydne()) oznac("kviz"); uloz();
+    S.p.kvizy[Q.k] = Math.max(S.p.kvizy[Q.k] || 0, proc); pridejXp(Q.body * 2); if (jeTemaTydne(Q.k)) oznac("kviz"); uloz();
   }
   render();
 }
@@ -1927,9 +1929,9 @@ function ukolyHtml(n){
 }
 function vPlan(){
   if (!planStart()){
-    return '<div class="top"><div><div class="eyebrow">' + TYDNY.length + ' týdnů, 30 minut po–pá</div><h1>Plán</h1></div></div>' + jaSeg() +
+    return '<div class="top"><div><div class="eyebrow">' + TYDNY.length + ' týdnů, 40 minut po–pá</div><h1>Plán</h1></div></div>' + jaSeg() +
       '<div class="feat" style="background:linear-gradient(155deg,#5fe08a,#0a8f4e 55%,#e5383b)"><div class="eb">' + TYDNY.length + ' týdnů</div><div class="bigsym">' + ic("cal") + '</div><h2>Úroveň A1 za ' + TYDNY.length + ' týdnů</h2>' +
-      '<p>Každý týden dvě témata, kvízy a kartičky. Ve volných chvílích si píšeš italsky s AI. Hotové úkoly se odškrtnou samy.</p><div class="acts"><button class="pillbtn" data-plan="start">' + ic("play") + 'Začít plán dnes</button></div></div>' +
+      '<p>Každý týden tři témata, kvízy a kartičky. Ve volných chvílích si píšeš italsky s AI. Hotové úkoly se odškrtnou samy.</p><div class="acts"><button class="pillbtn" data-plan="start">' + ic("play") + 'Začít plán dnes</button></div></div>' +
       '<div class="sec"><div class="sec-h"><h3>Co tě čeká</h3></div><div class="list">' + PLAN.map((f, fi) => {
         const od = TYDNY.findIndex(t => t.fi === fi) + 1, do_ = TYDNY.map(t => t.fi).lastIndexOf(fi) + 1;
         return '<div class="row"><span class="chk">' + (fi + 1) + '</span><span class="t"><b>' + esc(f.f) + '</b><span>Týden ' + od + '–' + do_ + ': ' + esc(f.t.map(t => t.n).join(", ")) + '</span></span></div>'; }).join("") + '</div></div>' +
@@ -1971,7 +1973,9 @@ function ring(hodnota, max, barva, r){
   return '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="' + r + '" style="stroke:var(--fill)"/><circle cx="50" cy="50" r="' + r + '" style="stroke:' + barva + '" stroke-dasharray="' + (c * p).toFixed(1) + ' ' + c.toFixed(1) + '"/></svg>';
 }
 function frazeDne(){
-  const fr = SLOVA.filter(w => w.it.includes(" ") && w.it.length > 9);
+  const vsechny = SLOVA.filter(w => w.it.includes(" ") && w.it.length > 9);
+  const a2 = jazUroven().i >= 3;   /* fráze z A2 až když má Matěj A1 */
+  const fr = vsechny.filter(w => a2 || !(TM[w.t] && TM[w.t].lvl === "A2"));
   const d = new Date(); const i = (d.getFullYear() * 400 + d.getMonth() * 31 + d.getDate()) % fr.length;
   return fr[i];
 }
@@ -2175,7 +2179,7 @@ function lxVyhodnot(){
 }
 function lxDalsi(){
   const L = LX(); if (!L) return;
-  { const e0 = L.ex[L.i]; if (e0 && e0.typ === "tip" && L.k === temaTydne()) oznac("jak"); if (e0 && e0.typ === "nove" && L.k === temaTydne()) oznac("slova"); }
+  { const e0 = L.ex[L.i]; if (e0 && e0.typ === "tip" && jeTemaTydne(L.k)) oznac("jak"); if (e0 && e0.typ === "nove" && jeTemaTydne(L.k)) oznac("slova"); }
   L.i++; L.odp = null; L.vyb = null; L.skl = []; L.par = { sel:null, hot:[], bad:null }; L.vstup = ""; L.mluv = { stav:"", text:"" }; L.proc = ""; L.procNacita = false;
   if (L.i >= L.ex.length) lxKonec();
   render(); scrollTo(0, 0);
@@ -2190,7 +2194,7 @@ function lxKonec(){
   { const d = dnes(); S.p.lekceDen = S.p.lekceDen || {}; S.p.lekceDen[d] = (S.p.lekceDen[d] || 0) + 1; }
   setTimeout(konfety, 250);
   if (L.chyb === 0) S.p.perfekt = (S.p.perfekt || 0) + 1;
-  if (L.k === temaTydne()) oznac("slova");
+  if (jeTemaTydne(L.k)) oznac("slova");
   pridejXp(L.xp);
   ulozHned();   /* konec lekce uložit hned, ne až za chvíli */
 }
@@ -2310,15 +2314,15 @@ function klikLekce(d, b){
 }
 
 /* ===================== harmonogram na každý den ===================== */
-/* Každý den plánu má program 30 minut (po–pá). Den v týdnu plánu: 0 = pondělí … 6 = neděle.
-   Po–út první téma týdne, st–čt druhé, pá opakování druhého a psaní.
-   Blok: [typ, minuty, popis]. typ "uzel" = zastávka na Cestě (j = číslo zastávky). */
+/* Každý den plánu má program 40 minut (po–pá), 3 témata týdně. Den v týdnu plánu: 0 = pondělí … 6 = neděle.
+   Po první téma, út zkouška z prvního a druhé, st druhé a začátek třetího, čt třetí, pá opakování a psaní.
+   Blok: [typ, minuty, popis, j, t]. typ "uzel" = zastávka na Cestě (j = číslo zastávky), t = které téma týdne (0, 1, 2). */
 const DEN_PROGRAM = [
-  [["uzel",7,"Lekce 1",0],["uzel",7,"Lekce 2",1],["jak",5,"Jak to funguje: gramatika"],["karty",11,"Kartičky: 30 kusů"]],
-  [["uzel",6,"Opakování",2],["uzel",5,"Zkouška",3],["karty",11,"Kartičky: 30 kusů"],["chat",8,"Psaní s AI: aspoň 3 zprávy"]],
-  [["uzel",7,"Lekce 1",0],["uzel",7,"Lekce 2",1],["jak",5,"Jak to funguje: gramatika"],["karty",11,"Kartičky: 30 kusů"]],
-  [["uzel",6,"Opakování",2],["uzel",5,"Zkouška",3],["karty",11,"Kartičky: 30 kusů"],["chat",8,"Psaní s AI: aspoň 3 zprávy"]],
-  [["slova",5,"Slovíčka nahlas: poslouchej a opakuj"],["karty",11,"Kartičky: 30 kusů"],["kviz",5,"Kvíz znovu, zkus lepší výsledek"],["chat",9,"Psaní s AI s kamarádem Lucou"]],
+  [["uzel",7,"Lekce 1",0,0],["uzel",7,"Lekce 2",1,0],["jak",5,"Jak to funguje: gramatika",0,0],["uzel",6,"Opakování",2,0],["karty",15,"Kartičky: 40 kusů"]],
+  [["uzel",5,"Zkouška",3,0],["uzel",7,"Lekce 1",0,1],["uzel",7,"Lekce 2",1,1],["jak",5,"Jak to funguje: gramatika",0,1],["karty",16,"Kartičky: 40 kusů"]],
+  [["uzel",6,"Opakování",2,1],["uzel",5,"Zkouška",3,1],["uzel",7,"Lekce 1",0,2],["karty",14,"Kartičky: 40 kusů"],["chat",8,"Psaní s AI: aspoň 3 zprávy"]],
+  [["uzel",7,"Lekce 2",1,2],["jak",5,"Jak to funguje: gramatika",0,2],["uzel",6,"Opakování",2,2],["uzel",5,"Zkouška",3,2],["karty",17,"Kartičky: 40 kusů"]],
+  [["slova",5,"Slovíčka nahlas: poslouchej a opakuj",0,2],["karty",15,"Kartičky: 40 kusů"],["kviz",5,"Kvíz znovu, zkus lepší výsledek",0,0],["jak",5,"Zopakuj si gramatiku",0,1],["chat",10,"Psaní s AI s kamarádem Lucou"]],
   [["volno",0,"Volno. Užij si víkend."]],
   [["volno",0,"Volno. Kdo chce, poslechne si frázi dne."]]
 ];
@@ -2329,16 +2333,22 @@ function denPlanu(iso){
   const i = Math.round((new Date(iso + "T12:00:00") - new Date(start + "T12:00:00")) / 86400000);
   const n = Math.max(1, Math.min(TYDNY.length, Math.floor(Math.max(0, i) / 7) + 1));
   const dow = (new Date(iso + "T12:00:00").getDay() + 6) % 7;
-  return { n, dow, k:temaVTydnu(n, dow >= 2), predStartem:i < 0 };
+  return { n, dow, k:temaVTydnu(n, [0, 1, 2, 2, 2, 0, 0][dow]), predStartem:i < 0 };
 }
-function temaVTydnu(n, druhe){
+/* Téma týdne podle pořadí (0 = první, 1 = druhé, 2 = třetí). Když jich týden má míň, vezme se poslední. */
+function temaVTydnu(n, idx){
   const T = TYDNY[n - 1], t = T.u.filter(x => x.typ === "tema" || x.typ === "ai"), pole = t.length ? t : T.u.filter(x => x.typ === "kviz");
-  const u = pole[druhe && pole.length > 1 ? 1 : 0]; return u ? u.k : aktTema();
+  const i = idx === true ? 1 : (Number(idx) || 0);
+  const u = pole[Math.min(i, pole.length - 1)]; return u ? u.k : aktTema();
 }
-function temaTydne(){ return temaVTydnu(denPlanu(dnes()).n); }
+function temaTydne(){ return temaVTydnu(denPlanu(dnes()).n, 0); }
+function jeTemaTydne(k){ const T = TYDNY[denPlanu(dnes()).n - 1]; return !!k && T.u.some(u => u.k === k); }
+/* Blok programu může mít v b[4] pořadí tématu v týdnu (0, 1, 2) */
+function kBloku(b, iso, k){ return b && b[4] != null ? temaVTydnu(denPlanu(iso || dnes()).n, b[4]) : k; }
 function nazevTematu(k){ return (TM[k] || AI_TEMATA[k] || {}).n || k; }
 function oznac(typ){ const d = dnes(); S.p.den = S.p.den || {}; const o = S.p.den[d] = S.p.den[d] || {}; if (!o[typ]){ o[typ] = 1; const k = Object.keys(S.p.den).sort(); while (k.length > 60) delete S.p.den[k.shift()]; uloz(); } }
 function blokHotovo(b, iso, k){
+  k = kBloku(b, iso, k);
   const typ = b[0], o = (S.p.den || {})[iso] || {}, karet = S.p.dny[iso] || 0;
   if (o["r:" + b[2]]) return true;
   if (typ === "uzel") return TM[k] ? uzelHotovy(k, b[3]) : false;
@@ -2349,7 +2359,8 @@ function blokHotovo(b, iso, k){
   if (typ === "volno") return true;
   return !!o[typ];
 }
-function blokText(b, k){
+function blokText(b, k, iso){
+  k = kBloku(b, iso, k);
   const typ = b[0], n = nazevTematu(k);
   if (typ === "uzel") return b[2] + ": " + n;
   if (typ === "slova" || typ === "jak" || typ === "kviz") return b[2] + " (" + n + ")";
@@ -2357,7 +2368,7 @@ function blokText(b, k){
 }
 const IKONA_BLOKU = { uzel:"play", chat:"chat", slova:"spk", jak:"book", karty:"cards", opak:"cards", kviz:"bulb", volno:"heart" };
 function akceBloku(dow, i, iso){
-  const b = DEN_PROGRAM[dow][i], k = denPlanu(iso || dnes()).k, typ = b[0];
+  const b = DEN_PROGRAM[dow][i], k = kBloku(b, iso, denPlanu(iso || dnes()).k), typ = b[0];
   if (typ !== "volno" && !TM[k] && AI_TEMATA[k]) return pripravTema(k);
   if (typ === "uzel"){
     const u = UZLY[b[3]];
@@ -2378,7 +2389,7 @@ function denHtml(iso, velky){
     '<span class="dt">' + (min ? "Týden " + P.n + " · " + esc(nazevTematu(P.k)) : "Volno") + '</span><span class="dm">' + (min ? (celkem && hot === celkem ? "hotovo" : min + " min") : "") + '</span></div>';
   if (velky || jeDnes || !minuly) h += '<div class="list">' + bloky.map((b, i) => { const ok = b[0] !== "volno" && blokHotovo(b, iso, P.k), klik = true;
     return (klik ? '<button class="row" data-blok="' + P.dow + ':' + i + ':' + iso + '">' : '<div class="row">') + '<span class="chk' + (ok ? " on" : "") + '"' + (b[0] !== "volno" ? ' data-fajfka="' + iso + '|' + esc(b[2]) + '" role="checkbox" aria-checked="' + ok + '" aria-label="Označit jako hotové"' : "") + '>' + (ok ? '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : ic(IKONA_BLOKU[b[0]])) + '</span>' +
-      '<span class="t"><b>' + esc(blokText(b, P.k)) + '</b>' + (b[1] ? '<span>' + b[1] + ' minut</span>' : "") + '</span>' + (klik ? chev() + '</button>' : '</div>'); }).join("") + '</div>';
+      '<span class="t"><b>' + esc(blokText(b, P.k, iso)) + '</b>' + (b[1] ? '<span>' + b[1] + ' minut</span>' : "") + '</span>' + (klik ? chev() + '</button>' : '</div>'); }).join("") + '</div>';
   return h + '</div>';
 }
 /* Dnešní kroužky jako v Apple Fitness: Lekce (1 denně), Kartičky (20), Psaní (3 zprávy) */
@@ -2419,7 +2430,7 @@ function programKarta(){
 }
 function vHarmonogram(){
   const n = S.tyden || aktTyden() || 1, konec = new Date(plusDny(planStart() || pristiPondeli(), TYDNY.length * 7 - 1) + "T12:00:00").toLocaleDateString("cs-CZ", { day:"numeric", month:"long" });
-  return '<div class="top"><div><div class="eyebrow">Po–Pá 30 minut · do' + konec + '</div><h1>Harmonogram</h1></div></div>' + jaSeg() + harmonogramHtml(n);
+  return '<div class="top"><div><div class="eyebrow">Po–Pá 40 minut · do ' + konec + '</div><h1>Harmonogram</h1></div></div>' + jaSeg() + harmonogramHtml(n);
 }
 function harmonogramHtml(n){
   const od = plusDny(planStart() || pristiPondeli(), (n - 1) * 7);
@@ -2430,7 +2441,7 @@ function harmonogramHtml(n){
 }
 function rozvrhHtml(){ return harmonogramHtml(S.tyden || aktTyden() || 1); }
 function planKarta(){
-  if (!planStart()) return '<button class="row glass" style="border-radius:var(--r)" data-tab="plan"><span class="sq" style="background:linear-gradient(155deg,#5fe08a,#0a8f4e)">' + ic("cal") + '</span><span class="t"><b>Plán: domluv se za půl roku</b><span>' + TYDNY.length + ' týdnů, 30 minut po–pá</span></span>' + chev() + '</button>';
+  if (!planStart()) return '<button class="row glass" style="border-radius:var(--r)" data-tab="plan"><span class="sq" style="background:linear-gradient(155deg,#5fe08a,#0a8f4e)">' + ic("cal") + '</span><span class="t"><b>Plán: domluv se za půl roku</b><span>' + TYDNY.length + ' týdnů, 40 minut po–pá</span></span>' + chev() + '</button>';
   const n = aktTyden(), T = TYDNY[n - 1], st = T.u.map(u => stavUkolu(n, u)), hot = st.filter(s => s.hotovo).length;
   const dalsi = T.u.findIndex((u, i) => !st[i].hotovo);
   return '<div class="box"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><b style="font-family:var(--font-d);font-size:19px">Týden ' + n + ': ' + esc(T.n) + '</b><span class="muted" style="font-size:14px;font-variant-numeric:tabular-nums">' + hot + '/' + T.u.length + '</span></div>' +
@@ -2662,9 +2673,9 @@ document.addEventListener("click", e => {
   if (d.rmode){ S.rmode = d.rmode; render(); if (d.rmode === "psat") dolu(); return; }
   if (d.mluv != null){ mluv(d.mluv, b); return; }
   if (d.tab){ S.tab = d.tab; if (d.tab === "temata") S.tema = null; render(); scrollTo(0, 0); if (d.tab === "rozhovor") dolu(); return; }
-  if (d.otevri){ S.tab = "temata"; S.tema = d.otevri; S.ttab = "slova"; if (d.otevri === temaTydne()) oznac("slova"); render(); scrollTo(0, 0); return; }
+  if (d.otevri){ S.tab = "temata"; S.tema = d.otevri; S.ttab = "slova"; if (jeTemaTydne(d.otevri)) oznac("slova"); render(); scrollTo(0, 0); return; }
   if (d.zpet){ S.tema = null; render(); return; }
-  if (d.ttab){ S.ttab = d.ttab; if (S.tema === temaTydne() && d.ttab !== "kviz") oznac(d.ttab); render(); return; }
+  if (d.ttab){ S.ttab = d.ttab; if (jeTemaTydne(S.tema) && d.ttab !== "kviz") oznac(d.ttab); render(); return; }
   if (d.uc){ S.p.akt = d.uc; uloz(); novaSada(d.uc); S.tab = "karticky"; render(); scrollTo(0, 0); fokus(); return; }
   if (d.start){ novaSada(d.start === "1" ? null : d.start); render(); fokus(); return; }
   if (d.konec){ S.karty = null; render(); return; }
@@ -2738,7 +2749,9 @@ async function samotest(){
     if (pret || siroke.length) chyby.push(t + ": přečnívá " + siroke.join(","));
   }
   /* plán */
-  ok(TYDNY.length === 21, "plan ma " + TYDNY.length + " tydnu");
+  ok(TYDNY.length === 14, "plan ma " + TYDNY.length + " tydnu");
+  ok(new Set([0, 1, 2].map(i => temaVTydnu(1, i))).size === 3, "tyden 1 ma 3 temata");
+  ok(DEN_PROGRAM.slice(0, 5).every(p => p.every(b => b[0] !== "uzel" || (b[4] != null && TM[temaVTydnu(1, b[4])]))), "kazda lekce v programu ma tema");
   ok(TYDNY.every(t => !t.u.some(u => TM[u.k] && TM[u.k].lvl === "A2") || t.u.every(u => !u.k || (TM[u.k] && TM[u.k].lvl === "A2"))), "A1 a A2 se v tydnu nemichaji");
   TYDNY.forEach((t, i) => t.u.forEach(u => {
     if ((u.typ === "tema" || u.typ === "kviz") && !TM[u.k]) chyby.push("plan tyden " + (i + 1) + ": chybi tema " + u.k);
@@ -2758,7 +2771,7 @@ async function samotest(){
   const dvojite = {}; SLOVA.filter(w => w.t !== "hovory").forEach(w => { const x = w.it.toLowerCase(); dvojite[x] = (dvojite[x] || 0) + 1; });
   const dv = Object.keys(dvojite).filter(x => dvojite[x] > 1); ok(!dv.length, "dvojita slovicka: " + dv.join(", "));
   ok(SLOVA.every(w => w.it && w.cz && w.v), "slovicka maji preklad i vyslovnost");
-  DEN_PROGRAM.slice(0, 5).forEach((p, d) => { const m = p.reduce((s, b) => s + b[1], 0); if (m < 28 || m > 32) chyby.push("harmonogram " + DNY_KRATCE[d] + " ma " + m + " min"); });
+  DEN_PROGRAM.slice(0, 5).forEach((p, d) => { const m = p.reduce((s, b) => s + b[1], 0); if (m < 38 || m > 42) chyby.push("harmonogram " + DNY_KRATCE[d] + " ma " + m + " min"); });
   { S.p.plan = { start:"2026-11-23" }; const P = denPlanu("2026-11-25"); ok(P.n === 1 && P.dow === 2, "den planu " + JSON.stringify(P)); const Q = denPlanu("2026-12-08"); ok(Q.n === 3 && Q.dow === 1, "den planu 2"); delete S.p.plan; }
   S.tab = "dnes"; render(); ok(document.querySelector("#app [data-blok]"), "denni program na Dnes");
   S.tab = "plan"; render(); ok(document.querySelector("#app").textContent.includes("Harmonogram týdne"), "harmonogram v planu");

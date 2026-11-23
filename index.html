@@ -1359,7 +1359,7 @@ function slucPokrok(m, d){
   const r = Object.assign({}, m, d);
   ["xp","perfekt","maxSerie","hovory","chatCelkem"].forEach(k => { if (m[k] != null || d[k] != null) r[k] = max(m[k], d[k]); });
   if (m.jazUr != null || d.jazUr != null) r.jazUr = Math.max(m.jazUr == null ? -1 : m.jazUr, d.jazUr == null ? -1 : d.jazUr);
-  ["lekceDen","dny","xpDen","chatDen","kvizy"].forEach(k => {
+  ["lekceDen","dny","xpDen","chatDen","kvizy","bonusDen"].forEach(k => {
     const a = m[k] || {}, b = d[k] || {}; if (!m[k] && !d[k]) return;
     const o = Object.assign({}, b); Object.keys(a).forEach(x => { o[x] = max(a[x], b[x]); }); r[k] = o;
   });
@@ -1457,6 +1457,53 @@ function mluv(text, el){
 const spk = (text, big) => '<button class="spk' + (big ? " big" : "") + '" data-mluv="' + esc(text) + '" aria-label="Přečíst nahlas">' + ic("spk") + '</button>';
 
 /* ===================== kartičky ===================== */
+/* ===================== bonus (23. 11.): „Ještě 10 minut“, poslech bez koukání a italština kolem tebe ===================== */
+const BONUS_TIPY = [
+  ["play","Easy Italian","Krátké rozhovory s Italy na ulici, s titulky.","Easy Italian"],
+  ["play","Italiano Automatico","Italština pro začátečníky. Mluví pomalu a jasně.","Italiano Automatico"],
+  ["flag","F1 a karting italsky","Sestřihy závodů s italským komentářem.","F1 highlights commento italiano"],
+  ["spk","Italská hudba","Písničky na zpívání: Måneskin, Eros Ramazzotti, Laura Pausini.","canzoni italiane famose"]
+];
+function bonusKarta(){
+  const n = (S.p.bonusDen || {})[dnes()] || 0, P = S.poslech;
+  const yt = q => "https://www.youtube.com/results?search_query=" + encodeURIComponent(q);
+  return '<div class="sec"><div class="sec-h"><h3>Bonus</h3>' + (n ? '<span class="muted" style="font-size:15px">dnes ' + n + '× navíc</span>' : '') + '</div>' +
+    '<div class="list">' +
+      '<button class="row" data-bonus="karty"><span class="sq" style="background:linear-gradient(155deg,#ffd43b,#f08c00)">' + ic("cards") + '</span><span class="t"><b>Ještě 10 minut</b><span>25 kartiček navíc, nejdřív ty, co ti nejdou</span></span>' + chev() + '</button>' +
+      '<button class="row" data-bonus="poslech"><span class="sq" style="background:linear-gradient(155deg,#74c0fc,#1c7ed6)">' + ic("spk") + '</span><span class="t"><b>' + (P ? "Zastavit poslech (" + (P.i + 1) + "/" + P.n + ")" : "Poslouchej bez koukání") + '</b><span>' +
+        (P ? esc(P.text) : "Přečtu ti 10 vět z tohoto týdne, ty jen posloucháš a opakuješ") + '</span></span>' + chev() + '</button>' +
+    '</div>' +
+    '<div class="sec-h" style="margin-top:6px"><h3 style="font-size:17px">Italsky kolem tebe</h3></div>' +
+    '<div class="list">' + BONUS_TIPY.map(t => '<a class="row" href="' + yt(t[3]) + '" target="_blank" rel="noopener"><span class="sq" style="background:linear-gradient(155deg,#ff8787,#e03131)">' + ic(t[0]) + '</span><span class="t"><b>' + esc(t[1]) + '</b><span>' + esc(t[2]) + '</span></span>' + chev() + '</a>').join("") + '</div>' +
+    '<p class="foot">Tip: u filmu na Netflixu nebo Disney+ přepni zvuk na italštinu a titulky na češtinu. 20 minut denně udělá hodně.</p></div>';
+}
+function pocitejBonus(){ const d = dnes(); S.p.bonusDen = S.p.bonusDen || {}; S.p.bonusDen[d] = (S.p.bonusDen[d] || 0) + 1; uloz(); }
+function novaSadaBonus(){
+  const tezke = SLOVA.filter(w => stat(w.id) && stat(w.id).bad).sort((a, b) => stat(b.id).bad - stat(a.id).bad).map(w => w.id);
+  const due = kOpakovani().map(w => w.id);
+  const T = TYDNY[denPlanu(dnes()).n - 1], tyden = mix(SLOVA.filter(w => T.u.some(u => u.k === w.t)).map(w => w.id));
+  const ids = [...new Set(tezke.concat(due, tyden))].slice(0, 25);
+  S.karty = { ids:mix(ids), i:0, tema:null, odp:null, dobre:0, spatne:[], vstup:"", bonus:true };
+}
+async function poslechni(){
+  const T = TYDNY[denPlanu(dnes()).n - 1];
+  const V = mix(T.u.filter(u => u.k && TM[u.k]).flatMap(u => vetyTematu(u.k))).slice(0, 10);
+  if (!V.length) return;
+  const run = S.poslech = { i:0, n:V.length, text:"" };
+  for (let i = 0; i < V.length; i++){
+    if (S.poslech !== run) return;
+    run.i = i; run.text = V[i].it + " = " + V[i].cz; if (S.tab === "dnes" && !S.lx) render();
+    await mluvP(V[i].it, .85);
+    if (S.poslech !== run) return;
+    await new Promise(r => setTimeout(r, 1600));   /* pauza na zopakování nahlas */
+  }
+  if (S.poslech === run){ S.poslech = null; pocitejBonus(); toast("Poslech hotový. Bravissimo!"); if (S.tab === "dnes" && !S.lx) render(); }
+}
+function bonusAkce(typ){
+  if (typ === "karty"){ pocitejBonus(); zastavPoslech(); S.tab = "karticky"; novaSadaBonus(); render(); scrollTo(0, 0); fokus(); return; }
+  if (typ === "poslech"){ if (S.poslech){ zastavPoslech(); render(); } else poslechni(); }
+}
+function zastavPoslech(){ if (S.poslech){ S.poslech = null; zastavMluveni(); } }
 function novaSada(tema){
   let ids;
   if (tema){ ids = mix(TM[tema].slova.map((_, i) => tema + "-" + i)).slice(0, 12); }
@@ -2465,6 +2512,7 @@ function vDnes(){
   pokracovatKarta() +
   urovenKarta() +
   programKarta() +
+  bonusKarta() +
   '<div class="sec"><div class="sec-h"><h3>Fráze dne</h3></div><div class="phrase glass">' + spk(f.it, true) +
     '<div class="t"><b>' + esc(f.it) + '</b><span>' + esc(ukaz(f.cz)) + '</span><i>čti: ' + esc(f.v) + '</i></div></div></div>' +
   '<button class="row glass" style="border-radius:var(--r)" data-tab="rozhovor"><span class="sq" style="background:' + ROZHOVORY[0].g + '">' + ic("chat") + '</span><span class="t"><b>Pokecej s kamarádem Lucou</b><span>AI ti odpoví italsky a opraví tě</span></span>' + ic("chev", "chev").replace("viewBox=\"0 0 24 24\"", "viewBox=\"0 0 8 14\"") + '</button>' +
@@ -2662,6 +2710,7 @@ document.addEventListener("click", e => {
   if (d.zavolej){ zavolej(d.zavolej); return; }
   if (d.kopiruj){ kopiruj(d.kopiruj); return; }
   if (d.blok){ const [dw, bi, iso] = d.blok.split(":"); akceBloku(Number(dw), Number(bi), iso); return; }
+  if (d.bonus){ bonusAkce(d.bonus); return; }
   if (d.ukol){ const [n, i] = d.ukol.split(":").map(Number); akceUkolu(n, i); return; }
   if (d.tyden){ S.tyden = Number(d.tyden); S.tab = "ja"; render(); scrollTo(0, 0); return; }
   if (d.plan){
@@ -2752,6 +2801,8 @@ async function samotest(){
   ok(TYDNY.length === 14, "plan ma " + TYDNY.length + " tydnu");
   ok(new Set([0, 1, 2].map(i => temaVTydnu(1, i))).size === 3, "tyden 1 ma 3 temata");
   ok(DEN_PROGRAM.slice(0, 5).every(p => p.every(b => b[0] !== "uzel" || (b[4] != null && TM[temaVTydnu(1, b[4])]))), "kazda lekce v programu ma tema");
+  ok(bonusKarta().includes('data-bonus="karty"') && bonusKarta().includes('data-bonus="poslech"'), "bonus karta");
+  { const pk = S.karty; novaSadaBonus(); ok(S.karty.bonus && S.karty.ids.length > 0 && S.karty.ids.length <= 25, "bonus sada " + S.karty.ids.length); S.karty = pk; }
   ok(TYDNY.every(t => !t.u.some(u => TM[u.k] && TM[u.k].lvl === "A2") || t.u.every(u => !u.k || (TM[u.k] && TM[u.k].lvl === "A2"))), "A1 a A2 se v tydnu nemichaji");
   TYDNY.forEach((t, i) => t.u.forEach(u => {
     if ((u.typ === "tema" || u.typ === "kviz") && !TM[u.k]) chyby.push("plan tyden " + (i + 1) + ": chybi tema " + u.k);

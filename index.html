@@ -1341,6 +1341,46 @@ function uloz(){
   clearTimeout(ulozTimer);
   ulozTimer = setTimeout(() => { db.doc("pokrok/matej").set(JSON.parse(JSON.stringify(S.p))).catch(() => {}); }, 1200);
 }
+/* 23. 11.: okamžité uložení (konec lekce) a slučování pokroku místo přepisování.
+   Starší stav z db (ozvěna předchozího zápisu, jiné okno, jiné zařízení) už nesmaže novější pokrok. */
+function ulozHned(){
+  if (S.test) return;
+  try { localStorage.setItem(LS, JSON.stringify(S.p)); } catch (e) {}
+  if (!db) return;
+  clearTimeout(ulozTimer);
+  db.doc("pokrok/matej").set(JSON.parse(JSON.stringify(S.p))).catch(() => {});
+}
+const kanon = o => JSON.stringify(o, (k, v) => v && typeof v === "object" && !Array.isArray(v) ? Object.keys(v).sort().reduce((r, x) => (r[x] = v[x], r), {}) : v);
+function slucPokrok(m, d){
+  m = m || {}; d = d || {};
+  const max = (a, b) => Math.max(a || 0, b || 0);
+  const r = Object.assign({}, m, d);
+  ["xp","perfekt","maxSerie","hovory","chatCelkem"].forEach(k => { if (m[k] != null || d[k] != null) r[k] = max(m[k], d[k]); });
+  if (m.jazUr != null || d.jazUr != null) r.jazUr = Math.max(m.jazUr == null ? -1 : m.jazUr, d.jazUr == null ? -1 : d.jazUr);
+  ["lekceDen","dny","xpDen","chatDen","kvizy"].forEach(k => {
+    const a = m[k] || {}, b = d[k] || {}; if (!m[k] && !d[k]) return;
+    const o = Object.assign({}, b); Object.keys(a).forEach(x => { o[x] = max(a[x], b[x]); }); r[k] = o;
+  });
+  if (m.cesta || d.cesta){
+    const o = JSON.parse(JSON.stringify(d.cesta || {}));
+    Object.keys(m.cesta || {}).forEach(k => { const a = m.cesta[k] || {}, x = o[k] = o[k] || { l:[] }; x.l = x.l || [];
+      (a.l || []).forEach((v, i) => { if (v) x.l[i] = true; }); if (a.hovor) x.hovor = true; });
+    r.cesta = o;
+  }
+  if (m.slova || d.slova){
+    const a = m.slova || {}, b = d.slova || {}, o = Object.assign({}, b), poc = x => (x.ok || 0) + (x.bad || 0);
+    Object.keys(a).forEach(id => { if (!b[id] || poc(a[id]) > poc(b[id])) o[id] = a[id]; });
+    r.slova = o;
+  }
+  if (m.den || d.den){
+    const o = JSON.parse(JSON.stringify(d.den || {}));
+    Object.keys(m.den || {}).forEach(x => { o[x] = Object.assign({}, m.den[x], o[x]); });
+    r.den = o;
+  }
+  if (Array.isArray(m.vlastni) && (!Array.isArray(d.vlastni) || m.vlastni.length > d.vlastni.length)) r.vlastni = m.vlastni;
+  if (!d.plan && m.plan) r.plan = m.plan;
+  return r;
+}
 const stat = id => S.p.slova[id];
 const umim = id => (stat(id) && stat(id).b >= 2);
 const kOpakovani = () => SLOVA.filter(w => stat(w.id) && stat(w.id).n <= dnes());
@@ -2152,6 +2192,7 @@ function lxKonec(){
   if (L.chyb === 0) S.p.perfekt = (S.p.perfekt || 0) + 1;
   if (L.k === temaTydne()) oznac("slova");
   pridejXp(L.xp);
+  ulozHned();   /* konec lekce uložit hned, ne až za chvíli */
 }
 function lxZavri(){ S.lx = null; document.body.classList.remove("lekce"); S.tab = "temata"; S.tema = null; render(); scrollTo(0, 0); }
 async function lxProc(){
@@ -2673,6 +2714,12 @@ async function samotest(){
   TEMATA.forEach(t => { ok(t.kroky.length === 3, "kroky " + t.k); ok(t.slova.every(s => s.length === 3 && s[2]), "vyslovnost " + t.k); });
   ok(rozeber("IT: Ciao!\nCZ: Ahoj!\nOPRAVA: Správně!").it === "Ciao!", "rozbor AI");
   ok(rozeber("bez formatu").raw === "bez formatu", "rozbor AI bez formatu");
+  { const a = { xp:70, perfekt:1, cesta:{ pozdravy:{ l:[true, true] } }, lekceDen:{ "2026-11-23":2 }, slova:{ x:{ ok:3, bad:0, b:2 } }, kvizy:{ cisla:80 } },
+          b = { xp:39, cesta:{ pozdravy:{ l:[true] } }, lekceDen:{ "2026-11-23":1 }, slova:{ x:{ ok:1, bad:0, b:1 }, y:{ ok:1, bad:0, b:1 } }, kvizy:{ cisla:60 }, plan:{ start:"2026-11-23" } };
+    const s = slucPokrok(a, b), s2 = slucPokrok(b, a);
+    ok(s.cesta.pozdravy.l[1] === true && s.xp === 70 && s.perfekt === 1 && s.lekceDen["2026-11-23"] === 2 && s.slova.x.ok === 3 && s.slova.y && s.kvizy.cisla === 80 && s.plan.start === "2026-11-23", "slucovani pokroku");
+    ok(kanon(s) === kanon(s2), "slucovani nezavisi na poradi");
+    ok(kanon(slucPokrok(s, JSON.parse(JSON.stringify(s)))) === kanon(s), "slucovani je stabilni"); }
   S.p = { slova:{}, dny:{}, kvizy:{}, akt:"pozdravy" };
   novaSada(null); ok(S.karty.ids.length === 10, "sada 10");
   const id0 = S.karty.ids[0]; S.tab = "karticky"; render();
@@ -2835,7 +2882,15 @@ try {
   if (db){
     let hotovo; const cekej = new Promise(r => { hotovo = r; setTimeout(r, 10000); });
     db.doc("pokrok/matej").onSnapshot(s => {
-      if (s.exists){ const d = s.data() || {}; if (!S.test) S.p = Object.assign({ slova:{}, dny:{}, kvizy:{}, akt:"pozdravy" }, d); nactiVlastni(); }
+      if (s.exists){
+        const d = s.data() || {};
+        if (!S.test){
+          const sl = slucPokrok(S.p, d);
+          S.p = Object.assign({ slova:{}, dny:{}, kvizy:{}, akt:"pozdravy" }, sl);
+          if (kanon(sl) !== kanon(d)) uloz();   /* v db chybělo něco novějšího z tohoto okna → doplnit */
+        }
+        nactiVlastni();
+      }
       else if (Object.keys(S.p.slova).length) uloz();
       if (!S.test && !S.p.plan){ S.p.plan = { start:pristiPondeli() }; uloz(); }
       S.dbStav = "ok"; hotovo(); if (!S.karty || S.tab !== "karticky") render(); else renderTabs();

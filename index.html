@@ -638,6 +638,21 @@ h1{font-size:34px;font-weight:700;letter-spacing:.01em}
 .tabbar{box-shadow:var(--tabsh),inset 0 0 0 .5px var(--line)}
 .tabbar button.on{background:var(--fill)}
 .lchip{box-shadow:none}
+/* zpětná vazba v lekci (23. 11. večer): celý spodní panel se zbarví, fajfka nebo křížek, tlačítko v barvě výsledku */
+.lfoot{transition:background-color .2s}
+.lfoot.ok{background:linear-gradient(var(--ok-soft),var(--ok-soft)),var(--card)}
+.lfoot.bad{background:linear-gradient(var(--bad-soft),var(--bad-soft)),var(--card)}
+.lfoot.ok .lres,.lfoot.bad .lres{background:transparent;padding:6px 0 2px}
+.lres b{display:flex;align-items:center;gap:8px;font-size:21px}
+.lres b::before{content:"";flex:none;width:26px;height:26px;border-radius:50%;background:currentColor no-repeat center/15px;
+  -webkit-mask:none}
+.lres.ok b::before{background:var(--ok) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") no-repeat center/15px}
+.lres.bad b::before{background:var(--bad) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7L7 17'/%3E%3C/svg%3E") no-repeat center/13px}
+.lfoot.ok #ldalsi{background:var(--ok)}
+.lfoot.bad #ldalsi{background:var(--bad)}
+.lfoot.ok .btn.gray,.lfoot.bad .btn.gray,.lfoot.ok .spk,.lfoot.bad .spk{background:var(--card)}
+.lbar .mbar{height:14px}
+.lbar .mbar i{transition:width .35s cubic-bezier(.2,.8,.2,1)}
 /* doladění (23. 11. večer): bez těžkých stínů, lekce přehlednější */
 .unit{box-shadow:none}
 .unit::before{display:none}
@@ -1440,7 +1455,7 @@ function mluvP(text, rate){
           ss.speak(u); if (ss.paused) ss.resume();
           setTimeout(() => konec(true), 2500 + t.length * 150);   /* pojistka, kdyby onend nepřišlo */
         };
-        if (ss.speaking || ss.pending){ ss.cancel(); setTimeout(start, 120); } else start();
+        if (ss.speaking || ss.pending){ ss.cancel(); setTimeout(start, 220); } else start();
       } catch (e) { res(false); }
       return;
     }
@@ -2312,7 +2327,7 @@ function vLekce(){
       '<button class="bigmic' + (M.stav === "posloucham" ? " live" : "") + '" data-lx="mic"' + (L.odp || M.stav === "vyhodnocuji" ? " disabled" : "") + ' aria-label="Mluvit">' + ic("mic") + '</button>' +
       '<div class="slysim" id="lslysim">' + (M.stav === "posloucham" ? esc(M.text + " " + (M.partial || "")) || "Mluv…" : M.stav === "vyhodnocuji" ? "Vyhodnocuji…" : M.chyba ? esc(M.chyba) : "Ťukni na mikrofon, řekni větu a ťukni znovu.") + '</div>';
   }
-  h += '<div class="lfoot"><div class="in">';
+  h += '<div class="lfoot' + (L.odp ? (L.odp.ok ? " ok" : " bad") : "") + '"><div class="in">';
   if (L.odp){
     const spr = e.w ? e.w.it + " = " + ukaz(bezPozn(e.w.cz)) : e.s ? e.s.it + " = " + e.s.cz : "";
     h += '<div class="lres ' + (L.odp.ok ? "ok" : "bad") + '">' + (spr && (e.w || e.s) ? spk(e.w ? e.w.it : e.s.it) : "") + '<span class="t"><b>' + (L.odp.ok ? (L.combo >= 5 ? "Skvělé, " + L.combo + "× v řadě!" : ["Výborně!","Správně!","Bravo!","Perfetto!"][L.i % 4]) : "Správně je:") + '</b>' +
@@ -2447,6 +2462,28 @@ const MOTOKARY = [
   ["2027-10-21","2027-10-24","RMC Golden Trophy","Genk"],["2027-11-05","2027-11-07","Mojo Trophy","Jesolo"]
 ];
 const motokaryDne = iso => MOTOKARY.filter(m => m[0] <= iso && iso <= m[1]);
+const dalsiMotokary = n => MOTOKARY.filter(m => m[1] >= dnes()).slice(0, n);
+const zaDni = iso => Math.round((new Date(iso + "T12:00:00") - new Date(dnes() + "T12:00:00")) / 86400000);
+const zaKdy = z => z <= 0 ? "teď" : z === 1 ? "zítra" : "za " + z + (z < 5 ? " dny" : " dní");
+function odDo(a, b){
+  const A = new Date(a + "T12:00:00"), B = new Date(b + "T12:00:00");
+  return A.getMonth() === B.getMonth() ? A.getDate() + ".–" + B.getDate() + ". " + (B.getMonth() + 1) + "." : A.getDate() + ". " + (A.getMonth() + 1) + ". – " + B.getDate() + ". " + (B.getMonth() + 1) + ".";
+}
+const mkIkona = () => '<span class="sq" style="background:linear-gradient(155deg,#ff6b8b,#ff2d3c)">' + ic("flag") + '</span>';
+function motokaryKarta(){
+  const m = dalsiMotokary(1)[0]; if (!m) return "";
+  const z = zaDni(m[0]);
+  return '<button class="row glass" data-tab="harmonogram" style="border-radius:var(--r)">' + mkIkona() + '<span class="t"><b>' + (z <= 0 ? "Teď: " : "Příští motokáry: ") + esc(m[2]) + '</b><span>' +
+    odDo(m[0], m[1]) + ' · ' + esc(m[3]) + ' · ' + zaKdy(z) + '</span></span>' + chev() + '</button>';
+}
+function motokaryHtml(){
+  const vse = MOTOKARY.filter(m => m[1] >= dnes()), L = S.mkVse ? vse : vse.slice(0, 6);
+  if (!vse.length) return "";
+  return '<div class="sec"><div class="sec-h"><h3>Motokáry</h3><span class="muted" style="font-size:15px">' + vse.length + ' akcí</span></div><div class="list">' +
+    L.map(m => '<div class="row">' + mkIkona() + '<span class="t"><b>' + esc(m[2]) + '</b><span>' + odDo(m[0], m[1]) + ' · ' + esc(m[3]) + '</span></span><span class="pill p-nove">' + zaKdy(zaDni(m[0])) + '</span></div>').join("") + '</div>' +
+    (!S.mkVse && vse.length > L.length ? '<button class="btn sm tint" data-motokary="vse" style="align-self:flex-start">Zobrazit všech ' + vse.length + '</button>' : "") +
+    '<p class="foot">Z kalendáře v Rotax deníku (sezóna 2027). V den akce ti aplikace nabídne krátký den.</p></div>';
+}
 const KRATKY_KARET = 15;
 const jeKratky = iso => !!(((S.p.den || {})[iso] || {}).kratky);
 /* Bloky dne jako dvojice [blok, index v DEN_PROGRAM]. V krátký den jen první nehotová lekce a 15 kartiček. */
@@ -2536,7 +2573,7 @@ function programKarta(){
 }
 function vHarmonogram(){
   const n = S.tyden || aktTyden() || 1, konec = new Date(plusDny(planStart() || pristiPondeli(), TYDNY.length * 7 - 1) + "T12:00:00").toLocaleDateString("cs-CZ", { day:"numeric", month:"long" });
-  return '<div class="top"><div><div class="eyebrow">Po–Pá 40 minut · do ' + konec + '</div><h1>Harmonogram</h1></div></div>' + jaSeg() + harmonogramHtml(n);
+  return '<div class="top"><div><div class="eyebrow">Po–Pá 40 minut · do ' + konec + '</div><h1>Harmonogram</h1></div></div>' + jaSeg() + motokaryHtml() + harmonogramHtml(n);
 }
 function harmonogramHtml(n){
   const od = plusDny(planStart() || pristiPondeli(), (n - 1) * 7);
@@ -2571,6 +2608,7 @@ function vDnes(){
   pokracovatKarta() +
   urovenKarta() +
   programKarta() +
+  motokaryKarta() +
   bonusKarta() +
   '<div class="sec"><div class="sec-h"><h3>Fráze dne</h3></div><div class="phrase glass">' + spk(f.it, true) +
     '<div class="t"><b>' + esc(f.it) + '</b><span>' + esc(ukaz(f.cz)) + '</span><i>čti: ' + esc(f.v) + '</i></div></div></div>' +
@@ -2770,6 +2808,7 @@ document.addEventListener("click", e => {
   if (d.kopiruj){ kopiruj(d.kopiruj); return; }
   if (d.blok){ const [dw, bi, iso] = d.blok.split(":"); akceBloku(Number(dw), Number(bi), iso); return; }
   if (d.bonus){ bonusAkce(d.bonus); return; }
+  if (d.motokary){ S.mkVse = true; render(); return; }
   if (d.kratky){ const dd = dnes(); S.p.den = S.p.den || {}; const o = S.p.den[dd] = S.p.den[dd] || {}; o.kratky = o.kratky ? 0 : 1; ulozHned(); if (o.kratky) toast("Hodně štěstí na motokárách!"); render(); return; }
   if (d.ukol){ const [n, i] = d.ukol.split(":").map(Number); akceUkolu(n, i); return; }
   if (d.tyden){ S.tyden = Number(d.tyden); S.tab = "ja"; render(); scrollTo(0, 0); return; }
@@ -2808,6 +2847,7 @@ document.addEventListener("submit", e => {
 });
 document.addEventListener("input", e => {
   if (e.target.id === "kin" && S.karty) S.karty.vstup = e.target.value;
+  if (e.target.id === "lin" && S.lx) S.lx.vstup = e.target.value;   /* rozepsaná odpověď v lekci se při překreslení neztratí */
   if (e.target.id === "cin"){ S.chat.draft = e.target.value; e.target.style.height = "auto"; e.target.style.height = Math.min(140, e.target.scrollHeight) + "px"; }
 });
 document.addEventListener("keydown", e => {
@@ -2870,6 +2910,8 @@ async function samotest(){
     ok(denPlanu(dd).dow > 4 || (bl.length <= 2 && bl.some(x => x[0][0] === "karty")), "kratky den"); if (puv) S.p.den[dd] = puv; else delete S.p.den[dd]; }
   ok(motokaryDne("2027-03-06").some(m => m[2] === "RMC CE I") && !motokaryDne("2027-03-10").length, "kalendar motokar");
   ok(MOTOKARY.every(m => /^\d{4}-\d\d-\d\d$/.test(m[0]) && m[0] <= m[1]), "data motokar");
+  ok(odDo("2027-03-05", "2027-03-07") === "5.–7. 3." && odDo("2027-04-28", "2027-05-02") === "28. 4. – 2. 5.", "datum od do");
+  ok(motokaryHtml().includes("Motokáry") || !dalsiMotokary(1).length, "seznam motokar");
   { const pk = S.karty; novaSadaBonus(); ok(S.karty.bonus && S.karty.ids.length > 0 && S.karty.ids.length <= 25, "bonus sada " + S.karty.ids.length); S.karty = pk; }
   ok(TYDNY.every(t => !t.u.some(u => TM[u.k] && TM[u.k].lvl === "A2") || t.u.every(u => !u.k || (TM[u.k] && TM[u.k].lvl === "A2"))), "A1 a A2 se v tydnu nemichaji");
   TYDNY.forEach((t, i) => t.u.forEach(u => {
@@ -3025,7 +3067,11 @@ try {
       }
       else if (Object.keys(S.p.slova).length) uloz();
       if (!S.test && !S.p.plan){ S.p.plan = { start:pristiPondeli() }; uloz(); }
-      S.dbStav = "ok"; hotovo(); if (!S.karty || S.tab !== "karticky") render(); else renderTabs();
+      /* 23. 11.: během lekce, kartiček nebo psaní nepřekreslovat (sekalo se to a ztrácel se rozepsaný text) */
+      const ae = document.activeElement, pise = ae && (ae.tagName === "INPUT" || ae.tagName === "TEXTAREA");
+      const prvni = S.dbStav !== "ok";
+      S.dbStav = "ok"; hotovo();
+      if (prvni || (!S.lx && !pise && !(S.karty && S.tab === "karticky"))) render(); else renderTabs();
     }, () => { S.dbStav = "chyba"; hotovo(); render(); });
     db.collection("temata").onSnapshot(s => { let zmena = false; s.docs.forEach(d => { if (d.exists && AI_TEMATA[d.id]){ pridejTemaAI(d.id, d.data()); zmena = true; } }); if (zmena && !S.hovor && !(S.karty && S.tab === "karticky")) render(); }, () => {});
     await cekej;

@@ -581,6 +581,21 @@ body.calling .tabbar{display:none}
   .tabbar button:hover{background:var(--fill)}
   .tabbar button.on:hover{background:var(--accent-soft)}
 }
+/* jazyková úroveň */
+.jazur{border-radius:var(--rl);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.jz-top{display:flex;align-items:center;gap:14px}
+.jz-kod{flex:none;min-width:64px;height:64px;padding:0 8px;box-sizing:border-box;border-radius:18px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:24px;font-weight:800;letter-spacing:-.02em}
+.jz-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.jz-t b{font-size:19px}
+.jz-t span:last-child{font-size:14px;color:var(--muted)}
+.jz-bar{height:10px;border-radius:99px;background:var(--fill);overflow:hidden}
+.jz-bar i{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.jz-chybi{font-size:14px;font-weight:600;color:var(--fg2)}
+.jz-lad{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.jz-lad span{text-align:center;font-size:13px;font-weight:700;padding:6px 0;border-radius:10px;background:var(--fill);color:var(--muted)}
+.jz-lad span.now{background:var(--accent-soft);color:var(--accent);outline:2px solid var(--accent);outline-offset:-2px}
+.jz-lad span.ok{background:var(--accent);color:#fff}
+.jz-pozn{font-size:12px;color:var(--muted);line-height:1.4}
 </style>
 
 <div id="wall" aria-hidden="true"><svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
@@ -1528,6 +1543,40 @@ function pridejXp(n){
   S.p.xp = (S.p.xp || 0) + n; S.p.xpDen = S.p.xpDen || {}; S.p.xpDen[d] = (S.p.xpDen[d] || 0) + n;
   S.p.maxSerie = Math.max(S.p.maxSerie || 0, serie()); uloz();
 }
+/* ===================== jazyková úroveň (odhad A1–C2) ===================== */
+const JAZ_UROVNE = [
+  { kod:"A0",   hl:"A1", n:"Úplný začátek",       s:0,    j:0,    o:"Teprve začínáš. Pár slov a pozdravů." },
+  { kod:"A1.1", hl:"A1", n:"Začátečník",          s:0.15, j:2,    o:"Pozdravíš, představíš se, poděkuješ." },
+  { kod:"A1.2", hl:"A1", n:"Začátečník plus",     s:0.45, j:0.4,  o:"Objednáš si jídlo, řekneš čísla, čas a cestu." },
+  { kod:"A1",   hl:"A1", n:"A1 zvládnuté",        s:0.9,  j:0.85, o:"Zvládneš jednoduché věci na dovolené a v boxech." }
+];
+function jazUroven(){
+  const N = SLOVA.length, C = CESTA.length;
+  const slov = SLOVA.filter(w => umim(w.id)).length;
+  const jedn = CESTA.filter(k => (S.p.kvizy[k] || 0) >= 75).length;
+  const potrebaS = u => Math.round(u.s * N), potrebaJ = u => u.j < 1 && u.j > 0 ? Math.ceil(u.j * C) : u.j;
+  let i = 0; JAZ_UROVNE.forEach((u, x) => { if (slov >= potrebaS(u) && jedn >= potrebaJ(u)) i = x; });
+  const dalsi = JAZ_UROVNE[i + 1] || null;
+  let proc = 100, chybi = "";
+  if (dalsi){
+    const ps = potrebaS(dalsi), pj = potrebaJ(dalsi);
+    proc = Math.round(Math.min(1, (Math.min(1, slov / Math.max(1, ps)) + Math.min(1, jedn / Math.max(1, pj))) / 2) * 100);
+    const a = [];
+    if (slov < ps) a.push((ps - slov) + " " + (ps - slov === 1 ? "slovíčko" : ps - slov < 5 ? "slovíčka" : "slovíček"));
+    if (jedn < pj) a.push((pj - jedn) + " " + (pj - jedn === 1 ? "zkouška" : pj - jedn < 5 ? "zkoušky" : "zkoušek") + " na Cestě");
+    chybi = "Do " + dalsi.kod + " ti chybí: " + a.join(" a ") + ".";
+  } else chybi = "A1 máš! Na A2 potřebuješ asi 1 000 slov a víc mluvení. To je další kurz, řekni Claudovi.";
+  return { i, u:JAZ_UROVNE[i], dalsi, proc, chybi, slov, jedn };
+}
+function urovenKarta(){
+  const z = jazUroven(), hl = ["A1","A2","B1","B2","C1","C2"], hi = z.i === 0 ? -1 : hl.indexOf(z.u.hl);
+  if (S.p.jazUr == null) { S.p.jazUr = z.i; }
+  else if (z.i > S.p.jazUr) { S.p.jazUr = z.i; uloz(); setTimeout(() => { try { konfety(); } catch (e) {} toast("Nová úroveň: " + z.u.kod + "! Bravo!"); }, 300); }
+  return '<div class="jazur glass"><div class="jz-top"><div class="jz-kod">' + z.u.kod + '</div><div class="jz-t"><span class="eyebrow">Tvoje italština</span><b>' + esc(z.u.n) + '</b><span>' + esc(z.u.o) + '</span></div></div>' +
+    '<div class="jz-bar"><i style="width:' + z.proc + '%"></i></div><div class="jz-chybi">' + esc(z.chybi) + '</div>' +
+    '<div class="jz-lad">' + hl.map((x, j) => '<span class="' + (j < hi || (j === hi && z.u.kod === x) ? "ok" : j === hi ? "now" : "") + '">' + x + '</span>').join("") + '</div>' +
+    '<div class="jz-pozn">Umíš ' + z.slov + ' slovíček, ' + z.jedn + ' ' + (z.jedn === 1 ? "zkoušku" : z.jedn >= 2 && z.jedn <= 4 ? "zkoušky" : "zkoušek") + ' z Cesty. Je to odhad podle aplikace, ne oficiální zkouška.</div></div>';
+}
 const lvlChips = () => '<div class="lvl"><span class="lchip fire" title="Série dní">' + ic("flame") + serie() + '</span><span class="lchip xp" title="Body (XP), úroveň ' + uroven() + '">' + ic("star") + (S.p.xp || 0) + '</span></div>';
 function odznaky(){
   const c = S.p.cesta || {}, lekci = Object.values(c).reduce((s, x) => s + ((x && x.l) || []).filter(Boolean).length, 0);
@@ -1956,6 +2005,7 @@ function vDnes(){
   const k = aktTema(), T = TM[k], due = kOpakovani().length, d = dnesKaret(), f = frazeDne();
   return '<div class="top"><div><div class="eyebrow">' + new Date().toLocaleDateString("cs-CZ", { weekday:"long", day:"numeric", month:"long" }) + '</div><h1>' + pozdrav + ', Matěj!</h1></div>' + lvlChips() + '</div>' +
   pokracovatKarta() +
+  urovenKarta() +
   programKarta() +
   '<div class="sec"><div class="sec-h"><h3>Fráze dne</h3></div><div class="phrase glass">' + spk(f.it, true) +
     '<div class="t"><b>' + esc(f.it) + '</b><span>' + esc(ukaz(f.cz)) + '</span><i>čti: ' + esc(f.v) + '</i></div></div></div>' +
@@ -2118,6 +2168,7 @@ function vPokrok(){
   const max = Math.max(CIL_DNE, ...dny.map(x => x[1]));
   const tezke = SLOVA.filter(w => stat(w.id) && stat(w.id).bad).sort((a, b) => stat(b.id).bad - stat(a.id).bad).slice(0, 6);
   return '<div class="top"><div><div class="eyebrow">Jak ti to jde</div><h1>Pokrok</h1></div>' + lvlChips() + '</div>' + jaSeg() +
+  urovenKarta() +
   '<div class="goalcard glass"><div class="ring">' + ring((S.p.xp || 0) % 100, 100, "#f2b400") + '<div class="v">' + uroven() + '<small>úroveň</small></div></div><div class="t"><b>' + (S.p.xp || 0) + ' XP celkem</b><span>Do další úrovně chybí ' + (100 - (S.p.xp || 0) % 100) + ' XP. Dnes: ' + ((S.p.xpDen || {})[dnes()] || 0) + ' XP.</span></div></div>' +
   '<div class="kpis"><div class="kpi"><span>Umím slovíček</span><b>' + umimN + ' <small>z ' + SLOVA.length + '</small></b></div><div class="kpi"><span>Viděl jsem</span><b>' + videl + '</b></div>' +
     '<div class="kpi"><span>Série dní</span><b>' + serie() + '</b></div><div class="kpi"><span>Hotových kvízů</span><b>' + kvizy + ' <small>z ' + TEMATA.length + '</small></b></div></div>' +

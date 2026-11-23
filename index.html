@@ -2399,7 +2399,7 @@ function blokHotovo(b, iso, k){
   const typ = b[0], o = (S.p.den || {})[iso] || {}, karet = S.p.dny[iso] || 0;
   if (o["r:" + b[2]]) return true;
   if (typ === "uzel") return TM[k] ? uzelHotovy(k, b[3]) : false;
-  if (typ === "karty") return karet >= CIL_DNE;
+  if (typ === "karty") return karet >= (jeKratky(iso) ? KRATKY_KARET : CIL_DNE);
   if (typ === "opak") return karet >= 10;
   if (typ === "chat") return ((S.p.chatDen || {})[iso] || 0) >= 3;
   if (typ === "kviz") return !!o.kviz;
@@ -2427,25 +2427,80 @@ function akceBloku(dow, i, iso){
   if (typ === "chat"){ S.tab = "rozhovor"; render(); scrollTo(0, 0); dolu(); return; }
   if (typ === "volno"){ const f = frazeDne(); mluv(f.it); }
 }
+/* ===== 23. 11. večer: dny s motokárami (krátká verze) a nestihnuté lekce ===== */
+/* Motokárové akce z Rotax deníku (kolekce kalendar, zdroj season-2027.pdf ze skupiny Autíčkáři). Všechny jsou „možná“,
+   proto aplikace krátký den jen nabídne, nezapne ho sama. Bez Clio Cupu (auta). [od, do, název, trať] */
+const MOTOKARY = [
+  ["2026-11-26","2026-11-29","RMC UAE – Abu Dhabi","Abu Dhabi"],["2026-12-10","2026-12-14","Test Lonato","Lonato"],
+  ["2027-01-08","2027-01-10","Test Lonato","Lonato"],["2027-01-21","2027-01-24","RMC Int. Trophy Asia","Macau"],["2027-01-29","2027-01-31","Test Lonato","Lonato"],
+  ["2027-02-03","2027-02-07","RMC Winter Cup","Lonato"],["2027-02-18","2027-02-21","Rotax Winterseries","Genk"],["2027-02-26","2027-02-28","RMC CE – Bonus Cup","Jesolo"],
+  ["2027-03-01","2027-03-05","RS Racing School","Viterbo"],["2027-03-05","2027-03-07","RMC CE I","Jesolo"],["2027-03-18","2027-03-21","Rotax Winterseries","Genk"],
+  ["2027-04-02","2027-04-04","Moravský pohár","Slovakiaring"],["2027-04-03","2027-04-04","RMC Germany Open","Wackersdorf"],["2027-04-09","2027-04-11","BNL 1","Ostricourt"],
+  ["2027-04-10","2027-04-11","RMC Germany R1","Wackersdorf"],["2027-04-21","2027-04-25","RMC Euro Trophy 1","Wackersdorf"],["2027-04-28","2027-05-02","Viking Trophy","Vojens"],
+  ["2027-05-07","2027-05-09","RMC CE II","Slovakia Ring"],["2027-05-14","2027-05-16","Moravský pohár","Třinec"],["2027-05-14","2027-05-16","BNL 2","Genk"],
+  ["2027-05-15","2027-05-16","RMC Germany R2","Liedolsheim"],["2027-05-19","2027-05-23","RMC Euro Trophy 2","Genk"],["2027-06-11","2027-06-13","Moravský pohár","Bruck"],
+  ["2027-06-12","2027-06-13","RMC Germany R3","Wittgenborn"],["2027-06-18","2027-06-20","RMC CE III","Bruck"],["2027-06-30","2027-07-04","RMC Euro Trophy 3","Zuera"],
+  ["2027-07-02","2027-07-04","Moravský pohár","Bruck"],["2027-07-12","2027-07-17","RMC International Trophy","Le Mans"],["2027-08-07","2027-08-08","RMC Germany R4","Mülsen"],
+  ["2027-08-13","2027-08-15","RMC CE IV","Třinec"],["2027-08-20","2027-08-22","Moravský pohár","Vysoké Mýto"],["2027-08-27","2027-08-29","BNL 3","Mariembourg"],
+  ["2027-09-01","2027-09-05","RMC Euro Trophy 4","Cremona"],["2027-09-10","2027-09-12","Moravský pohár","Třinec"],["2027-09-17","2027-09-19","RMC CE V","Kecskemét"],
+  ["2027-09-18","2027-09-19","RMC Germany R5","Kerpen"],["2027-10-01","2027-10-03","BNL 4","Genk"],["2027-10-08","2027-10-10","Moravský pohár","Slovakiaring"],
+  ["2027-10-21","2027-10-24","RMC Golden Trophy","Genk"],["2027-11-05","2027-11-07","Mojo Trophy","Jesolo"]
+];
+const motokaryDne = iso => MOTOKARY.filter(m => m[0] <= iso && iso <= m[1]);
+const KRATKY_KARET = 15;
+const jeKratky = iso => !!(((S.p.den || {})[iso] || {}).kratky);
+/* Bloky dne jako dvojice [blok, index v DEN_PROGRAM]. V krátký den jen první nehotová lekce a 15 kartiček. */
+function blokyDne(iso){
+  const P = denPlanu(iso), vse = DEN_PROGRAM[P.dow].map((b, i) => [b, i]);
+  if (!jeKratky(iso) || P.dow > 4) return vse;
+  const uz = vse.filter(([b]) => b[0] === "uzel"), prvni = uz.find(([b]) => !blokHotovo(b, iso, P.k)) || uz[0];
+  const kar = vse.find(([b]) => b[0] === "karty");
+  return [prvni, kar && [["karty", 8, "Kartičky: " + KRATKY_KARET + " kusů"], kar[1]]].filter(Boolean);
+}
+/* Lekce a zkoušky z minulých dnů plánu, které ještě nejsou hotové (nic se neztratí, jen se ukážou k dodělání). */
+function nedodelane(){
+  if (!planStart()) return [];
+  const out = [], vid = new Set();
+  for (let d = planStart(), x = 0; d < dnes() && x < 400; d = plusDny(d, 1), x++){
+    const P = denPlanu(d); if (P.dow > 4 || P.predStartem) continue;
+    DEN_PROGRAM[P.dow].forEach((b, i) => {
+      if (b[0] !== "uzel") return;
+      const k = kBloku(b, d, P.k), klic = k + ":" + b[3];
+      if (vid.has(klic)) return; vid.add(klic);
+      if (TM[k] && !uzelHotovy(k, b[3])) out.push({ b, i, iso:d, dow:P.dow, k });
+    });
+  }
+  return out;
+}
+function nestihlHtml(){
+  const nd = nedodelane(); if (!nd.length) return "";
+  const vikend = denPlanu(dnes()).dow > 4;
+  return '<div class="sec"><div class="sec-h"><h3>Nestihl jsi</h3><span class="muted" style="font-size:15px;font-variant-numeric:tabular-nums">' + nd.length + '</span></div><div class="list">' +
+    nd.slice(0, 4).map(x => '<button class="row" data-blok="' + x.dow + ':' + x.i + ':' + x.iso + '"><span class="chk">' + ic("play") + '</span><span class="t"><b>' + esc(blokText(x.b, x.k, x.iso)) + '</b><span>z ' +
+      DNY_JMENA[(x.dow + 1) % 7].toLowerCase() + ' ' + new Date(x.iso + "T12:00:00").toLocaleDateString("cs-CZ", { day:"numeric", month:"numeric" }) + ' · ' + x.b[1] + ' minut</span></span>' + chev() + '</button>').join("") + '</div>' +
+    (nd.length > 4 ? '<p class="foot">A ještě ' + (nd.length - 4) + ' dalších. Ukážou se, až dokončíš tyhle.</p>' : "") +
+    '<p class="foot">' + (vikend ? "Víkend je ideální chvíle to dohnat." : "Nevadí, nic se neztratilo. Dodělej to, až budeš mít čas, třeba o víkendu.") + '</p>' +
+    (nd.length >= 4 ? '<button class="btn sm tint" data-plan="posun" style="align-self:flex-start">Posunout plán o týden</button>' : "") + '</div>';
+}
 function denHtml(iso, velky){
-  const P = denPlanu(iso), bloky = DEN_PROGRAM[P.dow], min = bloky.reduce((s, b) => s + b[1], 0);
+  const P = denPlanu(iso), dvojice = blokyDne(iso), bloky = dvojice.map(x => x[0]), min = bloky.reduce((s, b) => s + b[1], 0);
   const hot = bloky.filter(b => b[0] !== "volno" && blokHotovo(b, iso, P.k)).length, celkem = bloky.filter(b => b[0] !== "volno").length;
   const jeDnes = iso === dnes(), minuly = iso < dnes();
   const datum = new Date(iso + "T12:00:00").toLocaleDateString("cs-CZ", { day:"numeric", month:"numeric" });
   let h = '<div class="den' + (jeDnes ? " dnes" : "") + (minuly ? " minuly" : "") + '"><div class="denh"><span class="dd">' + DNY_KRATCE[P.dow] + '<b>' + datum + '</b></span>' +
-    '<span class="dt">' + (min ? "Týden " + P.n + " · " + esc(nazevTematu(P.k)) : "Volno") + '</span><span class="dm">' + (min ? (celkem && hot === celkem ? "hotovo" : min + " min") : "") + '</span></div>';
-  if (velky || jeDnes || !minuly) h += '<div class="list">' + bloky.map((b, i) => { const ok = b[0] !== "volno" && blokHotovo(b, iso, P.k), klik = true;
+    '<span class="dt">' + (min ? "Týden " + P.n + " · " + esc(nazevTematu(P.k)) : "Volno") + (motokaryDne(iso).length ? ' · motokáry: ' + esc(motokaryDne(iso).map(m => m[2]).join(", ")) : "") + '</span><span class="dm">' + (min ? (celkem && hot === celkem ? "hotovo" : min + " min") : "") + '</span></div>';
+  if (velky || jeDnes || !minuly) h += '<div class="list">' + dvojice.map(([b, i]) => { const ok = b[0] !== "volno" && blokHotovo(b, iso, P.k), klik = true;
     return (klik ? '<button class="row" data-blok="' + P.dow + ':' + i + ':' + iso + '">' : '<div class="row">') + '<span class="chk' + (ok ? " on" : "") + '"' + (b[0] !== "volno" ? ' data-fajfka="' + iso + '|' + esc(b[2]) + '" role="checkbox" aria-checked="' + ok + '" aria-label="Označit jako hotové"' : "") + '>' + (ok ? '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' : ic(IKONA_BLOKU[b[0]])) + '</span>' +
       '<span class="t"><b>' + esc(blokText(b, P.k, iso)) + '</b>' + (b[1] ? '<span>' + b[1] + ' minut</span>' : "") + '</span>' + (klik ? chev() + '</button>' : '</div>'); }).join("") + '</div>';
   return h + '</div>';
 }
 /* Dnešní kroužky jako v Apple Fitness: Lekce (1 denně), Kartičky (20), Psaní (3 zprávy) */
 function krouzky(){
-  const d = dnes(), lek = Math.min(1, (S.p.lekceDen || {})[d] || 0), kar = Math.min(CIL_DNE, S.p.dny[d] || 0), psa = Math.min(3, (S.p.chatDen || {})[d] || 0);
+  const d = dnes(), CIL = jeKratky(d) ? KRATKY_KARET : CIL_DNE, lek = Math.min(1, (S.p.lekceDen || {})[d] || 0), kar = Math.min(CIL, S.p.dny[d] || 0), psa = Math.min(3, (S.p.chatDen || {})[d] || 0);
   const kr = (r, w, p, c) => { const o = 2 * Math.PI * r; return '<circle cx="60" cy="60" r="' + r + '" style="stroke:' + c + ';opacity:.2" stroke-width="' + w + '"/><circle cx="60" cy="60" r="' + r + '" style="stroke:' + c + '" stroke-width="' + w + '" stroke-linecap="round" stroke-dasharray="' + (o * Math.max(.001, p)).toFixed(1) + ' ' + o.toFixed(1) + '"/>'; };
   const leg = (c, n, v) => '<div class="kl"><i style="background:' + c + '"></i><span>' + n + '</span><b>' + v + '</b></div>';
-  return '<div class="krouzky"><svg viewBox="0 0 120 120" class="kr" aria-hidden="true">' + kr(52, 13, lek, "var(--k1)") + kr(37, 13, kar / CIL_DNE, "var(--k2)") + kr(22, 13, psa / 3, "var(--k3)") + '</svg>' +
-    '<div class="kleg">' + leg("var(--k1)", "Lekce", lek + "/1") + leg("var(--k2)", "Kartičky", kar + "/" + CIL_DNE) + leg("var(--k3)", "Psaní", psa + "/3") + '</div></div>';
+  return '<div class="krouzky"><svg viewBox="0 0 120 120" class="kr" aria-hidden="true">' + kr(52, 13, lek, "var(--k1)") + kr(37, 13, kar / CIL, "var(--k2)") + kr(22, 13, psa / 3, "var(--k3)") + '</svg>' +
+    '<div class="kleg">' + leg("var(--k1)", "Lekce", lek + "/1") + leg("var(--k2)", "Kartičky", kar + "/" + CIL) + leg("var(--k3)", "Psaní", psa + "/3") + '</div></div>';
 }
 /* Konfety v italských barvách (bez knihoven, ohleduplné k omezenému pohybu) */
 function konfety(){
@@ -2462,15 +2517,19 @@ function konfety(){
   document.body.appendChild(box); setTimeout(() => box.remove(), 3200);
 }
 function hlidejDen(){
-  const P = denPlanu(dnes()), bloky = DEN_PROGRAM[P.dow].filter(b => b[0] !== "volno"); if (!bloky.length) return;
+  const P = denPlanu(dnes()), bloky = blokyDne(dnes()).map(x => x[0]).filter(b => b[0] !== "volno"); if (!bloky.length) return;
   const d = dnes(); S.p.den = S.p.den || {}; const o = S.p.den[d] = S.p.den[d] || {};
   if (!o.oslava && bloky.every(b => blokHotovo(b, d, P.k))){ o.oslava = 1; uloz(); konfety(); toast("Dnešní program je hotový! Bravissimo!"); }
 }
 function programKarta(){
-  const P = denPlanu(dnes()), bloky = DEN_PROGRAM[P.dow], min = bloky.reduce((s, b) => s + b[1], 0);
+  const P = denPlanu(dnes()), bloky = blokyDne(dnes()).map(x => x[0]), min = bloky.reduce((s, b) => s + b[1], 0), kr = jeKratky(dnes());
   const hot = bloky.filter(b => b[0] !== "volno" && blokHotovo(b, dnes(), P.k)).length, celkem = bloky.filter(b => b[0] !== "volno").length;
-  return '<div class="dgrid">' + krouzky() + '<div class="sec"><div class="sec-h"><h3>Dnešní program</h3><span class="muted" style="font-size:15px;font-variant-numeric:tabular-nums">' + (min ? min + " min · " + hot + "/" + celkem : "volno") + '</span></div>' +
+  const mk = motokaryDne(dnes());
+  const mkHtml = mk.length && P.dow < 5 && !kr ? '<button class="row glass" data-kratky="1" style="border-radius:var(--r)"><span class="sq" style="background:linear-gradient(155deg,#ff6b8b,#ff2d3c)">' + ic("flag") + '</span><span class="t"><b>Dnes: ' + esc(mk.map(m => m[2]).join(", ")) + '</b><span>' + esc(mk[0][3]) + '. Jedeš? Ťukni a dej si krátký den (15 minut).</span></span>' + chev() + '</button>' : "";
+  return mkHtml + nestihlHtml() + '<div class="dgrid">' + krouzky() + '<div class="sec"><div class="sec-h"><h3>' + (kr ? "Krátký den" : "Dnešní program") + '</h3><span class="muted" style="font-size:15px;font-variant-numeric:tabular-nums">' + (min ? min + " min · " + hot + "/" + celkem : "volno") + '</span></div>' +
     denHtml(dnes(), true).replace(/^<div class="den[^"]*"><div class="denh">.*?<\/div>/, '<div class="den">') +
+    (P.dow < 5 && !P.predStartem ? '<button class="btn sm ' + (kr ? "tint" : "gray") + '" data-kratky="1" style="align-self:flex-start">' + (kr ? "Zpátky na celý program (40 minut)" : "Dnes mám motokáry: jen 15 minut") + '</button>' : "") +
+    (kr ? '<p class="foot">Krátký den: jedna lekce a ' + KRATKY_KARET + ' kartiček, ať ti nespadne série. Zbytek najdeš zítra v „Nestihl jsi“.</p>' : "") +
     (P.predStartem ? '<p class="foot">Plán začíná v pondělí ' + new Date((planStart() || pristiPondeli()) + "T12:00:00").toLocaleDateString("cs-CZ", { day:"numeric", month:"numeric" }) + ' Dnes si můžeš zkusit první lekci.</p>' : "") +
     (celkem && hot === celkem ? '<p class="foot">Dnešní program máš hotový. Bravo, Matěj!</p>' : "") +
     '<button class="btn sm tint" data-tab="harmonogram" style="align-self:flex-start">' + ic("cal").replace("<svg", '<svg style="width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2"') + 'Celý harmonogram</button></div></div>';
@@ -2711,11 +2770,13 @@ document.addEventListener("click", e => {
   if (d.kopiruj){ kopiruj(d.kopiruj); return; }
   if (d.blok){ const [dw, bi, iso] = d.blok.split(":"); akceBloku(Number(dw), Number(bi), iso); return; }
   if (d.bonus){ bonusAkce(d.bonus); return; }
+  if (d.kratky){ const dd = dnes(); S.p.den = S.p.den || {}; const o = S.p.den[dd] = S.p.den[dd] || {}; o.kratky = o.kratky ? 0 : 1; ulozHned(); if (o.kratky) toast("Hodně štěstí na motokárách!"); render(); return; }
   if (d.ukol){ const [n, i] = d.ukol.split(":").map(Number); akceUkolu(n, i); return; }
   if (d.tyden){ S.tyden = Number(d.tyden); S.tab = "ja"; render(); scrollTo(0, 0); return; }
   if (d.plan){
     if (d.plan === "start" || d.plan === "ano"){ S.p.plan = { start:dnes() }; S.planReset = false; S.tyden = null; uloz(); S.tab = "plan"; render(); scrollTo(0, 0); }
     if (d.plan === "reset"){ S.planReset = true; render(); }
+    if (d.plan === "posun" && planStart()){ S.p.plan = Object.assign({}, S.p.plan, { start:plusDny(planStart(), 7) }); S.tyden = null; ulozHned(); toast("Plán je posunutý o týden."); render(); scrollTo(0, 0); }
     if (d.plan === "ne"){ S.planReset = false; render(); }
     return;
   }
@@ -2802,6 +2863,13 @@ async function samotest(){
   ok(new Set([0, 1, 2].map(i => temaVTydnu(1, i))).size === 3, "tyden 1 ma 3 temata");
   ok(DEN_PROGRAM.slice(0, 5).every(p => p.every(b => b[0] !== "uzel" || (b[4] != null && TM[temaVTydnu(1, b[4])]))), "kazda lekce v programu ma tema");
   ok(bonusKarta().includes('data-bonus="karty"') && bonusKarta().includes('data-bonus="poslech"'), "bonus karta");
+  { const pp = S.p.plan; S.p.plan = { start:plusDny(dnes(), -15) };
+    ok(nedodelane().length > 0 && nestihlHtml().includes("Nestihl jsi"), "nestihnute lekce se ukazou " + nedodelane().length);
+    if (pp) S.p.plan = pp; else delete S.p.plan; }
+  { const dd = dnes(); S.p.den = S.p.den || {}; const puv = S.p.den[dd]; S.p.den[dd] = { kratky:1 }; const bl = blokyDne(dd);
+    ok(denPlanu(dd).dow > 4 || (bl.length <= 2 && bl.some(x => x[0][0] === "karty")), "kratky den"); if (puv) S.p.den[dd] = puv; else delete S.p.den[dd]; }
+  ok(motokaryDne("2027-03-06").some(m => m[2] === "RMC CE I") && !motokaryDne("2027-03-10").length, "kalendar motokar");
+  ok(MOTOKARY.every(m => /^\d{4}-\d\d-\d\d$/.test(m[0]) && m[0] <= m[1]), "data motokar");
   { const pk = S.karty; novaSadaBonus(); ok(S.karty.bonus && S.karty.ids.length > 0 && S.karty.ids.length <= 25, "bonus sada " + S.karty.ids.length); S.karty = pk; }
   ok(TYDNY.every(t => !t.u.some(u => TM[u.k] && TM[u.k].lvl === "A2") || t.u.every(u => !u.k || (TM[u.k] && TM[u.k].lvl === "A2"))), "A1 a A2 se v tydnu nemichaji");
   TYDNY.forEach((t, i) => t.u.forEach(u => {

@@ -638,6 +638,19 @@ h1{font-size:34px;font-weight:700;letter-spacing:.01em}
 .tabbar{box-shadow:var(--tabsh),inset 0 0 0 .5px var(--line)}
 .tabbar button.on{background:var(--fill)}
 .lchip{box-shadow:none}
+/* doladění (23. 11. večer): bez těžkých stínů, lekce přehlednější */
+.unit{box-shadow:none}
+.unit::before{display:none}
+.uzel i{box-shadow:0 4px 0 rgba(0,0,0,.12)}
+.uzel.zamek i{box-shadow:inset 0 0 0 .5px var(--line)}
+.uzel .zac{box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.lq{font-size:28px;letter-spacing:-.01em}
+.opt{background:var(--card);border-radius:16px;min-height:58px;box-shadow:inset 0 0 0 1px var(--line)}
+.opt .k{background:var(--fill);color:var(--fg2)}
+.opt.sel{box-shadow:inset 0 0 0 2px var(--accent)}
+.lfoot{box-shadow:0 -.5px 0 var(--line)}
+.kpi b{letter-spacing:-.02em}
+.jz-kod{border-radius:16px}
 @media (min-width:900px){
   .tabbar{box-shadow:inset 0 0 0 .5px var(--line)}
   .tabbar button.on,.tabbar button.on:hover{background:var(--accent);color:#fff}
@@ -1237,6 +1250,20 @@ function aktTema(){
 }
 
 /* ===================== výslovnost ===================== */
+/* Nejlepší italský hlas prohlížeče: vylepšený / Siri hlas má přednost, pak známé italské hlasy Applu, pak místní hlas. */
+let HLAS_IT = null;
+function nactiHlas(){
+  try {
+    const v = window.speechSynthesis.getVoices().filter(x => /^it([-_]|$)/i.test(x.lang)); if (!v.length) return;
+    const skore = x => (/premium|enhanced|vylepšen|siri|neural|natural/i.test(x.name) ? 8 : 0) + (/^(alice|federica|emma|paola|luca|federico)/i.test(x.name) ? 3 : 0) +
+      (x.localService ? 2 : 0) + (/it[-_]IT/i.test(x.lang) ? 1 : 0) + (/google/i.test(x.name) ? 1 : 0);
+    HLAS_IT = v.sort((a, b) => skore(b) - skore(a))[0];
+  } catch (e) {}
+}
+if (window.speechSynthesis){
+  nactiHlas();
+  try { window.speechSynthesis.addEventListener("voiceschanged", nactiHlas); } catch (e) { window.speechSynthesis.onvoiceschanged = nactiHlas; }
+}
 /* Přečte italský text nahlas. Vrací slib, který se splní, až dočte (nebo hned, když to nejde). */
 function mluvP(text, rate){
   const t = bezPozn(prvniVar(String(text || ""))).replace(/\.\.\.|…/g, "").trim();
@@ -1250,11 +1277,19 @@ function mluvP(text, rate){
       return;
     }
     if (!tts && window.speechSynthesis){
+      /* 23. 11.: oprava sekání na iPhonu – nemluvit hned po cancel(), držet si odkaz na větu, vybrat nejlepší italský hlas */
       try {
-        speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(t); u.lang = "it-IT"; u.rate = rate || .9;
-        const hlas = speechSynthesis.getVoices().find(v => /^it/i.test(v.lang)); if (hlas) u.voice = hlas;
-        u.onend = () => res(true); u.onerror = () => res(false); speechSynthesis.speak(u);
+        const ss = window.speechSynthesis; if (!HLAS_IT) nactiHlas();
+        let hotovo = false; const konec = ok => { if (!hotovo){ hotovo = true; res(ok); } };
+        const start = () => {
+          const u = new SpeechSynthesisUtterance(t); u.lang = HLAS_IT ? HLAS_IT.lang : "it-IT"; u.rate = rate || .92; u.pitch = 1; u.volume = 1;
+          if (HLAS_IT) u.voice = HLAS_IT;
+          window._mluvenaVeta = u;   /* jinak ji Safari někdy zahodí a utne v půlce */
+          u.onend = () => konec(true); u.onerror = () => konec(false);
+          ss.speak(u); if (ss.paused) ss.resume();
+          setTimeout(() => konec(true), 2500 + t.length * 150);   /* pojistka, kdyby onend nepřišlo */
+        };
+        if (ss.speaking || ss.pending){ ss.cancel(); setTimeout(start, 120); } else start();
       } catch (e) { res(false); }
       return;
     }

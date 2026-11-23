@@ -2692,6 +2692,20 @@ nactiVlastni();
 try { const z = JSON.parse(localStorage.getItem(LS + "-temata") || "{}"); Object.keys(z).forEach(k => pridejTemaAI(k, z[k])); } catch (e) {}
 render();
 nahled();
+/* 23. 11.: když se aplikace v Claude obnoví na novou verzi, pokračuje se tam, kde Matěj byl (i uprostřed lekce, kartiček nebo kvízu) */
+function obnovHot(d){
+  if (!d || typeof d !== "object") return;
+  ["tab","tema","ttab","jaMode","tyden","karty","kviz"].forEach(k => { if (d[k] !== undefined && d[k] !== null) S[k] = d[k]; });
+  if (d.lx && d.lx.ex && TM[d.lx.k]){ S.lx = d.lx; document.body.classList.add("lekce"); }
+  render();
+}
+try {
+  const hot = window.claude && window.claude.hot;
+  if (hot){
+    if (hot.snapshot) hot.snapshot(() => JSON.parse(JSON.stringify({ tab:S.tab, tema:S.tema, ttab:S.ttab, jaMode:S.jaMode || null, tyden:S.tyden || null, karty:S.karty || null, kviz:S.kviz || null, lx:S.lx || null })));
+    if (hot.ready) hot.ready(obnovHot); else obnovHot(hot.data);
+  }
+} catch (e) {}
 (async () => {
   const use = window.claude && window.claude.use;
   if (!use){ S.dbStav = "bez"; render(); if (location.hash === "#selftest") samotest(); return; }

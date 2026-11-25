@@ -112,6 +112,16 @@ button.row:active{background:var(--fill)}
 .spk:active{transform:scale(.92)}
 .spk svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .spk.on{background:var(--accent);color:#fff}
+.itw{color:var(--accent);font-weight:600;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer;border-radius:6px;padding:0 2px;margin:0 -2px;transition:background .15s}
+.itw.on,.itw:active{background:var(--accent-soft)}
+.bub{position:absolute;z-index:999;max-width:280px;min-width:160px;padding:12px 14px;border-radius:16px;background:var(--solid,#fff);color:var(--fg);box-shadow:0 10px 30px rgba(0,0,0,.25);animation:bubIn .15s ease-out}
+@keyframes bubIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+.bub .bw{font-weight:700;font-size:20px;color:var(--accent)}
+.bub .bc{font-size:19px;font-weight:600;margin-top:4px}
+.bub .bc span{font-size:14px;font-weight:400;opacity:.6}
+.bub .bt{font-size:16px;margin-top:4px}
+.bub .bh{font-size:12px;opacity:.55;margin-top:8px}
+.row .t b,.ex .t b,.newcard .w,.ccard .q,.lprompt .lq{cursor:pointer}
 .spk.big{width:52px;height:52px}
 .spk.big svg{width:26px;height:26px}
 .nospk .spk{display:none}
@@ -703,9 +713,9 @@ const TEMATA = [
     ["buonanotte","dobrou noc","buonanótte"],["salve","dobrý den|zdravím","sálve"],["come stai?","jak se máš?","kóme stáj"],["bene, grazie","dobře, díky","béne grácie"],
     ["sì","ano","sí"],["no","ne","no"],["scusi","promiňte","skúzi"],["a presto","brzy na viděnou|zatím","a présto"],["benvenuto","vítej","benvenúto"],["di niente","není zač","di niénte"]],
    kroky:[
-    ["Tykání a vykání","Kamarádům a jezdcům tykáš: ciao, scusa. Dospělým, které neznáš (recepce, pořadatel), vykáš: buongiorno, scusi.",[["Ciao, come ti chiami?","Ahoj, jak se jmenuješ?"],["Buongiorno, scusi!","Dobrý den, promiňte!"]]],
-    ["„Sono“ znamená „jsem“","Italové většinou neříkají „já“ (io). Stačí samotné sloveso.",[["Sono Matěj.","Jsem Matěj."],["Sono un pilota.","Jsem jezdec."]]],
-    ["Jak se čte","c před e/i se čte č (ciao = čao). ch se čte k (chiamo = kjámo). gn se čte ň (bagno = báňo). gl se čte lj (gli = lji). h se nečte nikdy.",[["Ciao!","Ahoj!"],["Mi chiamo Luca.","Jmenuji se Luca."]]]]},
+    ["Kamarád, nebo dospělý?","Kamarádovi řekneš {ciao} (ahoj) a {scusa} (promiň). Cizímu dospělému, třeba na recepci, řekneš {buongiorno} (dobrý den) a {scusi} (promiňte). Je to jako v češtině: tykat a vykat.",[["Ciao, come ti chiami?","Ahoj, jak se jmenuješ?"],["Buongiorno, scusi!","Dobrý den, promiňte!"]]],
+    ["„Jsem“ je {sono}","Italové neříkají „já jsem“. Řeknou jen {sono} a to už znamená „jsem“. Úplně jako česky: „Jsem Matěj.“",[["Sono Matěj.","Jsem Matěj."],["Sono un pilota.","Jsem jezdec."]]],
+    ["Jak se to čte","Pár pravidel a přečteš skoro všechno: c před e nebo i čti jako č ({ciao} = čao). ch čti jako k ({chiamo} = kjámo). gn čti jako ň ({bagno} = báňo). h se nečte vůbec.",[["Ciao!","Ahoj!"],["Mi chiamo Luca.","Jmenuji se Luca."]]]]},
  { k:"rodina", n:"Rodina a domov", g:"linear-gradient(155deg,#ffb38a,#e0603b)", ic:"home",
    o:"Máma, táta, sestra a kde bydlíš.",
    slova:[
@@ -716,9 +726,9 @@ const TEMATA = [
     ["i genitori","rodiče","i dženitóri"],["la madre","matka","la mádre"],["il padre","otec","il pádre"],["il figlio","syn","il fíljo"],["la figlia","dcera","la fílja"],
     ["lo zio","strýc","lo dzío"],["la zia","teta","la dzía"],["il cugino","bratranec","il kudžíno"],["la nonna","babička","la nónna"],["il nonno","děda|dědeček","il nónno"]],
    kroky:[
-    ["Můj a moje","il mio = můj, la mia = moje. Člen obvykle zůstává. U členů rodiny v jednotném čísle ale člen odpadá: mia sorella, mio fratello.",[["Mia sorella si chiama Ela.","Moje sestra se jmenuje Ela."],["Questa è la mia camera.","Tohle je můj pokoj."]]],
-    ["Sloveso abitare (bydlet)","abito = bydlím, abiti = bydlíš, abita = bydlí. Je to pravidelné sloveso na -are.",[["Dove abiti?","Kde bydlíš?"],["Abito in Repubblica Ceca.","Bydlím v České republice."]]],
-    ["Sourozenci","Hai fratelli? = Máš sourozence? Odpovíš ho (mám) nebo non ho (nemám).",[["Hai fratelli?","Máš sourozence?"],["Ho una sorella.","Mám sestru."]]]]},
+    ["Můj a moje","{mio} = můj, {mia} = moje. U rodiny se před to nic nedává: {mia sorella} = moje sestra, {mio fratello} = můj brácha.",[["Mia sorella si chiama Ela.","Moje sestra se jmenuje Ela."],["Questa è la mia camera.","Tohle je můj pokoj."]]],
+    ["Bydlím, bydlíš, bydlí","{abito} = bydlím, {abiti} = bydlíš, {abita} = bydlí. Jen se mění konec slova: o je já, i je ty, a je on nebo ona.",[["Dove abiti?","Kde bydlíš?"],["Abito in Repubblica Ceca.","Bydlím v České republice."]]],
+    ["Máš sourozence?","{Hai fratelli?} = Máš sourozence? Odpovíš {ho} (mám) nebo {non ho} (nemám). Písmeno h se nečte, takže {ho} zní jako „o“.",[["Hai fratelli?","Máš sourozence?"],["Ho una sorella.","Mám sestru."]]]]},
  { k:"skola", n:"Škola a koníčky", g:"linear-gradient(155deg,#64d2ff,#0a84c6)", ic:"book",
    o:"Předměty, úkoly a co rád děláš ve volném čase.",
    slova:[
@@ -730,9 +740,9 @@ const TEMATA = [
     ["la storia","dějepis|příběh","la stória"],["la geografia","zeměpis","la džeografía"],["la lavagna","tabule","la laváňa"],["studiare","učit se|studovat","studjáre"],
     ["imparare","naučit se","imparáre"],["la pausa","přestávka","la páuza"],["leggere","číst","léddžere"],["scrivere","psát","skrívere"]],
    kroky:[
-    ["Mi piace","mi piace = líbí se mi, mám rád. Za tím je věc nebo sloveso.",[["Mi piace il gelato.","Mám rád zmrzlinu."],["Mi piace guardare i film.","Rád se dívám na filmy."]]],
-    ["Víc věcí: mi piacciono","Když se ti líbí víc věcí, řekneš mi piacciono. Zápor: non mi piace.",[["Mi piacciono i kart.","Mám rád motokáry."],["Non mi piacciono i compiti.","Nemám rád úkoly."]]],
-    ["Hrát sport: giocare a","giocare a + sport: gioco (hraju), giochi (hraješ), gioca (hraje).",[["Gioco a calcio.","Hraju fotbal."],["Giochi a tennis?","Hraješ tenis?"]]]]},
+    ["Mám rád: {mi piace}","{mi piace} = líbí se mi, mám rád. Za to dáš, co máš rád: {mi piace il gelato} = mám rád zmrzlinu.",[["Mi piace il gelato.","Mám rád zmrzlinu."],["Mi piace guardare i film.","Rád se dívám na filmy."]]],
+    ["Víc věcí: {mi piacciono}","Když máš rád víc věcí najednou, řekneš {mi piacciono}. Když něco nemáš rád, dáš před to {non}: {non mi piace}.",[["Mi piacciono i kart.","Mám rád motokáry."],["Non mi piacciono i compiti.","Nemám rád úkoly."]]],
+    ["Hraju fotbal","Hrát sport = {giocare a} + sport. {gioco} = hraju, {giochi} = hraješ, {gioca} = hraje.",[["Gioco a calcio.","Hraju fotbal."],["Giochi a tennis?","Hraješ tenis?"]]]]},
  { k:"cas", n:"Dny a hodiny", g:"linear-gradient(155deg,#d07cff,#5e5ce6)", ic:"watch",
    o:"Dny v týdnu, dnes, zítra a kolik je hodin.",
    slova:[
@@ -742,9 +752,9 @@ const TEMATA = [
     ["la settimana","týden","la settimána"],["il mese","měsíc","il méze"],["l'anno","rok","lánno"],["la mattina","ráno|dopoledne","la mattína"],["il pomeriggio","odpoledne","il pomeríddžo"],
     ["la sera","večer","la séra"],["la notte","noc","la nótte"],["adesso","teď","adésso"],["presto","brzy","présto"],["tardi","pozdě","tárdi"],["mezzogiorno","poledne","meddzodžórno"],["il minuto","minuta","il minúto"]],
    kroky:[
-    ["Dny v týdnu","Píšou se malým písmenem. Se členem znamenají „každý“: il sabato = každou sobotu.",[["Sabato ho una gara.","V sobotu mám závod."],["La domenica dormo a lungo.","V neděli dlouho spím."]]],
-    ["Kolik je hodin","sono le + číslo. Jedna hodina je výjimka: è l'una. Půl je e mezza.",[["Sono le due e mezza.","Je půl třetí."],["È l'una.","Je jedna hodina."]]],
-    ["V kolik?","A che ora? = V kolik? Odpověď: alle + číslo.",[["A che ora è la cena?","V kolik je večeře?"],["Alle otto.","V osm."]]]]},
+    ["Dny v týdnu","Dny se píšou malým písmenem. {sabato} = v sobotu (jednou). {il sabato} = každou sobotu.",[["Sabato ho una gara.","V sobotu mám závod."],["La domenica dormo a lungo.","V neděli dlouho spím."]]],
+    ["Kolik je hodin?","Řekneš {sono le} a číslo: {sono le tre} = jsou tři. Jen jedna hodina je jinak: {è l'una}. Půl řekneš {e mezza}.",[["Sono le due e mezza.","Je půl třetí."],["È l'una.","Je jedna hodina."]]],
+    ["V kolik?","{A che ora?} = V kolik? Odpovíš {alle} a číslo: {alle otto} = v osm.",[["A che ora è la cena?","V kolik je večeře?"],["Alle otto.","V osm."]]]]},
  { k:"barvy", n:"Barvy a oblečení", g:"linear-gradient(155deg,#ff7a9a,#9b5cff)", ic:"tshirt",
    o:"Barvy, tričko, boty a tvoje helma.",
    slova:[
@@ -754,9 +764,9 @@ const TEMATA = [
     ["arancione","oranžový","arančóne"],["rosa","růžový","róza"],["viola","fialový","vióla"],["grigio","šedý","grídžo"],["marrone","hnědý","marróne"],
     ["la gonna","sukně","la gónna"],["il vestito","šaty|oblek","il vestíto"],["i calzini","ponožky","i kalcíni"],["la felpa","mikina","la félpa"],["gli occhiali da sole","sluneční brýle","lji okkjáli da sóle"]],
    kroky:[
-    ["Barva je za slovem","V italštině dáš barvu až za věc, opačně než v češtině.",[["la maglietta rossa","červené tričko"],["il casco nero","černá helma"]]],
-    ["Barva se mění","rosso / rossa / rossi / rosse podle věci. Barvy na -e se mění jen v množném čísle (verde, verdi). blu se nemění nikdy.",[["le scarpe rosse","červené boty"],["i pantaloni blu","modré kalhoty"]]],
-    ["Jakou to má barvu?","Di che colore è? = Jakou to má barvu?",[["Di che colore è il tuo casco?","Jakou barvu má tvoje helma?"],["È blu e bianco.","Je modrobílá."]]]]},
+    ["Barva jde až za věc","Česky řekneš „červené tričko“, italsky obráceně: {la maglietta rossa} = tričko červené. Nejdřív věc, pak barva.",[["la maglietta rossa","červené tričko"],["il casco nero","černá helma"]]],
+    ["Barva se přizpůsobí","Barva se mění podle věci: {rosso} (kluk-slovo), {rossa} (holka-slovo), {rossi} a {rosse} (víc věcí). Barva {blu} se nemění nikdy.",[["le scarpe rosse","červené boty"],["i pantaloni blu","modré kalhoty"]]],
+    ["Jakou to má barvu?","{Di che colore è?} = Jakou to má barvu? Odpovíš třeba {è blu} = je modrá.",[["Di che colore è il tuo casco?","Jakou barvu má tvoje helma?"],["È blu e bianco.","Je modrobílá."]]]]},
  { k:"nakup", n:"Nakupování", g:"linear-gradient(155deg,#7ee0c3,#14a37f)", ic:"bag",
    o:"Obchod, zmrzlina, kolik to stojí a placení.",
    slova:[
@@ -766,9 +776,9 @@ const TEMATA = [
     ["il formaggio","sýr","il formáddžo"],["la carne","maso","la kárne"],["le uova","vejce","le uóva"],["la mela","jablko","la méla"],["la banana","banán","la banána"],["il prezzo","cena (kolik to stojí)","il précco"],
     ["i soldi","peníze","i sóldi"],["il resto","drobné zpátky|zbytek","il résto"],["aperto","otevřeno|otevřený","apérto"],["chiuso","zavřeno|zavřený","kjúzo"],["costa poco","stojí to málo|je to levné","kósta póko"]],
    kroky:[
-    ["Tenhle a tamten","questo = tenhle (blízko), quello = tamten (dál).",[["Vorrei questo.","Chtěl bych tohle."],["Quanto costa quello?","Kolik stojí tamto?"]]],
-    ["Můžu…?","posso + další sloveso = můžu…?",[["Posso pagare con la carta?","Můžu zaplatit kartou?"],["Posso provare?","Můžu si to vyzkoušet?"]]],
-    ["Příchuť zmrzliny","al nebo alla + příchuť: al cioccolato (čokoládová), alla fragola (jahodová), al limone (citronová).",[["Un gelato al cioccolato, per favore.","Čokoládovou zmrzlinu, prosím."],["Due palline alla fragola.","Dva kopečky jahodové."]]]]},
+    ["Tohle a tamto","{questo} = tohle (blízko u tebe). {quello} = tamto (dál od tebe).",[["Vorrei questo.","Chtěl bych tohle."],["Quanto costa quello?","Kolik stojí tamto?"]]],
+    ["Můžu…?","{posso} = můžu. Za to dáš, co chceš udělat: {posso pagare?} = můžu zaplatit?",[["Posso pagare con la carta?","Můžu zaplatit kartou?"],["Posso provare?","Můžu si to vyzkoušet?"]]],
+    ["Jakou zmrzlinu?","Příchuť řekneš s {al} nebo {alla}: {al cioccolato} = čokoládová, {alla fragola} = jahodová, {al limone} = citronová.",[["Un gelato al cioccolato, per favore.","Čokoládovou zmrzlinu, prosím."],["Due palline alla fragola.","Dva kopečky jahodové."]]]]},
  { k:"kart", n:"Kart a jeho díly", g:"linear-gradient(155deg,#ff6b8b,#ff2d3c)", ic:"wheel",
    o:"Díly kartu, aby ses domluvil s mechanikem.",
    slova:[
@@ -777,9 +787,9 @@ const TEMATA = [
     ["il volante","volant","il volánte"],["i freni","brzdy","i fréni"],["il sedile","sedačka","il sedíle"],["il serbatoio","nádrž","il serbatóio"],
     ["la candela","svíčka (zapalovací)","la kandéla"],["il radiatore","chladič","il radiatóre"],["lo scarico","výfuk","lo skáriko"],["il paraurti","nárazník","il paraúrti"]],
    kroky:[
-    ["Člen il a la","Před podstatným jménem stojí člen. il = mužský rod, la = ženský. Slova na -o bývají mužská, na -a ženská, na -e můžou být obojí, takže je uč i se členem.",[["il motore","motor"],["la catena","řetěz"]]],
-    ["lo a l'","lo dáš před slova, která začínají na s + souhlásku nebo na z. Před samohláskou se člen zkrátí na l'.",[["lo scarico","výfuk"],["l'olio","olej"]]],
-    ["Množné číslo","Koncovka -o se mění na -i, -a na -e, -e na -i. Člen il se mění na i, la na le, lo a l' na gli.",[["il freno → i freni","brzda → brzdy"],["la gomma → le gomme","pneumatika → pneumatiky"]]]]},
+    ["Slovíčko před věcí: {il} a {la}","Italové dávají před věc malé slovíčko. {il} je pro „kluk-slova“ (většinou končí na o: {il casco}), {la} pro „holka-slova“ (většinou končí na a: {la gomma}). Uč se slova i s tímhle slovíčkem.",[["il motore","motor"],["la catena","řetěz"]]],
+    ["{lo} a {l'}","Když slovo začíná na s a další souhlásku nebo na z, dáš {lo}: {lo sterzo}. Když začíná na samohlásku, zkrátí se to na {l'}: {l'olio}.",[["lo scarico","výfuk"],["l'olio","olej"]]],
+    ["Víc kusů","Když je věcí víc, změní se konec: o se změní na i, a na e. A slovíčko před: {il} → {i}, {la} → {le}. {la gomma} → {le gomme}.",[["il freno → i freni","brzda → brzdy"],["la gomma → le gomme","pneumatika → pneumatiky"]]]]},
  { k:"boxy", n:"V boxech s mechanikem", g:"linear-gradient(155deg,#ffb340,#ff6a00)", ic:"wrench",
    o:"Řekni mechanikovi, co kart dělá a co chceš změnit.",
    slova:[
@@ -789,9 +799,9 @@ const TEMATA = [
     ["abbassa la pressione","sniž tlak","abbássa la pressióne"],["la carburazione","karburace|nastavení karburátoru","la karburacióne"],["troppo grasso","moc bohatá směs (moc paliva)","tróppo grásso"],
     ["troppo magro","moc chudá směs (málo paliva)","tróppo mágro"],["la benzina","benzín","la bendzína"],["l'olio","olej","lólio"]],
    kroky:[
-    ["Sloveso essere (být)","sono = jsem / jsou, sei = jsi, è = je, siamo = jsme, siete = jste. Díky tomu popíšeš, jaký kart je.",[["Le gomme sono fredde.","Pneumatiky jsou studené."],["Il motore è caldo.","Motor je horký."]]],
-    ["Zápor: non","Slovíčko non dáš před sloveso a věta je záporná.",[["Il motore non tira.","Motor netáhne."],["Non va bene.","Není to dobré."]]],
-    ["Poprosit o změnu","Rozkaz pro kamaráda: alza (zvyš), abbassa (sniž), cambia (změň). Přidej per favore a zní to slušně. più znamená víc.",[["Alza la pressione, per favore.","Zvyš tlak, prosím."],["Il rapporto più corto.","Kratší převod."]]]]},
+    ["Být: {sono}, {sei}, {è}","{sono} = jsem, {sei} = jsi, {è} = je, {siamo} = jsme. Tím řekneš, jaký kart je: {il kart è veloce} = kart je rychlý.",[["Le gomme sono fredde.","Pneumatiky jsou studené."],["Il motore è caldo.","Motor je horký."]]],
+    ["Ne: {non}","Když chceš říct „ne“, dáš {non} před činnost: {non funziona} = nefunguje.",[["Il motore non tira.","Motor netáhne."],["Non va bene.","Není to dobré."]]],
+    ["Poprosit mechanika","{alza} = zvyš, {abbassa} = sniž, {cambia} = vyměň. Přidej {per favore} (prosím) a zní to slušně. {più} = víc.",[["Alza la pressione, per favore.","Zvyš tlak, prosím."],["Il rapporto più corto.","Kratší převod."]]]]},
  { k:"trat", n:"Na trati", g:"linear-gradient(155deg,#5ac8fa,#007aff)", ic:"flag",
    o:"Zatáčky, vlajky, kvalifikace a závod.",
    slova:[
@@ -800,9 +810,9 @@ const TEMATA = [
     ["la bandiera gialla","žlutá vlajka","la bandiéra džálla"],["la bandiera blu","modrá vlajka","la bandiéra blu"],["la bandiera a scacchi","šachovnicová vlajka|cílová vlajka","la bandiéra a skákki"],
     ["il giro veloce","rychlé kolo|nejrychlejší kolo","il džíro velóče"],["il tempo","čas (na kolo)","il témpo"],["sono arrivato secondo","dojel jsem druhý","sóno arriváto sekóndo"],["la frenata","brzdění","la frenáta"]],
    kroky:[
-    ["Pořadí v cíli","primo (první), secondo (druhý), terzo (třetí), quarto (čtvrtý), quinto (pátý). Holka by řekla prima, seconda.",[["Sono arrivato primo!","Dojel jsem první!"],["Sono terzo.","Jsem třetí."]]],
-    ["Minulý čas","Dojel jsem = sono arrivato. U většiny sloves se ale používá ho: ho vinto = vyhrál jsem, ho frenato = zabrzdil jsem.",[["Ho vinto la gara!","Vyhrál jsem závod!"],["Ho frenato tardi.","Zabrzdil jsem pozdě."]]],
-    ["Slovesa na -are","frenare (brzdit): freno (brzdím), freni (brzdíš), frena (brzdí). Stejně jdou sorpassare (předjíždět) a girare (zatáčet).",[["Freno in curva.","Brzdím v zatáčce."],["Lui sorpassa.","On předjíždí."]]]]},
+    ["Kolikátý jsi dojel","{primo} = první, {secondo} = druhý, {terzo} = třetí, {quarto} = čtvrtý, {quinto} = pátý. Holka řekne {prima}, {seconda}.",[["Sono arrivato primo!","Dojel jsem první!"],["Sono terzo.","Jsem třetí."]]],
+    ["Co se stalo (minulost)","Když vyprávíš, co se stalo, dáš před to většinou {ho}: {ho vinto} = vyhrál jsem, {ho frenato} = zabrzdil jsem. Jen u „dojel jsem“ je {sono arrivato}.",[["Ho vinto la gara!","Vyhrál jsem závod!"],["Ho frenato tardi.","Zabrzdil jsem pozdě."]]],
+    ["Brzdím, brzdíš","{freno} = brzdím, {freni} = brzdíš, {frena} = brzdí. Stejně to jde u {sorpassare} (předjíždět) a {girare} (zatáčet).",[["Freno in curva.","Brzdím v zatáčce."],["Lui sorpassa.","On předjíždí."]]]]},
  { k:"cisla", n:"Čísla", g:"linear-gradient(155deg,#ffd84d,#ff9d00)", ic:"watch",
    o:"Počítání od jedné do tisíce.",
    slova:[
@@ -814,9 +824,9 @@ const TEMATA = [
     ["quaranta","čtyřicet|40","kuaránta"],["cinquanta","padesát|50","činkuánta"],["sessanta","šedesát|60","sessánta"],["settanta","sedmdesát|70","settánta"],
     ["ottanta","osmdesát|80","ottánta"],["novanta","devadesát|90","novánta"]],
    kroky:[
-    ["11 až 19","undici, dodici, tredici, quattordici, quindici, sedici končí na -dici. Pak diciassette (17), diciotto (18), diciannove (19).",[["quindici giri","patnáct kol"],["Ho tredici anni.","Je mi třináct let."]]],
-    ["Desítky","venti (20), trenta (30), quaranta (40), cinquanta (50). U 21 a 28 se samohláska ztratí: ventuno, ventotto.",[["ventotto secondi","dvacet osm sekund"],["trenta giri","třicet kol"]]],
-    ["Kolik?","quanto = kolik (jedna věc), quanti = kolik (víc věcí).",[["Quanti giri mancano?","Kolik kol zbývá?"],["Quanto costa?","Kolik to stojí?"]]]]},
+    ["11 až 19","{undici} (11), {dodici} (12), {tredici} (13) a dál až {sedici} (16) končí na „-dici“. Pak {diciassette} (17), {diciotto} (18), {diciannove} (19).",[["quindici giri","patnáct kol"],["Ho tredici anni.","Je mi třináct let."]]],
+    ["Desítky","{venti} (20), {trenta} (30), {quaranta} (40), {cinquanta} (50). U 21 a 28 jedno písmeno vypadne: {ventuno}, {ventotto}.",[["ventotto secondi","dvacet osm sekund"],["trenta giri","třicet kol"]]],
+    ["Kolik?","{quanto} = kolik, když je to jedna věc. {quanti} = kolik, když je jich víc: {quanti anni hai?} = kolik ti je let?",[["Quanti giri mancano?","Kolik kol zbývá?"],["Quanto costa?","Kolik to stojí?"]]]]},
  { k:"pocasi", n:"Počasí", g:"linear-gradient(155deg,#a3bcd4,#4f7196)", ic:"rain",
    o:"Slunce, déšť, vítr a jaké je dnes venku.",
    slova:[
@@ -826,9 +836,9 @@ const TEMATA = [
     ["il sole","slunce","il sóle"],["il vento","vítr","il vénto"],["la nuvola","mrak","la núvola"],["il cielo","nebe|obloha","il čiélo"],
     ["la temperatura","teplota","la temperatúra"],["i gradi","stupně","i grádi"],["l'ombrello","deštník","lombréllo"],["è bello","je hezky","é béllo"]],
    kroky:[
-    ["Počasí s „fa“","Italové říkají „dělá horko“: fa caldo, fa freddo. Na déšť je jedno slovo: piove.",[["Oggi fa caldo.","Dnes je horko."],["Piove!","Prší!"]]],
-    ["c'è a ci sono","c'è = je tam (jedna věc), ci sono = jsou tam (víc věcí).",[["C'è vento.","Fouká vítr."],["Ci sono nuvole.","Jsou mraky."]]],
-    ["Přídavné jméno se mění","Přídavné jméno se řídí podle slova: bagnato (mužský), bagnata (ženský), bagnati / bagnate (množné).",[["La pista è bagnata.","Trať je mokrá."],["Le gomme sono bagnate.","Pneumatiky jsou mokré."]]]]},
+    ["Je horko: {fa caldo}","Italové říkají „dělá horko“: {fa caldo} = je horko, {fa freddo} = je zima. Na déšť stačí jedno slovo: {piove} = prší.",[["Oggi fa caldo.","Dnes je horko."],["Piove!","Prší!"]]],
+    ["Je tam / jsou tam","{c'è} = je tam (jedna věc). {ci sono} = jsou tam (víc věcí).",[["C'è vento.","Fouká vítr."],["Ci sono nuvole.","Jsou mraky."]]],
+    ["Slovo se přizpůsobí","Popis se mění podle věci: {bagnato} (kluk-slovo), {bagnata} (holka-slovo), {bagnati} a {bagnate} (víc věcí). Znamená to „mokrý“.",[["La pista è bagnata.","Trať je mokrá."],["Le gomme sono bagnate.","Pneumatiky jsou mokré."]]]]},
  { k:"citim", n:"Jak se cítím", g:"linear-gradient(155deg,#ff8fc7,#e0306f)", ic:"heart",
    o:"Únava, žízeň, bolest a radost po závodě.",
    slova:[
@@ -838,9 +848,9 @@ const TEMATA = [
     ["la testa","hlava","la tésta"],["il braccio","paže|ruka","il bráččo"],["la mano","ruka (dlaň)","la máno"],["la gamba","noha","la gámba"],["il piede","chodidlo|noha (chodidlo)","il piéde"],
     ["la pancia","břicho","la pánča"],["felice","šťastný","felíče"],["triste","smutný","tríste"],["arrabbiato","naštvaný","arrabbjáto"],["nervoso","nervózní","nervózo"],["annoiato","znuděný","annojáto"]],
    kroky:[
-    ["Sloveso avere (mít)","ho = mám, hai = máš, ha = má. h se nečte, takže ho zní jako „o“. Hlad a žízeň se v italštině „mají“.",[["Ho sete.","Mám žízeň."],["Hai fame?","Máš hlad?"]]],
-    ["Když něco bolí","mi fa male + člen + část těla. Doslova „dělá mi zle“.",[["Mi fa male il braccio.","Bolí mě ruka."],["Mi fa male la testa.","Bolí mě hlava."]]],
-    ["Jak se máš?","stare se používá na to, jak se máš: sto bene (mám se dobře), stai bene? (máš se dobře?).",[["Come stai?","Jak se máš?"],["Sto bene, grazie.","Mám se dobře, díky."]]]]},
+    ["Mít: {ho}, {hai}, {ha}","{ho} = mám, {hai} = máš, {ha} = má. h se nečte, takže {ho} zní jako „o“. Italové hlad a žízeň „mají“: {ho fame} = mám hlad.",[["Ho sete.","Mám žízeň."],["Hai fame?","Máš hlad?"]]],
+    ["Když něco bolí","{mi fa male} = bolí mě. Za to dáš, co tě bolí: {mi fa male la testa} = bolí mě hlava.",[["Mi fa male il braccio.","Bolí mě ruka."],["Mi fa male la testa.","Bolí mě hlava."]]],
+    ["Jak se máš?","{sto bene} = mám se dobře. {stai bene?} = máš se dobře?",[["Come stai?","Jak se máš?"],["Sto bene, grazie.","Mám se dobře, díky."]]]]},
  { k:"kamaradi", n:"Kamarádi", g:"linear-gradient(155deg,#ff9f6b,#f0503a)", ic:"people",
    o:"Seznam se a pokecej s italskými kluky a holkami.",
    slova:[
@@ -851,9 +861,9 @@ const TEMATA = [
     ["l'amica","kamarádka","lamíka"],["insieme","spolu","insiéme"],["la festa","oslava|večírek","la fésta"],["il compleanno","narozeniny","il kompleánno"],["uscire","jít ven","uššíre"],
     ["d'accordo","souhlasím|domluveno","dakkórdo"],["certo!","jasně!|určitě!","čérto"],["perché no?","proč ne?","perké no"],["hai tempo?","máš čas?","áj témpo"],["mi dispiace","je mi líto","mi dispjáče"]],
    kroky:[
-    ["Otázky","Slovosled zůstává stejný, otázku poznáš podle hlasu. Tázací slova: come (jak), dove (kde), che (jaký, co), quanto (kolik), quando (kdy), perché (proč).",[["Di dove sei?","Odkud jsi?"],["Quando vieni?","Kdy přijdeš?"]]],
-    ["Sloveso andare (jít, jet)","vado = jdu, vai = jdeš, va = jde. andiamo = jdeme.",[["Vado al mare.","Jedu k moři."],["Dove vai?","Kam jdeš?"]]],
-    ["di = z, od","di dove = odkud. Se členem se spojí: di + la = della.",[["Sono di Praga.","Jsem z Prahy."],["Sono della Repubblica Ceca.","Jsem z České republiky."]]]]},
+    ["Jak se zeptat","Otázka je stejná jako věta, jen to řekneš hlasem nahoru. Slova na otázky: {come} (jak), {dove} (kde), {quando} (kdy), {perché} (proč), {quanto} (kolik).",[["Di dove sei?","Odkud jsi?"],["Quando vieni?","Kdy přijdeš?"]]],
+    ["Jdu, jdeš, jde","{vado} = jdu, {vai} = jdeš, {va} = jde. {andiamo} = jdeme, pojďme!",[["Vado al mare.","Jedu k moři."],["Dove vai?","Kam jdeš?"]]],
+    ["Odkud jsi?","{di dove sei?} = odkud jsi? Odpovíš {sono di Praga} = jsem z Prahy.",[["Sono di Praga.","Jsem z Prahy."],["Sono della Repubblica Ceca.","Jsem z České republiky."]]]]},
  { k:"smer", n:"Kudy kam", g:"linear-gradient(155deg,#8ee07a,#2f9e44)", ic:"pin",
    o:"Zeptej se na cestu a když nerozumíš, řekni to.",
    slova:[
@@ -864,9 +874,9 @@ const TEMATA = [
     ["la strada","ulice|silnice","la stráda"],["l'incrocio","křižovatka","linkróčo"],["il semaforo","semafor","il semáforo"],["la piazza","náměstí","la piácca"],["davanti a","před","davánti a"],
     ["dietro","za|vzadu","diétro"],["accanto a","vedle","akkánto a"],["la mappa","mapa","la máppa"],["girare","zahnout|zatočit","džiráre"]],
    kroky:[
-    ["Kde je?","dov'è = dove + è (kde je). Pro víc věcí: dove sono?",[["Dov'è la spiaggia?","Kde je pláž?"],["Dove sono i box?","Kde jsou boxy?"]]],
-    ["Směr","a destra (doprava), a sinistra (doleva), sempre dritto (pořád rovně).",[["Sempre dritto, poi a destra.","Pořád rovně, pak doprava."],["È qui vicino.","Je to tady blízko."]]],
-    ["Když nerozumíš","puoi + další sloveso = můžeš… Je to nejdůležitější věta pro začátečníka.",[["Non capisco.","Nerozumím."],["Puoi ripetere, per favore?","Můžeš to zopakovat, prosím?"]]]]},
+    ["Kde je?","{dov'è} = kde je (jedna věc). Když hledáš víc věcí: {dove sono?} = kde jsou?",[["Dov'è la spiaggia?","Kde je pláž?"],["Dove sono i box?","Kde jsou boxy?"]]],
+    ["Doprava, doleva","{a destra} = doprava, {a sinistra} = doleva, {sempre dritto} = pořád rovně.",[["Sempre dritto, poi a destra.","Pořád rovně, pak doprava."],["È qui vicino.","Je to tady blízko."]]],
+    ["Když nerozumíš","{puoi} = můžeš. {Puoi ripetere?} = Můžeš to zopakovat? Tuhle větu se vyplatí umět nazpaměť.",[["Non capisco.","Nerozumím."],["Puoi ripetere, per favore?","Můžeš to zopakovat, prosím?"]]]]},
  { k:"jidlo", n:"Jídlo a hotel", g:"linear-gradient(155deg,#ff9f6b,#e2483a)", ic:"fork",
    o:"Objednat si pizzu, vodu a zaplatit.",
    slova:[
@@ -878,9 +888,9 @@ const TEMATA = [
     ["l'insalata","salát","linsaláta"],["le patatine fritte","hranolky","le patatíne frítte"],["il succo","džus","il súkko"],["il dolce","dezert|zákusek","il dólče"],
     ["buon appetito!","dobrou chuť!","buón appetíto"],["il tavolo","stůl","il távolo"],["la prenotazione","rezervace","la prenotacióne"]],
    kroky:[
-    ["Člen un a una","un = jeden/nějaký (mužský), una = ženský, před samohláskou un' u ženských slov.",[["un panino","jeden sendvič"],["una pizza","jedna pizza"]]],
-    ["Zdvořile: vorrei","vorrei = chtěl bych. Je zdvořilejší než voglio (chci).",[["Vorrei una pizza, per favore.","Chtěl bych pizzu, prosím."],["Vorrei un'acqua.","Chtěl bych vodu."]]],
-    ["Ceny","euro se v množném čísle nemění: un euro, due euro, dieci euro.",[["Costa otto euro.","Stojí to osm eur."],["Il conto, per favore.","Účet, prosím."]]]]},
+    ["Jeden, nějaký: {un} a {una}","{un} = jeden (kluk-slova: {un panino}). {una} = jedna (holka-slova: {una pizza}).",[["un panino","jeden sendvič"],["una pizza","jedna pizza"]]],
+    ["Slušně: {vorrei}","{vorrei} = chtěl bych. Je to slušnější než {voglio} (chci). V restauraci říkej {vorrei}.",[["Vorrei una pizza, per favore.","Chtěl bych pizzu, prosím."],["Vorrei un'acqua.","Chtěl bych vodu."]]],
+    ["Ceny","Slovo {euro} se nemění: {un euro}, {due euro}, {dieci euro}.",[["Costa otto euro.","Stojí to osm eur."],["Il conto, per favore.","Účet, prosím."]]]]},
  /* ===== 23. 11.: nová témata pro úroveň A1 ===== */
  { k:"kalendar", n:"Měsíce a roční období", g:"linear-gradient(155deg,#ffcf5c,#e8590c)", ic:"cal",
    o:"Měsíce, jaro, léto, podzim, zima a datum.",
@@ -889,9 +899,9 @@ const TEMATA = [
     ["luglio","červenec","lúljo"],["agosto","srpen","agósto"],["settembre","září","settémbre"],["ottobre","říjen","ottóbre"],["novembre","listopad","novémbre"],["dicembre","prosinec","dičémbre"],
     ["la primavera","jaro","la primavéra"],["l'estate","léto","lestáte"],["l'autunno","podzim","lautúnno"],["l'inverno","zima (roční období)","linvérno"],["la data","datum","la dáta"],["le vacanze","prázdniny|dovolená","le vakánce"]],
    kroky:[
-    ["Datum","Datum řekneš il + číslo + měsíc. Jen první den v měsíci je il primo.",[["Oggi è il 23 novembre.","Dnes je 23. listopadu."],["Il primo maggio.","Prvního května."]]],
-    ["V měsíci: a nebo in","a maggio nebo in maggio = v květnu. Měsíce se píšou malým písmenem.",[["A luglio vado al mare.","V červenci jedu k moři."],["Il mio compleanno è a marzo.","Narozeniny mám v březnu."]]],
-    ["Roční období","in primavera (na jaře), d'estate (v létě), in autunno (na podzim), d'inverno (v zimě).",[["D'estate fa caldo.","V létě je horko."],["D'inverno nevica.","V zimě sněží."]]]]},
+    ["Datum","Řekneš {il} + číslo + měsíc: {il cinque maggio} = pátého května. Jen první den je jinak: {il primo maggio}.",[["Oggi è il 23 novembre.","Dnes je 23. listopadu."],["Il primo maggio.","Prvního května."]]],
+    ["V květnu","{a maggio} nebo {in maggio} = v květnu. Obojí je správně. Měsíce se píšou malým písmenem.",[["A luglio vado al mare.","V červenci jedu k moři."],["Il mio compleanno è a marzo.","Narozeniny mám v březnu."]]],
+    ["Roční období","{in primavera} = na jaře, {d'estate} = v létě, {in autunno} = na podzim, {d'inverno} = v zimě.",[["D'estate fa caldo.","V létě je horko."],["D'inverno nevica.","V zimě sněží."]]]]},
  { k:"slovesa", n:"Důležitá slovesa", g:"linear-gradient(155deg,#8e8cff,#4b49c9)", ic:"bulb",
    o:"Být, mít, dělat, chtít, moct, muset a další slovesa, bez kterých se neobejdeš.",
    slova:[
@@ -900,9 +910,9 @@ const TEMATA = [
     ["parlare","mluvit","parláre"],["mangiare","jíst","mandžáre"],["bere","pít","bére"],["dormire","spát","dormíre"],["capire","rozumět","kapíre"],["prendere","vzít|dát si","préndere"],
     ["comprare","koupit|kupovat","kompráre"],["aspettare","čekat","aspettáre"],["lavorare","pracovat","lavoráre"],["guidare","řídit","guidáre"],["vincere","vyhrát","vínčere"],["aprire","otevřít","apríre"]],
    kroky:[
-    ["Tři skupiny sloves","Slovesa končí na -are (parlare), -ere (prendere) nebo -ire (dormire). Podle konce se časují.",[["Parlo italiano.","Mluvím italsky."],["Dormo bene.","Spím dobře."]]],
-    ["Já, ty, on","U pravidelných sloves: já = -o, ty = -i, on nebo ona = -a (u -are) a -e (u -ere a -ire).",[["parlo, parli, parla","mluvím, mluvíš, mluví"],["prendo, prendi, prende","beru, bereš, bere"]]],
-    ["Chci, můžu, musím","voglio (chci), posso (můžu), devo (musím) + sloveso v základním tvaru.",[["Voglio mangiare.","Chci jíst."],["Devo andare.","Musím jít."]]]]},
+    ["Tři druhy činností","Slova na činnost končí na -are ({parlare} = mluvit), -ere ({prendere} = vzít) nebo -ire ({dormire} = spát). Podle konce poznáš, jak se mění.",[["Parlo italiano.","Mluvím italsky."],["Dormo bene.","Spím dobře."]]],
+    ["Já, ty, on","Když mluvíš o sobě, dáš na konec o: {parlo} = mluvím. Ty = i: {parli} = mluvíš. On nebo ona = a: {parla} = mluví.",[["parlo, parli, parla","mluvím, mluvíš, mluví"],["prendo, prendi, prende","beru, bereš, bere"]]],
+    ["Chci, můžu, musím","{voglio} = chci, {posso} = můžu, {devo} = musím. Za to dáš činnost: {devo andare} = musím jít.",[["Voglio mangiare.","Chci jíst."],["Devo andare.","Musím jít."]]]]},
  { k:"slova", n:"Malá slova", g:"linear-gradient(155deg,#9be15d,#2fa84f)", ic:"chat",
    o:"A, ale, protože, kdy, kde, kdo, s, bez, vždycky, nikdy. Spojují věty dohromady.",
    slova:[
@@ -911,9 +921,9 @@ const TEMATA = [
     ["molto","hodně|velmi","mólto"],["poco","málo","póko"],["tutto","všechno","tútto"],["sempre","vždycky","sémpre"],["mai","nikdy","máj"],["anche","taky","ánke"],
     ["già","už","džá"],["ancora","ještě","ankóra"],["forse","možná","fórse"],["solo","jen|jenom","sólo"],["allora","tak|takže","allóra"],["qualcosa","něco","kualkóza"]],
    kroky:[
-    ["Proč a protože","perché znamená obojí: v otázce proč, v odpovědi protože.",[["Perché sei stanco?","Proč jsi unavený?"],["Perché ho corso molto.","Protože jsem hodně běžel."]]],
-    ["Nikdy: non … mai","Zápor s mai má dvě slova: non před slovesem a mai za ním.",[["Non mangio mai il pesce.","Nikdy nejím rybu."],["Non sono mai stanco.","Nikdy nejsem unavený."]]],
-    ["S, bez, pro","con = s, senza = bez, per = pro.",[["Un panino con il formaggio.","Sendvič se sýrem."],["Una pizza senza funghi.","Pizza bez hub."]]]]},
+    ["Proč i protože","{perché} znamená obojí. V otázce „proč“, v odpovědi „protože“.",[["Perché sei stanco?","Proč jsi unavený?"],["Perché ho corso molto.","Protože jsem hodně běžel."]]],
+    ["Nikdy","„Nikdy“ se řekne dvěma slovy: {non} dáš před činnost a {mai} za ni. {non mangio mai} = nikdy nejím.",[["Non mangio mai il pesce.","Nikdy nejím rybu."],["Non sono mai stanco.","Nikdy nejsem unavený."]]],
+    ["S, bez, pro","{con} = s, {senza} = bez, {per} = pro.",[["Un panino con il formaggio.","Sendvič se sýrem."],["Una pizza senza funghi.","Pizza bez hub."]]]]},
  { k:"popis", n:"Lidé a popis", g:"linear-gradient(155deg,#ffa8d0,#d6336c)", ic:"people",
    o:"Velký, malý, rychlý, milý. Popíšeš kamaráda i sebe.",
    slova:[
@@ -922,9 +932,9 @@ const TEMATA = [
     ["forte","silný","fórte"],["nuovo","nový","nuóvo"],["facile","snadný|lehký","fáčile"],["difficile","těžký|obtížný","diffíčile"],["i capelli","vlasy","i kapélli"],["gli occhi","oči","lji ókki"],
     ["il ragazzo","kluk","il ragácco"],["la ragazza","holka","la ragácca"],["l'uomo","muž","luómo"],["la donna","žena","la dónna"],["il bambino","dítě|malý kluk","il bambíno"]],
    kroky:[
-    ["Přídavné jméno za slovem","Většina přídavných jmen stojí za slovem: un kart veloce. Pár krátkých bývá před ním: una piccola casa.",[["un ragazzo simpatico","milý kluk"],["una piccola città","malé město"]]],
-    ["Koncovky -o, -a, -e","Na -o: piccolo, piccola, piccoli, piccole. Na -e: veloce (pro kluka i holku), veloci (množné číslo).",[["La macchina è veloce.","Auto je rychlé."],["Le ragazze sono simpatiche.","Holky jsou milé."]]],
-    ["Popsat člověka","ha gli occhi … = má … oči, ha i capelli … = má … vlasy, è alto / alta = je vysoký / vysoká.",[["Ha gli occhi azzurri.","Má modré oči."],["Mia sorella è alta.","Moje sestra je vysoká."]]]]},
+    ["Popis jde za věc","Většinou nejdřív věc, pak jaká je: {un kart veloce} = rychlý kart. Pár krátkých slov jde před: {una piccola casa} = malý domek.",[["un ragazzo simpatico","milý kluk"],["una piccola città","malé město"]]],
+    ["Popis se přizpůsobí","{piccolo} (kluk-slovo), {piccola} (holka-slovo), {piccoli} a {piccole} (víc věcí). Slova na e se mění míň: {veloce} je pro kluka i holku.",[["La macchina è veloce.","Auto je rychlé."],["Le ragazze sono simpatiche.","Holky jsou milé."]]],
+    ["Popsat člověka","{ha gli occhi blu} = má modré oči. {ha i capelli neri} = má černé vlasy. {è alto} = je vysoký (holka: {è alta}).",[["Ha gli occhi azzurri.","Má modré oči."],["Mia sorella è alta.","Moje sestra je vysoká."]]]]},
  { k:"dum", n:"Byt a věci doma", g:"linear-gradient(155deg,#c9a27e,#8a5a32)", ic:"home",
    o:"Pokoje, nábytek a kde co doma je.",
    slova:[
@@ -934,9 +944,9 @@ const TEMATA = [
     ["il computer","počítač","il kompjúter"],["il giardino","zahrada","il džardíno"],["le scale","schody","le skále"],["il piano","patro","il pjáno"],
     ["sopra","nahoře|na (něčem)","sópra"],["sotto","dole|pod","sótto"],["dentro","uvnitř","déntro"],["fuori","venku","fuóri"]],
    kroky:[
-    ["Kde to je?","sopra (na, nad), sotto (pod), dentro (uvnitř), fuori (venku), accanto a (vedle).",[["Il gatto è sotto il letto.","Kočka je pod postelí."],["Il casco è sopra la sedia.","Helma je na židli."]]],
-    ["Předložka + člen","in + il = nel, in + la = nella, a + il = al. V pokoji = nella camera.",[["Sono nella mia camera.","Jsem ve svém pokoji."],["Il computer è nel soggiorno.","Počítač je v obýváku."]]],
-    ["Je tam?","C'è …? = Je tam …? Odpověď: sì, c'è (ano, je) nebo no, non c'è (ne, není).",[["C'è una doccia?","Je tam sprcha?"],["No, non c'è.","Ne, není."]]]]},
+    ["Kde to je?","{sopra} = na, nad. {sotto} = pod. {dentro} = uvnitř. {fuori} = venku. {accanto a} = vedle.",[["Il gatto è sotto il letto.","Kočka je pod postelí."],["Il casco è sopra la sedia.","Helma je na židli."]]],
+    ["Dvě slova slepená do jednoho","Někdy se dvě slova slepí: „v“ + {il} = {nel}, „v“ + {la} = {nella}. {nella camera} = v pokoji.",[["Sono nella mia camera.","Jsem ve svém pokoji."],["Il computer è nel soggiorno.","Počítač je v obýváku."]]],
+    ["Je tam?","{C'è?} = Je tam? Odpovíš {sì, c'è} (ano, je) nebo {no, non c'è} (ne, není).",[["C'è una doccia?","Je tam sprcha?"],["No, non c'è.","Ne, není."]]]]},
  { k:"mesto", n:"Město a místa", g:"linear-gradient(155deg,#a5b4fc,#4c6ef5)", ic:"pin",
    o:"Kavárna, park, banka, letiště. Kam ve městě jít.",
    slova:[
@@ -945,9 +955,9 @@ const TEMATA = [
     ["il parco","park","il párko"],["la fermata dell'autobus","autobusová zastávka","la fermáta dellautobus"],["l'aeroporto","letiště","laeropórto"],["la posta","pošta","la pósta"],
     ["il mercato","trh","il merkáto"],["la piscina","bazén","la piššína"],["lo stadio","stadion","lo stádio"],["a piedi","pěšky","a piédi"]],
    kroky:[
-    ["Je tady nějaký…?","C'è un / una … qui vicino? = Je tady blízko nějaký …?",[["C'è un bar qui vicino?","Je tu blízko nějaký bar?"],["C'è una piscina?","Je tu bazén?"]]],
-    ["Do: a nebo in","Do města: a Roma, a Milano. Do země: in Italia. Do parku: al parco, do banky: in banca.",[["Vado a Roma.","Jedu do Říma."],["Andiamo al parco.","Jdeme do parku."]]],
-    ["Jak daleko?","È lontano? = Je to daleko? a piedi = pěšky, in autobus = autobusem.",[["È lontano lo stadio?","Je stadion daleko?"],["Dieci minuti a piedi.","Deset minut pěšky."]]]]},
+    ["Je tady nějaký…?","{C'è un supermercato qui vicino?} = Je tady blízko nějaký obchod? Místo obchodu dáš, co hledáš.",[["C'è un bar qui vicino?","Je tu blízko nějaký bar?"],["C'è una piscina?","Je tu bazén?"]]],
+    ["Do města, do země","Do města: {a Roma}, {a Milano}. Do země: {in Italia}. Do parku: {al parco}.",[["Vado a Roma.","Jedu do Říma."],["Andiamo al parco.","Jdeme do parku."]]],
+    ["Je to daleko?","{È lontano?} = Je to daleko? {a piedi} = pěšky, {in autobus} = autobusem.",[["È lontano lo stadio?","Je stadion daleko?"],["Dieci minuti a piedi.","Deset minut pěšky."]]]]},
  { k:"priroda", n:"Příroda a zvířata", g:"linear-gradient(155deg,#69db7c,#2b8a3e)", ic:"rain",
    o:"Hory, moře, les a zvířata.",
    slova:[
@@ -955,9 +965,9 @@ const TEMATA = [
     ["l'albero","strom","lálbero"],["il fiore","květina","il fióre"],["l'erba","tráva","lérba"],["il bosco","les","il bósko"],["la montagna","hora|hory","la montáňa"],["il lago","jezero","il lágo"],
     ["il fiume","řeka","il fiúme"],["l'isola","ostrov","lízola"],["la campagna","venkov","la kampáňa"],["la luna","měsíc (na obloze)","la lúna"],["la stella","hvězda","la stélla"],["l'acqua","voda","lákkua"]],
    kroky:[
-    ["Mít rád zvířata","mi piacciono + víc zvířat, mi piace + jedno zvíře.",[["Mi piacciono i cavalli.","Mám rád koně."],["Hai un animale?","Máš nějaké zvíře?"]]],
-    ["Člen gli","gli je množné číslo pro lo a l': l'albero → gli alberi, l'animale → gli animali.",[["gli alberi","stromy"],["gli uccelli","ptáci"]]],
-    ["Na horách, u moře","in montagna = na horách, al mare = u moře, al lago = u jezera, in campagna = na venkově.",[["D'estate vado al mare.","V létě jezdím k moři."],["D'inverno vado in montagna.","V zimě jezdím na hory."]]]]},
+    ["Mám rád zvířata","Jedno zvíře: {mi piace il cane}. Víc zvířat: {mi piacciono i cani}.",[["Mi piacciono i cavalli.","Mám rád koně."],["Hai un animale?","Máš nějaké zvíře?"]]],
+    ["{gli} = víc věcí","Když je věcí víc a slovo začíná samohláskou, dáš před něj {gli}: {gli alberi} = stromy, {gli animali} = zvířata.",[["gli alberi","stromy"],["gli uccelli","ptáci"]]],
+    ["Na horách, u moře","{in montagna} = na horách, {al mare} = u moře, {al lago} = u jezera.",[["D'estate vado al mare.","V létě jezdím k moři."],["D'inverno vado in montagna.","V zimě jezdím na hory."]]]]},
  /* ===== bývalá AI témata, teď napsaná přímo v aplikaci (fungují i bez AI) ===== */
  { k:"minulost", n:"Co jsem dělal", g:"linear-gradient(155deg,#b0a4ff,#6a4ee6)", ic:"znovu", ai:true,
    o:"Minulý čas: co jsi dělal včera, o víkendu a minulý týden.",
@@ -967,9 +977,9 @@ const TEMATA = [
     ["sono andato","šel jsem|jel jsem","sóno andáto"],["sono tornato","vrátil jsem se","sóno tornáto"],["sono stato","byl jsem","sóno státo"],["ho comprato","koupil jsem","o kompráto"],
     ["ho parlato","mluvil jsem","o parláto"],["ho preso","vzal jsem|dal jsem si","o prézo"],["ho detto","řekl jsem","o détto"]],
    kroky:[
-    ["Minulý čas s avere","ho + příčestí. -are → -ato, -ere → -uto, -ire → -ito: mangiare → ho mangiato, dormire → ho dormito.",[["Ieri ho giocato a calcio.","Včera jsem hrál fotbal."],["Ho dormito poco.","Spal jsem málo."]]],
-    ["Minulý čas s essere","Slovesa pohybu (andare, venire, tornare, arrivare) a essere mají sono. Koncovka se mění: sono andato (kluk), sono andata (holka).",[["Sono andato al kartodromo.","Jel jsem na motokárovou dráhu."],["Ela è andata a scuola.","Ela šla do školy."]]],
-    ["Nepravidelná příčestí","fare → fatto, vedere → visto, prendere → preso, dire → detto, essere → stato.",[["Ho visto un bel film.","Viděl jsem pěkný film."],["Cosa hai fatto ieri?","Co jsi dělal včera?"]]]]},
+    ["Co jsem dělal","Minulost = {ho} + změněné slovo. Konec -are se změní na -ato: {mangiare} → {ho mangiato} (jedl jsem). -ire na -ito: {ho dormito} (spal jsem).",[["Ieri ho giocato a calcio.","Včera jsem hrál fotbal."],["Ho dormito poco.","Spal jsem málo."]]],
+    ["Kam jsem šel","U pohybu (jít, přijet, vrátit se) je místo {ho} slovo {sono}: {sono andato} = šel jsem. Holka řekne {sono andata}.",[["Sono andato al kartodromo.","Jel jsem na motokárovou dráhu."],["Ela è andata a scuola.","Ela šla do školy."]]],
+    ["Slova, co se mění jinak","Některá slova se změní po svém. Ty se musíš naučit: {ho fatto} (udělal jsem), {ho visto} (viděl jsem), {ho preso} (vzal jsem).",[["Ho visto un bel film.","Viděl jsem pěkný film."],["Cosa hai fatto ieri?","Co jsi dělal včera?"]]]]},
  { k:"muj_den", n:"Můj den", g:"linear-gradient(155deg,#ffd27a,#f29b0c)", ic:"watch", ai:true,
    o:"Celý den od rána do večera: vstávání, škola, úkoly, spaní.",
    slova:[
@@ -977,9 +987,9 @@ const TEMATA = [
     ["vado a scuola","jdu do školy","vádo a skuóla"],["torno a casa","vracím se domů","tórno a káza"],["faccio i compiti","dělám úkoly","fáččo i kómpiti"],["ceno","večeřím","čéno"],
     ["vado a letto","jdu spát","vádo a létto"],["di solito","obvykle","di sólito"],["prima","nejdřív|předtím","príma"],["dopo","potom|po","dópo"],["poi","pak","pój"],["ogni giorno","každý den","óňi džórno"]],
    kroky:[
-    ["Zvratná slovesa","Jako česká slovesa se „se“: mi alzo (vstávám), ti alzi (vstáváš), si alza (vstává).",[["Mi alzo alle sette.","Vstávám v sedm."],["A che ora ti alzi?","V kolik vstáváš?"]]],
-    ["Nejdřív, pak, potom","prima = nejdřív, poi = pak, dopo = potom. dopo + jídlo = po: dopo cena (po večeři).",[["Prima faccio colazione, poi vado a scuola.","Nejdřív snídám, pak jdu do školy."],["Dopo cena guardo la TV.","Po večeři se dívám na televizi."]]],
-    ["Sloveso fare","faccio = dělám, fai = děláš, fa = dělá. Používá se i na jídlo a sport: faccio colazione, faccio sport.",[["Faccio i compiti.","Dělám úkoly."],["Cosa fai dopo la scuola?","Co děláš po škole?"]]]]},
+    ["Vstávám: {mi alzo}","Jako české „se“: {mi alzo} = vstávám (zvedám se), {ti alzi} = vstáváš, {si alza} = vstává.",[["Mi alzo alle sette.","Vstávám v sedm."],["A che ora ti alzi?","V kolik vstáváš?"]]],
+    ["Nejdřív, pak","{prima} = nejdřív, {poi} = pak, {dopo} = potom. {dopo cena} = po večeři.",[["Prima faccio colazione, poi vado a scuola.","Nejdřív snídám, pak jdu do školy."],["Dopo cena guardo la TV.","Po večeři se dívám na televizi."]]],
+    ["Dělám: {faccio}","{faccio} = dělám, {fai} = děláš, {fa} = dělá. Říká se i u jídla a sportu: {faccio colazione} = snídám.",[["Faccio i compiti.","Dělám úkoly."],["Cosa fai dopo la scuola?","Co děláš po škole?"]]]]},
  { k:"sport", n:"Sport a volný čas", g:"linear-gradient(155deg,#6fe3a0,#16a05a)", ic:"people", ai:true,
    o:"Sporty, tým, zápas a kdo je rychlejší.",
    slova:[
@@ -987,9 +997,9 @@ const TEMATA = [
     ["la squadra","tým","la skuádra"],["la partita","zápas","la partíta"],["perdere","prohrát","pérdere"],["allenarsi","trénovat","allenársi"],["l'allenamento","trénink","lallenaménto"],
     ["il campione","šampion|mistr","il kampjóne"],["la palestra","posilovna|tělocvična","la paléstra"],["sciare","lyžovat","šiáre"],["più veloce di","rychlejší než","pjú velóče di"],["il migliore","nejlepší","il miljóre"]],
    kroky:[
-    ["Hrát a dělat sport","giocare a + míčový sport (giocare a calcio). fare + jiný sport (fare nuoto, fare sci).",[["Gioco a tennis.","Hraju tenis."],["Faccio nuoto.","Plavu (dělám plavání)."]]],
-    ["Porovnávání","più … di = víc … než, meno … di = míň … než.",[["Il kart è più veloce della bici.","Kart je rychlejší než kolo."],["Il calcio è meno difficile del tennis.","Fotbal je méně těžký než tenis."]]],
-    ["Nejlepší a nejrychlejší","il migliore = nejlepší. il più veloce = nejrychlejší.",[["Sei il migliore!","Jsi nejlepší!"],["È il pilota più veloce.","Je to nejrychlejší jezdec."]]]]},
+    ["Hrát, nebo dělat?","S míčem se „hraje“: {giocare a calcio} = hrát fotbal. Ostatní sporty se „dělají“: {fare nuoto} = plavat.",[["Gioco a tennis.","Hraju tenis."],["Faccio nuoto.","Plavu (dělám plavání)."]]],
+    ["Víc a míň než","{più} = víc, {meno} = míň, {di} = než. {Luca è più alto di me} = Luca je vyšší než já.",[["Il kart è più veloce della bici.","Kart je rychlejší než kolo."],["Il calcio è meno difficile del tennis.","Fotbal je méně těžký než tenis."]]],
+    ["Nejlepší","{il migliore} = nejlepší. {il più veloce} = nejrychlejší.",[["Sei il migliore!","Jsi nejlepší!"],["È il pilota più veloce.","Je to nejrychlejší jezdec."]]]]},
  { k:"cesta", n:"Cestování a doprava", g:"linear-gradient(155deg,#7cc4ff,#2f6fe0)", ic:"pin", ai:true,
    o:"Vlak, letadlo, lístek a kdy to odjíždí.",
    slova:[
@@ -998,9 +1008,9 @@ const TEMATA = [
     ["in orario","včas","in orário"],["la valigia","kufr","la valídža"],["il passaporto","pas","il passapórto"],["andata e ritorno","tam a zpět","andáta e ritórno"],
     ["a che ora parte?","v kolik to odjíždí?","a ke óra párte"],["il viaggio","cesta|výlet","il viáddžo"]],
    kroky:[
-    ["Čím jedeš: in","in treno, in macchina, in aereo, in autobus. Ale pěšky = a piedi.",[["Vado a Milano in treno.","Jedu do Milána vlakem."],["Vengo a piedi.","Přijdu pěšky."]]],
-    ["Odkud a kam: da, a, in","da = z (města): da Praga. a = do města: a Roma. in = do země: in Italia.",[["Il treno da Praga.","Vlak z Prahy."],["Arrivo a Roma alle dieci.","Do Říma přijedu v deset."]]],
-    ["Sloveso partire","parto = odjíždím, parti = odjíždíš, parte = odjíždí.",[["A che ora parte il treno?","V kolik odjíždí vlak?"],["Parto domani.","Odjíždím zítra."]]]]},
+    ["Čím jedeš","{in treno} = vlakem, {in macchina} = autem, {in aereo} = letadlem. Ale pěšky je {a piedi}.",[["Vado a Milano in treno.","Jedu do Milána vlakem."],["Vengo a piedi.","Přijdu pěšky."]]],
+    ["Odkud a kam","{da} = z: {da Praga} = z Prahy. {a} = do města: {a Roma}. {in} = do země: {in Italia}.",[["Il treno da Praga.","Vlak z Prahy."],["Arrivo a Roma alle dieci.","Do Říma přijedu v deset."]]],
+    ["Odjíždím","{parto} = odjíždím, {parti} = odjíždíš, {parte} = odjíždí.",[["A che ora parte il treno?","V kolik odjíždí vlak?"],["Parto domani.","Odjíždím zítra."]]]]},
  { k:"vikend", n:"Závodní víkend", g:"linear-gradient(155deg,#ff7a7a,#d62828)", ic:"flag", ai:true,
    o:"Přihláška, tréninky, briefing, startovní rošt a stupně vítězů.",
    slova:[
@@ -1010,9 +1020,9 @@ const TEMATA = [
     ["la griglia di partenza","startovní rošt","la grílja di parténca"],["il pilota","jezdec","il pilóta"],["la classifica","pořadí|výsledky","la klassífika"],
     ["il giro di ricognizione","zahřívací kolo|seznamovací kolo","il džíro di rikoňicióne"],["la coppa","pohár","la kóppa"],["la manche","rozjížďka|jízda","la mánš"]],
    kroky:[
-    ["Program závodu","alle nove = v devět, dopo le qualifiche = po kvalifikaci, prima della gara = před závodem.",[["Il briefing è alle otto.","Briefing je v osm."],["Dopo le qualifiche c'è la gara.","Po kvalifikaci je závod."]]],
-    ["Sloveso dovere (muset)","devo = musím, devi = musíš, deve = musí. Za ním je sloveso v základním tvaru.",[["Devo andare al briefing.","Musím jít na briefing."],["Il kart deve andare in parco chiuso.","Kart musí jít do uzavřeného depa."]]],
-    ["Odkud startuješ","parto dalla … posizione = startuju z … místa. sono sul podio = jsem na stupních vítězů.",[["Parto dalla terza posizione.","Startuju ze třetího místa."],["Sono sul podio!","Jsem na stupních vítězů!"]]]]},
+    ["Kdy co je","{alle nove} = v devět. {dopo le qualifiche} = po kvalifikaci. {prima della gara} = před závodem.",[["Il briefing è alle otto.","Briefing je v osm."],["Dopo le qualifiche c'è la gara.","Po kvalifikaci je závod."]]],
+    ["Musím: {devo}","{devo} = musím, {devi} = musíš, {deve} = musí. Za to dáš činnost: {devo partire} = musím odjet.",[["Devo andare al briefing.","Musím jít na briefing."],["Il kart deve andare in parco chiuso.","Kart musí jít do uzavřeného depa."]]],
+    ["Odkud startuješ","{parto dalla terza posizione} = startuju ze třetího místa. {sono sul podio} = jsem na bedně.",[["Parto dalla terza posizione.","Startuju ze třetího místa."],["Sono sul podio!","Jsem na stupních vítězů!"]]]]},
  { k:"lekar", n:"U lékaře a v nouzi", g:"linear-gradient(155deg,#ff9fb0,#e0405a)", ic:"heart", ai:true,
    o:"Co tě bolí, lékárna, nemocnice a jak požádat o pomoc.",
    slova:[
@@ -1021,9 +1031,9 @@ const TEMATA = [
     ["l'ambulanza","sanitka|záchranka","lambulánca"],["chiamare","zavolat|volat","kjamáre"],["sto male","je mi špatně","stó mále"],["il raffreddore","rýma|nachlazení","il raffreddóre"],
     ["la tosse","kašel","la tósse"],["può aiutarmi?","můžete mi pomoct?","puó ajutármi"],["ho bisogno di un medico","potřebuju doktora","o bizóňo di un médiko"]],
    kroky:[
-    ["Bolí mě","mi fa male + jedna věc, mi fanno male + víc věcí.",[["Mi fa male la gamba.","Bolí mě noha."],["Mi fanno male i piedi.","Bolí mě nohy."]]],
-    ["Poprosit o pomoc","Dospělému vykáš: può aiutarmi? Kamarádovi tykáš: puoi aiutarmi?",[["Scusi, può aiutarmi?","Promiňte, můžete mi pomoct?"],["Chiamate un'ambulanza!","Zavolejte sanitku!"]]],
-    ["Číslo v nouzi","V Itálii i v Česku platí číslo 112.",[["Chiamo il 112.","Volám 112."],["Dov'è la farmacia?","Kde je lékárna?"]]]]},
+    ["Bolí mě","Jedna věc: {mi fa male la testa} (bolí mě hlava). Víc věcí: {mi fanno male i piedi} (bolí mě nohy).",[["Mi fa male la gamba.","Bolí mě noha."],["Mi fanno male i piedi.","Bolí mě nohy."]]],
+    ["Poprosit o pomoc","Dospělého: {può aiutarmi?} = můžete mi pomoct? Kamaráda: {puoi aiutarmi?} = můžeš mi pomoct?",[["Scusi, può aiutarmi?","Promiňte, můžete mi pomoct?"],["Chiamate un'ambulanza!","Zavolejte sanitku!"]]],
+    ["Číslo v nouzi","V Itálii i u nás platí stejné číslo: 112.",[["Chiamo il 112.","Volám 112."],["Dov'è la farmacia?","Kde je lékárna?"]]]]},
  { k:"plany", n:"Plány a budoucnost", g:"linear-gradient(155deg,#c7a0ff,#8b3fe0)", ic:"bulb", ai:true,
    o:"Co budeš dělat, kam pojedeš a čím chceš být.",
    slova:[
@@ -1032,9 +1042,9 @@ const TEMATA = [
     ["il sogno","sen|sen (přání)","il sóňo"],["il futuro","budoucnost","il futúro"],["il lavoro","práce","il lavóro"],["un giorno","jednou|jednoho dne","un džórno"],
     ["spero di","doufám, že","spéro di"],["ho intenzione di","mám v plánu","o intencióne di"],["fra un anno","za rok","fra un ánno"]],
    kroky:[
-    ["Budoucí čas","Koncovky: -ò (já), -ai (ty), -à (on). parlerò = budu mluvit, partirò = odjedu. Nepravidelné: andrò, farò, sarò, avrò.",[["Domani andrò al mare.","Zítra pojedu k moři."],["Sarò un pilota.","Budu jezdec."]]],
-    ["Chci a chtěl bych","voglio + sloveso = chci. vorrei + sloveso = chtěl bych (zdvořileji).",[["Voglio vincere.","Chci vyhrát."],["Vorrei diventare pilota.","Chtěl bych se stát jezdcem."]]],
-    ["Za a příští","fra = za (časem): fra un anno. prossimo = příští: la settimana prossima.",[["Fra due settimane c'è la gara.","Za dva týdny je závod."],["L'anno prossimo vado in Italia.","Příští rok jedu do Itálie."]]]]},
+    ["Co bude","Budoucnost poznáš podle konce: {parlerò} = budu mluvit, {partirò} = odjedu. Pár slov se mění po svém: {andrò} (půjdu), {farò} (udělám), {sarò} (budu).",[["Domani andrò al mare.","Zítra pojedu k moři."],["Sarò un pilota.","Budu jezdec."]]],
+    ["Chci a chtěl bych","{voglio} = chci. {vorrei} = chtěl bych (slušněji).",[["Voglio vincere.","Chci vyhrát."],["Vorrei diventare pilota.","Chtěl bych se stát jezdcem."]]],
+    ["Za rok, příští týden","{fra un anno} = za rok. {la settimana prossima} = příští týden.",[["Fra due settimane c'è la gara.","Za dva týdny je závod."],["L'anno prossimo vado in Italia.","Příští rok jedu do Itálie."]]]]},
  { k:"telefon", n:"Telefon a zprávy", g:"linear-gradient(155deg,#8ee0d0,#1c9e8a)", ic:"phone", ai:true,
    o:"Mobil, zprávy, fotky a jak se domluvit, že si zavoláte.",
    slova:[
@@ -1043,9 +1053,9 @@ const TEMATA = [
     ["il caricabatterie","nabíječka","il karikabattérie"],["scaricare","stáhnout","skarikáre"],["il video","video","il vídeo"],["rispondere","odpovědět|zvednout telefon","rispóndere"],
     ["scrivimi!","napiš mi!","skrívimi"],["ti chiamo dopo","zavolám ti potom","ti kjámo dópo"]],
    kroky:[
-    ["Mi a ti","mi = mně, ti = tobě. Stojí před slovesem: ti scrivo (napíšu ti), mi chiami? (zavoláš mi?).",[["Ti mando una foto.","Pošlu ti fotku."],["Mi scrivi stasera?","Napíšeš mi dnes večer?"]]],
-    ["Rozkaz pro kamaráda","U rozkazu se mi a ti připojí na konec: scrivimi (napiš mi), chiamami (zavolej mi).",[["Chiamami domani!","Zavolej mi zítra!"],["Mandami il video!","Pošli mi to video!"]]],
-    ["Telefonování","Italové zvedají telefon slovem pronto. Ci sentiamo = ozveme se.",[["Pronto, sono Matěj.","Haló, tady Matěj."],["Ci sentiamo domani!","Ozveme se zítra!"]]]]},
+    ["Mně a tobě","{mi} = mně, {ti} = tobě. Dávají se před činnost: {ti scrivo} = napíšu ti, {mi chiami?} = zavoláš mi?",[["Ti mando una foto.","Pošlu ti fotku."],["Mi scrivi stasera?","Napíšeš mi dnes večer?"]]],
+    ["Napiš mi!","Když kamarádovi něco přikazuješ, {mi} se přilepí na konec: {scrivimi} = napiš mi, {chiamami} = zavolej mi.",[["Chiamami domani!","Zavolej mi zítra!"],["Mandami il video!","Pošli mi to video!"]]],
+    ["Haló!","Italové berou telefon slovem {pronto}. Na konci řeknou {ci sentiamo} = ozveme se.",[["Pronto, sono Matěj.","Haló, tady Matěj."],["Ci sentiamo domani!","Ozveme se zítra!"]]]]},
  /* ===== 23. 11.: úroveň A2, balíček 1 (8 témat) ===== */
  { k:"a2_prace", lvl:"A2", n:"Práce a povolání", g:"linear-gradient(155deg,#91a7ff,#3b5bdb)", ic:"people",
    o:"Povolání, kancelář, plat a čím bys chtěl být.",
@@ -1056,9 +1066,9 @@ const TEMATA = [
     ["il colloquio di lavoro","pracovní pohovor","il kollókuio di lavóro"],["l'azienda","firma","ladziénda"],["a tempo pieno","na plný úvazek","a témpo piéno"],["il turno","směna","il túrno"],
     ["licenziarsi","dát výpověď","ličenciársi"],["cercare lavoro","hledat práci","čerkáre lavóro"],["l'esperienza","zkušenost","lesperiénca"]],
    kroky:[
-    ["Co děláš za práci?","Che lavoro fai? Odpověď: faccio il / la + povolání, nebo sono + povolání bez členu.",[["Faccio il cuoco.","Jsem kuchař."],["Mia madre è infermiera.","Moje máma je zdravotní sestra."]]],
-    ["Ženské tvary","-o → -a (cuoco → cuoca), -iere → -iera (infermiere → infermiera), -tore → -trice (attore → attrice).",[["la poliziotta","policistka"],["la cuoca","kuchařka"]]],
-    ["Rád bych…","mi piacerebbe + sloveso = rád bych. Je to zdvořilé a hodí se na pohovor.",[["Mi piacerebbe fare il meccanico.","Rád bych byl mechanik."],["Mi piacerebbe lavorare in Italia.","Rád bych pracoval v Itálii."]]]]},
+    ["Co děláš za práci?","{Che lavoro fai?} = Co děláš za práci? Odpověď: {faccio il cuoco} = dělám kuchaře.",[["Faccio il cuoco.","Jsem kuchař."],["Mia madre è infermiera.","Moje máma je zdravotní sestra."]]],
+    ["Když je to žena","Ženy mají jiný konec slova: {cuoco} → {cuoca} (kuchařka), {attore} → {attrice} (herečka).",[["la poliziotta","policistka"],["la cuoca","kuchařka"]]],
+    ["Rád bych…","{mi piacerebbe} = rád bych. {mi piacerebbe fare il pilota} = rád bych byl jezdec.",[["Mi piacerebbe fare il meccanico.","Rád bych byl mechanik."],["Mi piacerebbe lavorare in Italia.","Rád bych pracoval v Itálii."]]]]},
  { k:"a2_obleceni", lvl:"A2", n:"Obchody a oblečení", g:"linear-gradient(155deg,#faa2c1,#c2255c)", ic:"tshirt",
    o:"Velikost, zkoušení, sleva a vrácení zboží.",
    slova:[
@@ -1068,9 +1078,9 @@ const TEMATA = [
     ["mi sta bene?","sluší mi to?","mi stá béne"],["la borsa","taška|kabelka","la bórsa"],["lo zaino","batoh","lo dzájno"],["la cintura","pásek","la čintúra"],["il maglione","svetr","il maljóne"],
     ["gli stivali","vysoké boty|kozačky","lji stiváli"],["il centro commerciale","nákupní centrum","il čéntro kommerčále"]],
    kroky:[
-    ["Ho, ji, je: lo, la, li, le","Místo věci řekneš zájmeno před slovesem: lo (ho), la (ji), li (je, mužské), le (je, ženské).",[["Lo prendo.","Vezmu si ho."],["Le provo.","Vyzkouším je."]]],
-    ["Je mi to velké","mi sta grande / stretto = je mi to velké / těsné. Víc věcí: mi stanno.",[["Questa giacca mi sta stretta.","Tahle bunda je mi těsná."],["Le scarpe mi stanno grandi.","Boty jsou mi velké."]]],
-    ["Jakou velikost?","Che taglia porti? = Jakou nosíš velikost? Che numero porti? = Jaké nosíš číslo bot?",[["Porto la M.","Nosím M."],["Porto il quarantadue.","Nosím dvaačtyřicítku."]]]]},
+    ["Ho, ji, je","Aby se věc neopakovala, řekneš místo ní krátké slovo před činností: {lo} = ho, {la} = ji, {li} nebo {le} = je. {lo prendo} = vezmu si ho.",[["Lo prendo.","Vezmu si ho."],["Le provo.","Vyzkouším je."]]],
+    ["Je mi to velké","{mi sta grande} = je mi to velké. {mi sta stretto} = je mi to těsné. U víc věcí: {mi stanno}.",[["Questa giacca mi sta stretta.","Tahle bunda je mi těsná."],["Le scarpe mi stanno grandi.","Boty jsou mi velké."]]],
+    ["Jakou máš velikost?","{Che taglia porti?} = Jakou nosíš velikost? {Che numero porti?} = Jaké nosíš číslo bot?",[["Porto la M.","Nosím M."],["Porto il quarantadue.","Nosím dvaačtyřicítku."]]]]},
  { k:"a2_domacnost", lvl:"A2", n:"Domácí práce", g:"linear-gradient(155deg,#ffd43b,#f08c00)", ic:"home",
    o:"Uklízení, nádobí, prádlo a kdo je na řadě.",
    slova:[
@@ -1080,9 +1090,9 @@ const TEMATA = [
     ["innaffiare le piante","zalít květiny","innaffjáre le piánte"],["portare fuori il cane","vyvenčit psa","portáre fuóri il káne"],["il bucato","prádlo (praní)","il bukáto"],
     ["la scopa","koště","la skópa"],["il secchio","kbelík","il sékkjo"],["tocca a me","jsem na řadě","tókka a mé"],["in ordine","uklizený|v pořádku","in órdine"]],
    kroky:[
-    ["Kdo je na řadě?","tocca a me = jsem na řadě, tocca a te = jsi na řadě, tocca a lui = je na řadě on.",[["Oggi tocca a te lavare i piatti.","Dnes jsi na řadě s nádobím."],["Tocca sempre a me!","Vždycky jsem na řadě já!"]]],
-    ["Jak často","spesso (často), qualche volta (někdy), di solito (obvykle), non … mai (nikdy).",[["Pulisco spesso la mia camera.","Často si uklízím pokoj."],["Non stiro mai.","Nikdy nežehlím."]]],
-    ["Musím a nemusím","devo + sloveso = musím. non devo = nemusím.",[["Devo fare il letto.","Musím ustlat postel."],["Oggi non devo pulire.","Dnes nemusím uklízet."]]]]},
+    ["Kdo je na řadě?","{tocca a me} = jsem na řadě já. {tocca a te} = jsi na řadě ty.",[["Oggi tocca a te lavare i piatti.","Dnes jsi na řadě s nádobím."],["Tocca sempre a me!","Vždycky jsem na řadě já!"]]],
+    ["Jak často","{spesso} = často, {qualche volta} = někdy, {di solito} = obvykle, {non… mai} = nikdy.",[["Pulisco spesso la mia camera.","Často si uklízím pokoj."],["Non stiro mai.","Nikdy nežehlím."]]],
+    ["Musím, nemusím","{devo} = musím. {non devo} = nemusím.",[["Devo fare il letto.","Musím ustlat postel."],["Oggi non devo pulire.","Dnes nemusím uklízet."]]]]},
  { k:"a2_vareni", lvl:"A2", n:"Vaření", g:"linear-gradient(155deg,#ff8787,#e03131)", ic:"fork",
    o:"Recept, suroviny, krájet, smažit a co je v kuchyni.",
    slova:[
@@ -1092,9 +1102,9 @@ const TEMATA = [
     ["il forno","trouba","il fórno"],["la pentola","hrnec","la péntola"],["la padella","pánev","la padélla"],["il cucchiaio","lžíce","il kukkjájo"],["la forchetta","vidlička","la forkétta"],
     ["il coltello","nůž","il koltéllo"],["il piatto","talíř","il piátto"],["è buonissimo!","je to výborné!","é buoníssimo"]],
    kroky:[
-    ["Recept: rozkaz","V receptu se píše rozkaz: taglia (nakrájej), aggiungi (přidej), mescola (zamíchej).",[["Taglia la cipolla.","Nakrájej cibuli."],["Aggiungi il sale.","Přidej sůl."]]],
-    ["Trochu: un po' di","un po' di = trochu, molto = hodně, troppo = moc.",[["Un po' di sale.","Trochu soli."],["Troppo zucchero!","Moc cukru!"]]],
-    ["Úplně nejlepší: -issimo","Koncovkou -issimo slovo zesílíš: buono → buonissimo (výborný), bello → bellissimo (nádherný).",[["La pizza è buonissima!","Pizza je výborná!"],["È facilissimo.","Je to úplně snadné."]]]]},
+    ["Recept poroučí","V receptu se poroučí: {taglia} = nakrájej, {aggiungi} = přidej, {mescola} = zamíchej.",[["Taglia la cipolla.","Nakrájej cibuli."],["Aggiungi il sale.","Přidej sůl."]]],
+    ["Trochu, hodně","{un po' di} = trochu, {molto} = hodně, {troppo} = moc (až moc).",[["Un po' di sale.","Trochu soli."],["Troppo zucchero!","Moc cukru!"]]],
+    ["Úplně super: -issimo","Když něco chceš zesílit, přidáš na konec -issimo: {buono} (dobrý) → {buonissimo} (výborný).",[["La pizza è buonissima!","Pizza je výborná!"],["È facilissimo.","Je to úplně snadné."]]]]},
  { k:"a2_dovolena", lvl:"A2", n:"Dovolená a hotel", g:"linear-gradient(155deg,#66d9e8,#1098ad)", ic:"pin",
    o:"Rezervace, pokoj s výhledem, pláž, výlety a kemp.",
    slova:[
@@ -1104,9 +1114,9 @@ const TEMATA = [
     ["fare il bagno","koupat se","fáre il báňo"],["la gita","výlet","la džíta"],["il campeggio","kemp","il kampéddžo"],["la tenda","stan","la ténda"],["visitare","navštívit|prohlédnout si","vizitáre"],
     ["la guida","průvodce","la guída"],["il turista","turista","il turísta"],["divertirsi","bavit se|užívat si","divertírsi"],["rilassarsi","odpočívat","rilassársi"],["la cartolina","pohlednice","la kartolína"]],
    kroky:[
-    ["Rezervace","vorrei prenotare + co. per + počet nocí: per tre notti.",[["Vorrei prenotare una camera doppia.","Chtěl bych rezervovat dvoulůžkový pokoj."],["Per tre notti, per favore.","Na tři noci, prosím."]]],
-    ["Užít si to: divertirsi","Zvratné sloveso: mi diverto, ti diverti, si diverte. Minulý čas: mi sono divertito.",[["Mi diverto molto al mare.","U moře se moc bavím."],["Ci siamo divertiti!","Užili jsme si to!"]]],
-    ["Je to v ceně?","È inclusa la colazione? = Je snídaně v ceně? C'è + jedna věc, ci sono + víc věcí.",[["C'è l'aria condizionata?","Je tam klimatizace?"],["La colazione è inclusa?","Je snídaně v ceně?"]]]]},
+    ["Zamluvit si pokoj","{vorrei prenotare una camera} = chtěl bych zamluvit pokoj. {per tre notti} = na tři noci.",[["Vorrei prenotare una camera doppia.","Chtěl bych rezervovat dvoulůžkový pokoj."],["Per tre notti, per favore.","Na tři noci, prosím."]]],
+    ["Bavím se","{mi diverto} = bavím se, {ti diverti} = bavíš se. Včera: {mi sono divertito} = užil jsem si to.",[["Mi diverto molto al mare.","U moře se moc bavím."],["Ci siamo divertiti!","Užili jsme si to!"]]],
+    ["Je to v ceně?","{È inclusa la colazione?} = Je snídaně v ceně?",[["C'è l'aria condizionata?","Je tam klimatizace?"],["La colazione è inclusa?","Je snídaně v ceně?"]]]]},
  { k:"a2_nazory", lvl:"A2", n:"Názory a pocity", g:"linear-gradient(155deg,#b197fc,#7048e8)", ic:"chat",
    o:"Podle mě, souhlasím, máš pravdu, mám chuť na…",
    slova:[
@@ -1116,9 +1126,9 @@ const TEMATA = [
     ["deluso","zklamaný","delúzo"],["geloso","žárlivý","dželózo"],["avere voglia di","mít chuť na","avére vólja di"],["mi sembra","zdá se mi","mi sémbra"],["dipende","záleží na tom","dipénde"],
     ["purtroppo","bohužel","purtróppo"],["per fortuna","naštěstí","per fortúna"]],
    kroky:[
-    ["Podle mě","secondo me = podle mě, per me = pro mě, penso che… = myslím, že…",[["Secondo me il kart è più divertente del calcio.","Podle mě je kart zábavnější než fotbal."],["Penso che sia difficile.","Myslím, že je to těžké."]]],
-    ["Souhlas a nesouhlas","sono d'accordo / non sono d'accordo. hai ragione = máš pravdu.",[["Sono d'accordo con te.","Souhlasím s tebou."],["Hai ragione!","Máš pravdu!"]]],
-    ["Mám chuť na…","ho voglia di + věc nebo sloveso = mám chuť na… / chce se mi…",[["Ho voglia di una pizza.","Mám chuť na pizzu."],["Non ho voglia di studiare.","Nechce se mi učit."]]]]},
+    ["Podle mě","{secondo me} = podle mě. {penso che} = myslím, že…",[["Secondo me il kart è più divertente del calcio.","Podle mě je kart zábavnější než fotbal."],["Penso che sia difficile.","Myslím, že je to těžké."]]],
+    ["Souhlasím","{sono d'accordo} = souhlasím. {non sono d'accordo} = nesouhlasím. {hai ragione} = máš pravdu.",[["Sono d'accordo con te.","Souhlasím s tebou."],["Hai ragione!","Máš pravdu!"]]],
+    ["Mám chuť","{ho voglia di} = mám chuť na, chce se mi. {ho voglia di una pizza} = mám chuť na pizzu.",[["Ho voglia di una pizza.","Mám chuť na pizzu."],["Non ho voglia di studiare.","Nechce se mi učit."]]]]},
  { k:"a2_detstvi", lvl:"A2", n:"Když jsem byl malý", g:"linear-gradient(155deg,#ffc078,#e8590c)", ic:"znovu",
    o:"Nový minulý čas (imperfektum): jak to bývalo, když jsi byl malý.",
    slova:[
@@ -1128,9 +1138,9 @@ const TEMATA = [
     ["la scuola elementare","první stupeň (základní škola)","la skuóla elementáre"],["ricordare","pamatovat si","rikordáre"],["mi ricordo","pamatuju si","mi rikórdo"],["una volta","jednou|kdysi","úna vólta"],
     ["c'era una volta","bylo nebylo","čéra úna vólta"],["crescere","vyrůstat","kréššere"],["il ricordo","vzpomínka","il rikórdo"],["mentre","zatímco|když","méntre"]],
    kroky:[
-    ["Imperfektum: jak to bývalo","Na popis minulosti a zvyků: -are → -avo (giocavo), -ere → -evo (avevo), -ire → -ivo (dormivo).",[["Da bambino giocavo sempre a calcio.","Jako dítě jsem pořád hrál fotbal."],["Avevo un cane.","Měl jsem psa."]]],
-    ["essere: ero, eri, era","Nepravidelné: ero (byl jsem), eri (byl jsi), era (byl), eravamo (byli jsme).",[["Quando ero piccolo, abitavo a Praga.","Když jsem byl malý, bydlel jsem v Praze."],["Era bellissimo.","Bylo to nádherné."]]],
-    ["Imperfektum, nebo ho fatto?","Imperfektum = co trvalo nebo se opakovalo. ho fatto = co se stalo jednou.",[["Mentre dormivo, è suonato il telefono.","Když jsem spal, zazvonil telefon."],["Ogni estate andavo al mare.","Každé léto jsem jezdil k moři."]]]]},
+    ["Jak to bývalo","Když vyprávíš, jak to bývalo, změníš konec na -avo, -evo nebo -ivo: {giocavo} = hrával jsem, {avevo} = míval jsem.",[["Da bambino giocavo sempre a calcio.","Jako dítě jsem pořád hrál fotbal."],["Avevo un cane.","Měl jsem psa."]]],
+    ["Byl jsem","{ero} = byl jsem, {eri} = byl jsi, {era} = byl, bylo. {ero piccolo} = byl jsem malý.",[["Quando ero piccolo, abitavo a Praga.","Když jsem byl malý, bydlel jsem v Praze."],["Era bellissimo.","Bylo to nádherné."]]],
+    ["Bývalo, nebo stalo se?","{giocavo} = hrával jsem (často, pořád). {ho giocato} = hrál jsem (jednou). Je to jako česky „hrával“ a „zahrál“.",[["Mentre dormivo, è suonato il telefono.","Když jsem spal, zazvonil telefon."],["Ogni estate andavo al mare.","Každé léto jsem jezdil k moři."]]]]},
  { k:"a2_motorsport", lvl:"A2", n:"Motorsport a technika", g:"linear-gradient(155deg,#495057,#212529)", ic:"wheel",
    o:"Nastavení, grip, stopa, brzdný bod a jak vyprávět závod jako profík.",
    slova:[
@@ -1141,9 +1151,9 @@ const TEMATA = [
     ["il commissario","traťový komisař","il kommissário"],["la gomma da bagnato","pneumatika do deště","la gómma da baňáto"],["le slick","slicky","le zlik"],["consumato","sjetý|opotřebovaný","konsumáto"],
     ["il miglior tempo","nejlepší čas","il miljór témpo"],["recuperare posizioni","získat zpátky pozice","rekuperáre pozicióni"]],
    kroky:[
-    ["Kde v zatáčce","in entrata (při vjezdu), a centro curva (uprostřed), in uscita (při výjezdu).",[["Il kart sottosterza in entrata.","Kart při vjezdu nedotáčí."],["In uscita perde aderenza.","Při výjezdu ztrácí grip."]]],
-    ["Víc a míň","più + slovo = víc, meno + slovo = míň. serve = je potřeba.",[["Serve meno pressione dietro.","Vzadu je potřeba míň tlaku."],["Ho bisogno di più aderenza.","Potřebuju víc gripu."]]],
-    ["Vyprávění závodu","ho preso la scia (chytil jsem háček), ho staccato tardi (brzdil jsem pozdě), sono uscito di pista (vyjel jsem z trati).",[["Ho staccato tardi e ho sorpassato.","Brzdil jsem pozdě a předjel jsem."],["Sono finito nella ghiaia.","Skončil jsem ve štěrku."]]]]},
+    ["Kde v zatáčce","{in entrata} = při vjezdu do zatáčky, {a centro curva} = uprostřed, {in uscita} = při výjezdu.",[["Il kart sottosterza in entrata.","Kart při vjezdu nedotáčí."],["In uscita perde aderenza.","Při výjezdu ztrácí grip."]]],
+    ["Víc a míň","{più} = víc, {meno} = míň. {serve più grip} = je potřeba víc přilnavosti.",[["Serve meno pressione dietro.","Vzadu je potřeba míň tlaku."],["Ho bisogno di più aderenza.","Potřebuju víc gripu."]]],
+    ["Vyprávění závodu","{ho preso la scia} = chytil jsem háček. {ho staccato tardi} = brzdil jsem pozdě. {sono uscito di pista} = vyjel jsem z trati.",[["Ho staccato tardi e ho sorpassato.","Brzdil jsem pozdě a předjel jsem."],["Sono finito nella ghiaia.","Skončil jsem ve štěrku."]]]]},
  /* ===== 23. 11.: úroveň A2, balíček 2 (7 témat) ===== */
  { k:"a2_internet", lvl:"A2", n:"Internet a sítě", g:"linear-gradient(155deg,#74c0fc,#1971c2)", ic:"phone",
    o:"Sociální sítě, videa, hesla a co právě děláš.",
@@ -1154,9 +1164,9 @@ const TEMATA = [
     ["il computer portatile","notebook","il kompjúter portátile"],["l'aggiornamento","aktualizace","laddžornaménto"],["la batteria scarica","vybitá baterie","la battería skárika"],["bloccarsi","zaseknout se","blokkársi"],
     ["navigare","brouzdat (po internetu)","navigáre"],["il messaggio vocale","hlasovka|hlasová zpráva","il messáddžo vokále"]],
    kroky:[
-    ["Právě teď: sto + -ando","sto + sloveso s koncovkou -ando / -endo = právě teď dělám: sto guardando (právě koukám), sto scrivendo (právě píšu).",[["Sto guardando un video.","Právě koukám na video."],["Che stai facendo?","Co právě děláš?"]]],
-    ["Kolik? Ne ho…","ne = jich / z toho. Quanti ne hai? = Kolik jich máš? Ne ho tre = Mám tři.",[["Quanti video guardi? Ne guardo tanti.","Kolik videí sleduješ? Sleduju jich hodně."],["Ne ho due.","Mám dva."]]],
-    ["Něco nefunguje","si è bloccato = zasekl se, non funziona = nefunguje, è scarica = je vybitá.",[["Il telefono si è bloccato.","Mobil se zasekl."],["La connessione non funziona.","Připojení nefunguje."]]]]},
+    ["Právě teď","{sto} + činnost s koncem -ando = právě teď něco dělám. {sto guardando} = právě koukám, {sto scrivendo} = právě píšu.",[["Sto guardando un video.","Právě koukám na video."],["Che stai facendo?","Co právě děláš?"]]],
+    ["Kolik jich máš?","{ne} = jich. {Quanti ne hai?} = Kolik jich máš? {Ne ho tre} = Mám tři.",[["Quanti video guardi? Ne guardo tanti.","Kolik videí sleduješ? Sleduju jich hodně."],["Ne ho due.","Mám dva."]]],
+    ["Něco nejde","{non funziona} = nefunguje. {si è bloccato} = zasekl se. {è scarica} = je vybitá.",[["Il telefono si è bloccato.","Mobil se zasekl."],["La connessione non funziona.","Připojení nefunguje."]]]]},
  { k:"a2_povaha", lvl:"A2", n:"Povaha a vztahy", g:"linear-gradient(155deg,#f783ac,#a61e4d)", ic:"heart",
    o:"Jaký kdo je, přátelství, hádka a usmíření.",
    slova:[
@@ -1166,9 +1176,9 @@ const TEMATA = [
     ["conoscersi","znát se|seznámit se","konóšersi"],["innamorarsi","zamilovat se","innamorársi"],["il carattere","povaha","il karáttere"],["il migliore amico","nejlepší kamarád","il miljóre amíko"],
     ["la fiducia","důvěra","la fidúča"],["mi manchi","chybíš mi","mi mánki"],["il rispetto","respekt|úcta","il rispétto"]],
    kroky:[
-    ["Jak dlouho: da","da + doba = už (tak dlouho). Sloveso je v přítomném čase!",[["Ci conosciamo da cinque anni.","Známe se pět let."],["Faccio karting da sei anni.","Jezdím kart už šest let."]]],
-    ["Navzájem: ci, vi, si","ci vediamo = uvidíme se, si sono conosciuti = seznámili se.",[["Ci scriviamo ogni giorno.","Píšeme si každý den."],["Si sono conosciuti a scuola.","Seznámili se ve škole."]]],
-    ["Trochu a moc","un po' (trochu), molto (hodně), troppo (moc) + vlastnost.",[["È un po' timido.","Je trochu stydlivý."],["Sei troppo testardo!","Jsi moc tvrdohlavý!"]]]]},
+    ["Už jak dlouho","{da} = už (tak dlouho). {lo conosco da due anni} = znám ho už dva roky. Pozor, italsky se říká „znám“, ne „znal jsem“.",[["Ci conosciamo da cinque anni.","Známe se pět let."],["Faccio karting da sei anni.","Jezdím kart už šest let."]]],
+    ["Navzájem","{ci vediamo} = uvidíme se. {si sono conosciuti} = seznámili se.",[["Ci scriviamo ogni giorno.","Píšeme si každý den."],["Si sono conosciuti a scuola.","Seznámili se ve škole."]]],
+    ["Trochu a moc","{un po' timido} = trochu stydlivý, {molto} = hodně, {troppo} = moc.",[["È un po' timido.","Je trochu stydlivý."],["Sei troppo testardo!","Jsi moc tvrdohlavý!"]]]]},
  { k:"a2_kultura", lvl:"A2", n:"Film, hudba a knihy", g:"linear-gradient(155deg,#e599f7,#9c36b5)", ic:"star",
    o:"Co jsi viděl a slyšel, jak se ti to líbilo a co doporučíš.",
    slova:[
@@ -1178,9 +1188,9 @@ const TEMATA = [
     ["il fumetto","komiks","il fumétto"],["lo scrittore","spisovatel","lo skrittóre"],["consigliare","doporučit|poradit","konsiljáre"],["emozionante","napínavý|dojemný","emocionánte"],
     ["famoso","slavný","famózo"],["i sottotitoli","titulky","i sottotítoli"],["la colonna sonora","filmová hudba|soundtrack","la kolónna sonóra"]],
    kroky:[
-    ["Líbilo se mi","mi è piaciuto (jedna věc), mi sono piaciuti (víc věcí). Ženský rod: mi è piaciuta.",[["Il film mi è piaciuto molto.","Film se mi moc líbil."],["La serie non mi è piaciuta.","Seriál se mi nelíbil."]]],
-    ["Který, která: che","che spojí dvě věty: il film che ho visto = film, který jsem viděl.",[["È la canzone che ascolto sempre.","To je písnička, kterou pořád poslouchám."],["Il cantante che mi piace è italiano.","Zpěvák, který se mi líbí, je Ital."]]],
-    ["Doporučit","ti consiglio + věc = doporučuju ti. ti consiglio di + sloveso = radím ti.",[["Ti consiglio questo film.","Doporučuju ti tenhle film."],["Cosa mi consigli?","Co mi doporučíš?"]]]]},
+    ["Líbilo se mi","Jedna věc: {mi è piaciuto} = líbilo se mi to. Víc věcí: {mi sono piaciuti}.",[["Il film mi è piaciuto molto.","Film se mi moc líbil."],["La serie non mi è piaciuta.","Seriál se mi nelíbil."]]],
+    ["Který, která","{che} spojí dvě věty: {il film che ho visto} = film, který jsem viděl.",[["È la canzone che ascolto sempre.","To je písnička, kterou pořád poslouchám."],["Il cantante che mi piace è italiano.","Zpěvák, který se mi líbí, je Ital."]]],
+    ["Doporučuju ti","{ti consiglio questo libro} = doporučuju ti tuhle knížku.",[["Ti consiglio questo film.","Doporučuju ti tenhle film."],["Cosa mi consigli?","Co mi doporučíš?"]]]]},
  { k:"a2_zdravi", lvl:"A2", n:"Zdravý život", g:"linear-gradient(155deg,#8ce99a,#2f9e44)", ic:"flame",
    o:"Spánek, jídlo, trénink, kondice a co bys měl dělat.",
    slova:[
@@ -1190,9 +1200,9 @@ const TEMATA = [
     ["ingrassare","přibrat","ingrassáre"],["scaldarsi","rozcvičit se|zahřát se","skaldársi"],["i muscoli","svaly","i múskoli"],["la fatica","námaha|únava","la fatíka"],["smettere di","přestat (s něčím)","sméttere di"],
     ["la colazione abbondante","pořádná snídaně","la kolacióne abbondánte"]],
    kroky:[
-    ["Měl bys: dovresti","dovrei = měl bych, dovresti = měl bys. Hodí se na rady.",[["Dovresti dormire di più.","Měl bys víc spát."],["Dovrei mangiare meno dolci.","Měl bych jíst míň sladkostí."]]],
-    ["Je potřeba: bisogna","bisogna + sloveso = je potřeba / musí se. Platí pro všechny.",[["Bisogna bere molta acqua.","Je potřeba pít hodně vody."],["Prima della gara bisogna scaldarsi.","Před závodem je potřeba se rozcvičit."]]],
-    ["Přestat a začít","smettere di + sloveso = přestat, cominciare a + sloveso = začít.",[["Ho smesso di mangiare patatine.","Přestal jsem jíst chipsy."],["Ho cominciato ad andare in palestra.","Začal jsem chodit do posilovny."]]]]},
+    ["Měl bys","{dovresti} = měl bys. {dovresti dormire di più} = měl bys víc spát. Hodí se na rady.",[["Dovresti dormire di più.","Měl bys víc spát."],["Dovrei mangiare meno dolci.","Měl bych jíst míň sladkostí."]]],
+    ["Je potřeba","{bisogna} = je potřeba, musí se. Platí pro každého: {bisogna bere acqua} = je potřeba pít vodu.",[["Bisogna bere molta acqua.","Je potřeba pít hodně vody."],["Prima della gara bisogna scaldarsi.","Před závodem je potřeba se rozcvičit."]]],
+    ["Přestat a začít","{smettere di} = přestat. {cominciare a} = začít.",[["Ho smesso di mangiare patatine.","Přestal jsem jíst chipsy."],["Ho cominciato ad andare in palestra.","Začal jsem chodit do posilovny."]]]]},
  { k:"a2_auto", lvl:"A2", n:"Auto a silnice", g:"linear-gradient(155deg,#a9e34b,#5c940d)", ic:"map",
    o:"Řízení, benzinka, parkování, kolona a autoškola.",
    slova:[
@@ -1202,9 +1212,9 @@ const TEMATA = [
     ["il pedaggio","mýtné","il pedáddžo"],["accendere il motore","nastartovat motor","aččéndere il motóre"],["la retromarcia","zpátečka","la retromárča"],["il cartello","dopravní značka|cedule","il kartéllo"],
     ["la coda","kolona","la kóda"],["il pieno","plná nádrž","il piéno"],["il navigatore","navigace","il navigatóre"],["l'istruttore","instruktor","listruttóre"],["la strada statale","silnice (hlavní)","la stráda statále"]],
    kroky:[
-    ["Rozkaz pro dospělého","Neznámému vykáš: giri (zabočte), si fermi (zastavte), vada (jeďte).",[["Giri a destra al semaforo.","U semaforu zabočte doprava."],["Si fermi qui, per favore.","Zastavte tady, prosím."]]],
-    ["Už a ještě ne","già = už, non … ancora = ještě ne.",[["Non ho ancora la patente.","Ještě nemám řidičák."],["Mio padre guida già da trent'anni.","Táta řídí už třicet let."]]],
-    ["Na benzince","Il pieno, per favore = Plnou, prosím. Venti euro di benzina = benzín za dvacet eur.",[["Il pieno, per favore.","Plnou, prosím."],["Dov'è il distributore più vicino?","Kde je nejbližší benzinka?"]]]]},
+    ["Poroučet dospělému","Cizímu dospělému řekneš: {giri} = zabočte, {si fermi} = zastavte.",[["Giri a destra al semaforo.","U semaforu zabočte doprava."],["Si fermi qui, per favore.","Zastavte tady, prosím."]]],
+    ["Už a ještě ne","{già} = už. {non ancora} = ještě ne.",[["Non ho ancora la patente.","Ještě nemám řidičák."],["Mio padre guida già da trent'anni.","Táta řídí už třicet let."]]],
+    ["Na benzince","{il pieno, per favore} = plnou, prosím. {venti euro di benzina} = benzín za dvacet eur.",[["Il pieno, per favore.","Plnou, prosím."],["Dov'è il distributore più vicino?","Kde je nejbližší benzinka?"]]]]},
  { k:"a2_pribeh", lvl:"A2", n:"Vyprávím příběh", g:"linear-gradient(155deg,#fcc2d7,#862e9c)", ic:"book",
    o:"Nejdřív, potom, najednou, nakonec: vyprávíš, co se stalo.",
    slova:[
@@ -1214,9 +1224,9 @@ const TEMATA = [
     ["nel frattempo","mezitím","nel frattémpo"],["qualche giorno fa","před pár dny","kuálke džórno fa"],["appena","právě|jakmile","appéna"],["ridere","smát se","rídere"],["la fortuna","štěstí (náhoda)","la fortúna"],
     ["strano","divný|zvláštní","stráno"]],
    kroky:[
-    ["Pořadí v příběhu","prima (nejdřív), poi (pak), all'improvviso (najednou), alla fine (nakonec).",[["Prima ho fatto colazione, poi sono uscito.","Nejdřív jsem se nasnídal, pak jsem šel ven."],["Alla fine abbiamo vinto!","Nakonec jsme vyhráli!"]]],
-    ["Kulisa a událost","Imperfektum = co zrovna probíhalo, ho fatto = co se najednou stalo. stavo + -ando = zrovna jsem dělal.",[["Stavo guidando quando ha cominciato a piovere.","Zrovna jsem jel, když začalo pršet."],["Era tardi e pioveva.","Bylo pozdě a pršelo."]]],
-    ["Co se stalo?","Cos'è successo? = Co se stalo? Mi è successa una cosa strana = Stala se mi divná věc.",[["Cos'è successo ieri?","Co se stalo včera?"],["Mi sono spaventato!","Lekl jsem se!"]]]]},
+    ["Jak jde příběh","{prima} = nejdřív, {poi} = pak, {all'improvviso} = najednou, {alla fine} = nakonec.",[["Prima ho fatto colazione, poi sono uscito.","Nejdřív jsem se nasnídal, pak jsem šel ven."],["Alla fine abbiamo vinto!","Nakonec jsme vyhráli!"]]],
+    ["Co se dělo a co se stalo","{pioveva} = pršelo (dělo se to dlouho). {ho visto} = uviděl jsem (stalo se to najednou). {stavo guidando} = zrovna jsem řídil.",[["Stavo guidando quando ha cominciato a piovere.","Zrovna jsem jel, když začalo pršet."],["Era tardi e pioveva.","Bylo pozdě a pršelo."]]],
+    ["Co se stalo?","{Cos'è successo?} = Co se stalo? {Mi è successa una cosa strana} = Stala se mi divná věc.",[["Cos'è successo ieri?","Co se stalo včera?"],["Mi sono spaventato!","Lekl jsem se!"]]]]},
  { k:"a2_ekologie", lvl:"A2", n:"Planeta a ekologie", g:"linear-gradient(155deg,#63e6be,#087f5b)", ic:"rain",
    o:"Třídění odpadu, klima, šetření a co se dělá pro planetu.",
    slova:[
@@ -1226,14 +1236,347 @@ const TEMATA = [
     ["il pannello solare","solární panel","il pannéllo soláre"],["l'auto elettrica","elektroauto","láuto eléttrika"],["la siccità","sucho","la siččitá"],["l'alluvione","povodeň","lalluvióne"],
     ["proteggere","chránit","protéddžere"],["il bidone","popelnice","il bidóne"],["usa e getta","na jedno použití","úza e džétta"],["la borraccia","láhev (na pití, opakovaně)","la borrácča"],["il rifiuto","odpad","il rifjúto"]],
    kroky:[
-    ["Dělá se: si","si + sloveso = dělá se (obecně). In Italia si ricicla molto = V Itálii se hodně recykluje.",[["Qui si ricicla la plastica.","Tady se recykluje plast."],["Non si spreca l'acqua.","Neplýtvá se vodou."]]],
-    ["Bylo by potřeba","bisognerebbe = bylo by potřeba. Zdvořilý návrh, co by se mělo změnit.",[["Bisognerebbe usare meno plastica.","Bylo by potřeba používat méně plastu."],["Bisognerebbe andare più in bici.","Mělo by se víc jezdit na kole."]]],
-    ["Kam to patří?","va nella plastica / nella carta / nel vetro = patří do plastu / papíru / skla.",[["La bottiglia va nella plastica.","Láhev patří do plastu."],["Dove va questo?","Kam patří tohle?"]]]]}
+    ["Dělá se","{si} + činnost = dělá se (lidi obecně). {si ricicla} = recykluje se.",[["Qui si ricicla la plastica.","Tady se recykluje plast."],["Non si spreca l'acqua.","Neplýtvá se vodou."]]],
+    ["Bylo by potřeba","{bisognerebbe} = bylo by potřeba. Tak slušně navrhneš, co změnit.",[["Bisognerebbe usare meno plastica.","Bylo by potřeba používat méně plastu."],["Bisognerebbe andare più in bici.","Mělo by se víc jezdit na kole."]]],
+    ["Kam to patří?","{va nella plastica} = patří do plastu, {nella carta} = do papíru, {nel vetro} = do skla.",[["La bottiglia va nella plastica.","Láhev patří do plastu."],["Dove va questo?","Kam patří tohle?"]]]]},
+ /* ===== 24. 11.: úroveň A2, balíček 3 (15 témat) ===== */
+ { k:"a2_restaurace", lvl:"A2", n:"Restaurace a stížnost", g:"linear-gradient(155deg,#ffa8a8,#c92a2a)", ic:"fork",
+   o:"Rezervace, celé menu, co ti nechutná a placení zvlášť.",
+   slova:[
+    ["l'antipasto","předkrm","lantipásto"],["il primo","první chod (těstoviny, rizoto)","il prímo"],["il secondo","hlavní chod (maso, ryba)","il sekóndo"],
+    ["il contorno","příloha","il kontórno"],["al sangue","krvavý (steak)","al sángue"],["ben cotto","dobře propečený","ben kótto"],["piccante","pálivý","pikkánte"],
+    ["salato","slaný","saláto"],["lamentarsi","stěžovat si","lamentársi"],["sbagliato","špatný|chybný","zbaljáto"],["pagare separatamente","platit zvlášť","pagáre separataménte"],["la mancia","spropitné","la mánča"],
+    ["il coperto","poplatek za stolování","il kopérto"],["il piatto del giorno","jídlo dne","il pjátto del džórno"],["senza glutine","bez lepku","sénca glútine"],["il bis","přídavek","il bis"],["avanzare","zbýt (jídlo)","avancáre"]],
+   kroky:[
+    ["Mohl byste…?","{potrebbe} = mohl byste. Je to moc slušné: {potrebbe portarmi il conto?} = mohl byste mi přinést účet?",[["Potrebbe portarmi il conto?","Mohl byste mi přinést účet?"],["Potrebbe cambiare il piatto?","Mohl byste mi jídlo vyměnit?"]]],
+    ["Moc: {troppo}","{troppo} = moc, až moc. {è troppo salato} = je to moc slané.",[["La pasta è troppo fredda.","Těstoviny jsou moc studené."],["È troppo piccante per me.","Je to na mě moc pálivé."]]],
+    ["Co mi doporučíte?","{Cosa mi consiglia?} = Co mi doporučíte? Číšník odpoví {Le consiglio…} = Doporučuju vám…",[["Cosa mi consiglia come secondo?","Co mi doporučíte jako hlavní chod?"],["Le consiglio il pesce.","Doporučuji vám rybu."]]]]},
+ { k:"a2_letiste", lvl:"A2", n:"Letiště a let", g:"linear-gradient(155deg,#a5d8ff,#1864ab)", ic:"pin",
+   o:"Odbavení, kufr, kontrola, zpoždění a ztracené zavazadlo.",
+   slova:[
+    ["il volo","let","il vólo"],["la carta d'imbarco","palubní vstupenka","la kárta dimbárko"],["il bagaglio a mano","příruční zavazadlo","il bagáljo a máno"],
+    ["il controllo di sicurezza","bezpečnostní kontrola","il kontróllo di sikurécca"],["la carta d'identità","občanka","la kárta didentitá"],["l'imbarco","nástup do letadla","limbárko"],["decollare","vzlétnout","dekolláre"],
+    ["atterrare","přistát","atterráre"],["cancellato","zrušený","kančelláto"],["il posto finestrino","místo u okna","il pósto finestríno"],["smarrito","ztracený","zmarríto"],
+    ["la coincidenza","přestup|navazující spoj","la koinčidénca"],["l'uscita","východ|brána","luššíta"],["l'assistente di volo","letuška|stevard","lassisténte di vólo"],["pesare","vážit","pezáre"]],
+   kroky:[
+    ["Zmeškal jsem","{ho perso} = ztratil jsem nebo zmeškal jsem. {ho perso il volo} = zmeškal jsem let.",[["Ho perso la valigia.","Ztratil jsem kufr."],["Abbiamo perso la coincidenza.","Zmeškali jsme přestup."]]],
+    ["V kolik letí?","{A che ora parte?} = V kolik odlétá? {A che ora arriva?} = V kolik přiletí?",[["A che ora parte il volo?","V kolik odlétá let?"],["Il volo arriva alle otto.","Let přilétá v osm."]]],
+    ["Je potřeba","{bisogna} = je potřeba, musí se. {bisogna fare il check-in} = musí se udělat odbavení.",[["Bisogna mostrare il passaporto.","Je potřeba ukázat pas."],["Bisogna arrivare due ore prima.","Musí se přijet dvě hodiny předem."]]]]},
+ { k:"a2_bydleni", lvl:"A2", n:"Bydlení a stěhování", g:"linear-gradient(155deg,#d8f5a2,#66a80f)", ic:"home",
+   o:"Byt, nájem, sousedé, stěhování a co se rozbilo.",
+   slova:[
+    ["l'affitto","nájem","laffítto"],["il palazzo","bytový dům|palác","il palácco"],["l'ascensore","výtah","laššensóre"],
+    ["il vicino di casa","soused","il vičíno di káza"],["traslocare","stěhovat se","traslokáre"],["lo scatolone","velká krabice","lo skatolóne"],["il trasloco","stěhování","il traslóko"],["il riscaldamento","topení","il riskaldaménto"],
+    ["il rubinetto","kohoutek","il rubinétto"],["rotto","rozbitý","rótto"],["riparare","opravit","riparáre"],["l'idraulico","instalatér","lidráuliko"],
+    ["il balcone","balkón","il balkóne"],["la cantina","sklep","la kantína"],["il rumore","hluk","il rumóre"],["arredare","zařídit (nábytkem)","arredáre"],["il condominio","bytový dům (s více byty)","il kondomínjo"],["la bolletta","účet (za elektřinu, vodu)","la bollétta"]],
+   kroky:[
+    ["Bydlím tu už…","{abito qui da due anni} = bydlím tu už dva roky. Italsky „bydlím“, ne „bydlel jsem“.",[["Abito qui da tre anni.","Bydlím tu tři roky."],["Da quanto tempo abiti qui?","Jak dlouho tu bydlíš?"]]],
+    ["Rozbilo se","{si è rotto} = rozbil se. {si è rotta} = rozbila se.",[["Si è rotto il rubinetto.","Rozbil se kohoutek."],["Si è rotta la lavatrice.","Rozbila se pračka."]]],
+    ["Ve kterém patře?","{al primo piano} = v prvním patře. {al piano terra} = v přízemí.",[["Abito al terzo piano.","Bydlím ve třetím patře."],["La cantina è sotto il piano terra.","Sklep je pod přízemím."]]]]},
+ { k:"a2_znamky", lvl:"A2", n:"Známky a zkoušky", g:"linear-gradient(155deg,#bac8ff,#4263eb)", ic:"book",
+   o:"Známky, písemky, úkoly, vysvědčení a jak ti jde škola.",
+   slova:[
+    ["il voto","známka","il vóto"],["la verifica","písemka|test","la verífika"],["l'interrogazione","zkoušení (ústní)","linterrogacjóne"],["la pagella","vysvědčení","la padžélla"],["promosso","prošel (do dalšího ročníku)","promósso"],
+    ["bocciato","propadl","boččáto"],["ripassare","zopakovat si (učivo)","ripassáre"],["la materia","předmět","la matérja"],
+    ["l'intervallo","přestávka","linterválo"],["la gita scolastica","školní výlet","la džíta skolástika"],["copiare","opisovat","kopjáre"],
+    ["la media","průměr","la médja"],["l'orario","rozvrh","lorárjo"],["la scienza","přírodověda|věda","la šénca"],["il compagno di classe","spolužák","il kompáňo di klásse"],["spiegare","vysvětlit","spjegáre"],["sbagliare","udělat chybu","zbaljáre"]],
+   kroky:[
+    ["Jde mi to","{sono bravo in matematica} = jde mi matika. {non sono bravo in} = nejde mi.",[["Sono bravo in matematica.","Jsem dobrý v matice."],["Non sono bravo in storia.","Dějepis mi nejde."]]],
+    ["Dostal jsem","{ho preso un otto} = dostal jsem osmičku. V Itálii je 10 nejlepší a 1 nejhorší, obráceně než u nás.",[["Ho preso nove in inglese.","Dostal jsem devítku z angličtiny."],["Che voto hai preso?","Jakou známku jsi dostal?"]]],
+    ["Musím","{devo studiare} = musím se učit. {non devo} = nemusím.",[["Devo ripassare per la verifica.","Musím si zopakovat na písemku."],["Oggi non devo studiare.","Dneska se nemusím učit."]]]]},
+ { k:"a2_hory", lvl:"A2", n:"Hory a výlety", g:"linear-gradient(155deg,#96f2d7,#0ca678)", ic:"map",
+   o:"Túra, lyže, chata, vrchol a co si vzít s sebou.",
+   slova:[
+    ["il sentiero","stezka","il sentjéro"],["la cima","vrchol","la číma"],["salire","stoupat|vystoupat","salíre"],["scendere","sestoupit|jet dolů","šéndere"],
+    ["gli scarponi","pohorky","lji skarpóni"],
+    ["gli sci","lyže","lji ši"],["lo snowboard","snowboard","lo znóubord"],["il rifugio","horská chata","il rifúdžo"],["la funivia","lanovka (kabinková)","la funivía"],
+    ["la seggiovia","sedačková lanovka","la seddžovía"],["stanco morto","utahaný k smrti","stánko mórto"],["la vista","výhled","la vísta"]],
+   kroky:[
+    ["Co si bereš","{Cosa ti porti?} = Co si bereš? {mi sono portato l'acqua} = vzal jsem si vodu.",[["Mi sono portato lo zaino.","Vzal jsem si batoh."],["Cosa ti porti in montagna?","Co si bereš na hory?"]]],
+    ["Jak dlouho to trvá","{ci vuole un'ora} = trvá to hodinu. Víc hodin: {ci vogliono due ore}.",[["Ci vuole un'ora fino alla cima.","Na vrchol to trvá hodinu."],["Quanto ci vuole?","Jak dlouho to trvá?"]]],
+    ["Šli jsme nahoru","{siamo saliti} = vylezli jsme nahoru. {siamo scesi} = sešli jsme dolů.",[["Siamo saliti in funivia.","Vyjeli jsme lanovkou."],["Sono sceso con lo snowboard.","Sjel jsem dolů na snowboardu."]]]]},
+ { k:"a2_more", lvl:"A2", n:"Moře a pláž", g:"linear-gradient(155deg,#99e9f2,#0c8599)", ic:"rain",
+   o:"Pláž, slunce, vlny, plavání a co se děje u moře.",
+   slova:[
+    ["la sabbia","písek","la sábbja"],["l'onda","vlna","lónda"],
+    ["scottarsi","spálit se (od slunce)","skottársi"],
+    ["il costume da bagno","plavky","il kostúme da báňo"],["l'asciugamano","ručník|osuška","laššugamáno"],["la medusa","medúza","la medúza"],["lo scoglio","skála (u moře)","lo skóljo"],["tuffarsi","skočit do vody","tuffársi"],
+    ["il bagnino","plavčík","il baňíno"],["la barca","loďka","la bárka"],["la conchiglia","mušle","la konkílja"],["il castello di sabbia","hrad z písku","il kastéllo di sábbja"],["l'acqua è fredda","voda je studená","lákkua é frédda"],["fare snorkeling","šnorchlovat","fáre znórkeling"]],
+   kroky:[
+    ["Jdeme se koupat","{fare il bagno} = koupat se. {andiamo al mare} = jedeme k moři.",[["Andiamo a fare il bagno!","Pojďme se vykoupat!"],["Domani andiamo al mare.","Zítra jedeme k moři."]]],
+    ["Spálil jsem se","{mi sono scottato} = spálil jsem se. {ci siamo tuffati} = skočili jsme do vody.",[["Mi sono scottato la schiena.","Spálil jsem si záda."],["Ci siamo tuffati dallo scoglio.","Skočili jsme ze skály."]]],
+    ["Pozor!","{attenzione} = pozor. Uvidíš to i na cedulích u moře.",[["Attenzione alle meduse!","Pozor na medúzy!"],["Attenzione al sole!","Pozor na slunce!"]]]]},
+ { k:"a2_svatky", lvl:"A2", n:"Svátky a oslavy", g:"linear-gradient(155deg,#ffc9c9,#f03e3e)", ic:"star",
+   o:"Vánoce, narozeniny, dárky, přání a jak se v Itálii slaví.",
+   slova:[
+    ["il Natale","Vánoce","il natále"],["la Pasqua","Velikonoce","la páskua"],["il Capodanno","Silvestr|Nový rok","il kapodánno"],
+    ["il regalo","dárek","il regálo"],["regalare","darovat","regaláre"],["festeggiare","slavit","festeddžáre"],["invitare","pozvat","invitáre"],["l'invitato","host (na oslavě)","linvitáto"],
+    ["la torta","dort","la tórta"],["la candelina","svíčka (na dortu)","la kandelína"],["l'albero di Natale","vánoční stromek","lálbero di natále"],["il panettone","panettone (vánoční bábovka)","il panettóne"],["i fuochi d'artificio","ohňostroj","i fuóki dartifíčo"],
+    ["la Befana","Befana (čarodějnice, 6. ledna nosí dárky)","la befána"],["auguri!","všechno nejlepší!","augúri"],["Buon Natale!","Veselé Vánoce!","buon natále"],["Buon anno!","Šťastný nový rok!","buon ánno"],["mascherarsi","převléknout se (do masky)","maskerársi"],["il Carnevale","masopust|karneval","il karnevále"]],
+   kroky:[
+    ["Jemu a jí","{gli} = jemu, {le} = jí. {gli ho regalato un libro} = dal jsem mu knížku.",[["Le ho regalato un fiore.","Dal jsem jí květinu."],["Cosa gli regali?","Co mu daruješ?"]]],
+    ["Přání","{Tanti auguri!} = Všechno nejlepší! {Buon compleanno!} = K narozeninám!",[["Tanti auguri di buon compleanno!","Všechno nejlepší k narozeninám!"],["Buone feste a tutti!","Krásné svátky všem!"]]],
+    ["Kdy se slaví","{a Natale} = o Vánocích. {a Capodanno} = na Silvestra.",[["A Natale mangiamo il panettone.","O Vánocích jíme panettone."],["Come festeggi il compleanno?","Jak slavíš narozeniny?"]]]]},
+ { k:"a2_urady", lvl:"A2", n:"Pošta, banka a úřady", g:"linear-gradient(155deg,#ced4da,#495057)", ic:"bag",
+   o:"Balík, poštovné, karta, bankomat, formulář a fronta.",
+   slova:[
+    ["l'ufficio postale","pošta","luffíčo postále"],["il pacco","balík","il pákko"],["spedire","poslat (poštou)","spedíre"],["il francobollo","známka (poštovní)","il frankobóllo"],["la busta","obálka","la bústa"],
+    ["l'indirizzo","adresa","lindirícco"],["il bancomat","bankomat","il bánkomat"],["prelevare","vybrat (peníze)","preleváre"],["la carta di credito","kreditní karta","la kárta di krédito"],
+    ["il modulo","formulář","il módulo"],["compilare","vyplnit (formulář)","kompiláre"],["firmare","podepsat","firmáre"],["la firma","podpis","la fírma"],["la fila","fronta","la fíla"],
+    ["lo sportello","přepážka","lo sportéllo"],["il documento","doklad","il dokuménto"],["la ricevuta","potvrzení|účtenka","la ričevúta"],["il codice postale","PSČ","il kódiče postále"],],
+   kroky:[
+    ["Chtěl bych poslat","{vorrei spedire un pacco} = chtěl bych poslat balík. {vorrei prelevare} = chtěl bych vybrat peníze.",[["Vorrei spedire questo pacco in Repubblica Ceca.","Chtěl bych poslat tenhle balík do Česka."],["Vorrei prelevare cento euro.","Chtěl bych vybrat sto eur."]]],
+    ["Kde podepsat?","{Dove devo firmare?} = Kde mám podepsat? {qui} = tady.",[["Dove devo firmare?","Kde mám podepsat?"],["Firmi qui, per favore.","Podepište tady, prosím."]]],
+    ["Kdo je na řadě?","{tocca a me} = jsem na řadě já. {tocca a lei} = jste na řadě vy.",[["Tocca a me?","Jsem na řadě?"],["No, tocca a lei.","Ne, jste na řadě vy."]]]]},
+ { k:"a2_penize", lvl:"A2", n:"Peníze a kapesné", g:"linear-gradient(155deg,#ffec99,#f59f00)", ic:"chart",
+   o:"Kapesné, šetření, ceny, sleva a za co utrácíš.",
+   slova:[
+    ["la paghetta","kapesné","la pagétta"],["spendere","utrácet","spéndere"],["costoso","drahý","kostózo"],
+    ["economico","levný","ekonómiko"],["gli spiccioli","drobné (mince)","lji spíččoli"],["la moneta","mince","la monéta"],
+    ["la banconota","bankovka","la bankonóta"],["il salvadanaio","prasátko (na peníze)","il salvadanájo"],["prestare","půjčit (někomu)","prestáre"],
+    ["il debito","dluh","il débito"],["valere la pena","stát za to","valére la péna"],["un affare","výhodný obchod","un affáre"],["permettersi","dovolit si (koupit)","perméttersi"],["mettere da parte","odkládat (stranou)","méttere da párte"]],
+   kroky:[
+    ["Kolik to stojí?","Jedna věc: {quanto costa?} Víc věcí: {quanto costano?}",[["Quanto costano queste scarpe?","Kolik stojí tyhle boty?"],["Costa troppo.","Stojí to moc."]]],
+    ["Nemám na to","{non posso permettermelo} = nemůžu si to dovolit, nemám na to.",[["Non posso permettermelo.","Nemůžu si to dovolit."],["Sto mettendo da parte i soldi per un casco.","Šetřím si peníze na helmu."]]],
+    ["Stojí to za to","{ne vale la pena} = stojí to za to. {non ne vale la pena} = nestojí to za to.",[["Ne vale la pena, è un affare!","Stojí to za to, je to výhodné!"],["Non ne vale la pena.","Nestojí to za to."]]]]},
+ { k:"a2_zvirata", lvl:"A2", n:"Mazlíčci a zvířata", g:"linear-gradient(155deg,#e9d8a6,#a0703b)", ic:"heart",
+   o:"Pes, kočka, péče o mazlíčka, veterinář a zoo.",
+   slova:[
+    ["l'animale domestico","mazlíček|domácí zvíře","lanímale doméstiko"],["il cucciolo","štěně|mládě","il kúččolo"],["il criceto","křeček","il kričéto"],["il coniglio","králík","il koníljo"],["il pappagallo","papoušek","il pappagállo"],
+    ["la tartaruga","želva","la tartarúga"],["dare da mangiare","krmit","dáre da mandžáre"],["portare a spasso","vyvenčit","portáre a spásso"],["il guinzaglio","vodítko","il guincáljo"],
+    ["la cuccia","pelíšek","la kúčča"],["abbaiare","štěkat","abbajáre"],["mordere","kousat","mórdere"],["il veterinario","veterinář","il veterinárjo"],["accarezzare","hladit","akkareccáre"],
+    ["lo zoo","zoo","lo dzóo"],["la gabbia","klec","la gábbja"],["il leone","lev","il leóne"],["la scimmia","opice","la šímmja"],["il lupo","vlk","il lúpo"],["selvatico","divoký","selvátiko"]],
+   kroky:[
+    ["Starám se o…","{mi occupo del cane} = starám se o psa. {Chi si occupa del gatto?} = Kdo se stará o kočku?",[["Mi occupo io del cane.","O psa se starám já."],["Chi si occupa del criceto?","Kdo se stará o křečka?"]]],
+    ["Krmím ho","{gli do da mangiare} = dávám mu najíst (psovi). U holky-zvířete: {le do da mangiare} = dávám jí najíst.",[["Gli do da mangiare due volte al giorno.","Krmím ho dvakrát denně."],["Le do l'insalata.","Dávám jí salát."]]],
+    ["Mám ho rád","{gli voglio bene} = mám ho rád. {ti voglio bene} = mám tě rád.",[["Voglio bene al mio cane.","Mám rád svého psa."],["Gli vogliamo tutti bene.","Všichni ho máme rádi."]]]]},
+ { k:"a2_hry", lvl:"A2", n:"Hry a videohry", g:"linear-gradient(155deg,#d0bfff,#5f3dc4)", ic:"trophy",
+   o:"Videohry, simulátor, online hraní, levely a deskovky.",
+   slova:[
+    ["il videogioco","videohra","il videodžóko"],["giocare online","hrát online","džokáre onlájn"],["la console","konzole","la konsól"],["il simulatore di guida","závodní simulátor","il simulatóre di guída"],
+    ["il livello","level|úroveň","il livéllo"],
+    ["il giocatore","hráč","il džokatóre"],["la sfida","výzva|souboj","la sfída"],["sbloccare","odemknout","zblokkáre"],["salvare","uložit|zachránit","salváre"],
+    ["il gioco da tavolo","desková hra","il džóko da távolo"],["le carte","karty","le kárte"],["i dadi","kostky (hrací)","i dádi"],["barare","podvádět (ve hře)","baráre"],["tocca a te","jsi na řadě","tókka a te"],["il record","rekord","il rékord"]],
+   kroky:[
+    ["Hrát hru","{giocare a carte} = hrát karty. {giocare ai videogiochi} = hrát videohry.",[["Gioco ai videogiochi con gli amici.","Hraju videohry s kamarády."],["Giochiamo a carte?","Zahrajeme si karty?"]]],
+    ["Dohrál jsem to","{l'ho finito} = dohrál jsem to. {l'} tu znamená „to“ nebo „ho“.",[["L'ho finito ieri.","Dohrál jsem ho včera."],["L'hai già sbloccato?","Už jsi ho odemkl?"]]],
+    ["Ještě jednou!","{Un'altra partita!} = Ještě jednu hru! {ancora una volta} = ještě jednou.",[["Facciamo un'altra partita!","Dáme ještě jednu hru!"],["Ho battuto il record!","Překonal jsem rekord!"]]]]},
+ { k:"a2_pravidla_doma", lvl:"A2", n:"Rodina a pravidla doma", g:"linear-gradient(155deg,#ffd8a8,#e8590c)", ic:"people",
+   o:"Co smíš a nesmíš, večerka, hádka s rodiči a domluva.",
+   slova:[
+    ["il permesso","svolení","il permésso"],["permettere","dovolit","perméttere"],["vietare","zakázat","vjetáre"],["vietato","zakázaný","vjetáto"],["tornare a casa","vrátit se domů","tornáre a káza"],
+    ["entro le dieci","do deseti (hodin)","éntro le djéči"],["chiedere scusa","omluvit se","kjédere skúza"],["la punizione","trest","la punicjóne"],
+    ["in castigo","potrestaný (má zaracha)","in kastígo"],["il fratello maggiore","starší bratr","il fratéllo maddžóre"],["la sorella minore","mladší sestra","la sorélla minóre"],["fidarsi","věřit (někomu)","fidársi"],
+    ["giusto","spravedlivý|správný","džústo"],["ingiusto","nespravedlivý","indžústo"],["convincere","přesvědčit","konvínčere"],["promettere","slíbit","prométtere"],["la promessa","slib","la proméssa"],],
+   kroky:[
+    ["Můžu…?","{Posso uscire?} = Můžu ven? {Mi lasci giocare?} = Necháš mě hrát?",[["Posso uscire stasera?","Můžu dneska večer ven?"],["Mi lasci giocare ancora un po'?","Necháš mě ještě chvíli hrát?"]]],
+    ["Nesmím","{non posso} = nesmím, nemůžu. {è vietato} = je to zakázané.",[["Non posso usare il telefono a tavola.","U stolu nesmím používat mobil."],["È vietato fumare.","Kouřit je zakázáno."]]],
+    ["Slibuju","{prometto che…} = slibuju, že… {prometto che studio} = slibuju, že se budu učit.",[["Prometto che torno entro le dieci.","Slibuju, že se vrátím do deseti."],["Ti prometto che non lo faccio più.","Slibuju ti, že to už neudělám."]]]]},
+ { k:"a2_dilna", lvl:"A2", n:"Dílna a nářadí", g:"linear-gradient(155deg,#adb5bd,#343a40)", ic:"wrench",
+   o:"Nářadí, šroubky, utahování a práce na kartu v dílně.",
+   slova:[
+    ["l'officina","dílna|servis","loffičína"],["gli attrezzi","nářadí","lji attrécci"],["la chiave inglese","francouzák|klíč na matice","la kjáve ingléze"],["il cacciavite","šroubovák","il kaččavíte"],["il martello","kladivo","il martéllo"],
+    ["la vite","šroub","la víte"],["il bullone","šroub s maticí","il bullóne"],["il dado","matice","il dádo"],["avvitare","zašroubovat","avvitáre"],["svitare","vyšroubovat","zvitáre"],
+    ["stringere","utáhnout","stríndžere"],["allentare","povolit","allentáre"],["la chiave dinamometrica","momentový klíč","la kjáve dinamométrika"],["il cavalletto","stojan (na kart)","il kavallétto"],["smontare","rozebrat","zmontáre"],
+    ["montare","namontovat|složit","montáre"],["lo sporco","špína","lo spórko"],["il grasso","mazivo|tuk","il grásso"],],
+   kroky:[
+    ["Podej mi","{passami la chiave} = podej mi klíč. {passamelo} = podej mi ho.",[["Passami la chiave da tredici.","Podej mi třináctku klíč."],["Passamelo, per favore.","Podej mi ho, prosím."]]],
+    ["Musí se to","{va stretto} = musí se to utáhnout. {va pulito} = musí se to vyčistit.",[["Questo bullone va stretto.","Tenhle šroub se musí utáhnout."],["La candela va cambiata.","Svíčka se musí vyměnit."]]],
+    ["Už? Ještě ne","{Hai già pulito?} = Už jsi to vyčistil? {non ancora} = ještě ne.",[["Hai già montato le gomme?","Už jsi namontoval pneumatiky?"],["Non ancora, lo faccio dopo.","Ještě ne, udělám to potom."]]]]},
+ { k:"a2_zavod_italie", lvl:"A2", n:"Závod v Itálii", g:"linear-gradient(155deg,#ff8787,#2b8a3e)", ic:"flag",
+   o:"Přihláška, technická přejímka, pneumatiky, tresty a výsledky.",
+   slova:[
+    ["la segreteria","závodní kancelář","la segretería"],["le verifiche tecniche","technická přejímka","le verífike téknike"],
+    ["squalificato","diskvalifikovaný","skualifikáto"],["il reclamo","protest (oficiální stížnost)","il reklámo"],["le gomme da pioggia","pneumatiky do deště","le gómme da pjóddža"],
+    ["le gomme slick","slicky","le gómme zlik"],["la prefinale","předfinále","la prefinále"],
+    ["la finale","finále","la finále"],["il giro più veloce","nejrychlejší kolo","il džíro pjú velóče"],["partire dal fondo","startovat odzadu","partíre dal fóndo"],["toccarsi","dotknout se (navzájem)","tokkársi"],["la pesa","vážení","la péza"]],
+   kroky:[
+    ["Kde je…?","{Dov'è la segreteria?} = Kde je závodní kancelář? Víc věcí: {dove sono?}",[["Dov'è la pesa?","Kde je vážení?"],["Dove sono le verifiche tecniche?","Kde je technická přejímka?"]]],
+    ["Trest","{ho preso una penalità di cinque secondi} = dostal jsem trest pět sekund.",[["Ho preso una penalità per il paraurti.","Dostal jsem trest za nárazník."],["Ci siamo toccati alla prima curva.","Dotkli jsme se v první zatáčce."]]],
+    ["Jak jsi dojel","{sono arrivato terzo} = dojel jsem třetí. {sono partito dal fondo} = startoval jsem úplně zezadu.",[["Sono partito dal fondo e sono arrivato quinto.","Startoval jsem odzadu a dojel jsem pátý."],["In che posizione sei arrivato?","Na kolikátém místě jsi dojel?"]]]]},
+ { k:"a2_telefonovani", lvl:"A2", n:"Telefonování a domluva", g:"linear-gradient(155deg,#8ce99a,#087f5b)", ic:"phone",
+   o:"Zavolat, nechat vzkaz, domluvit čas a zrušit schůzku.",
+   slova:[
+    ["telefonare","telefonovat","telefonáre"],["chi parla?","kdo volá?|kdo je u telefonu?","ki párla"],["richiamare","zavolat zpátky","rikjamáre"],["lasciare un messaggio","nechat vzkaz","laššáre un messáddžo"],
+    ["la segreteria telefonica","hlasová schránka","la segretería telefónika"],["occupato","obsazeno","okkupáto"],["non c'è campo","není signál","non čé kámpo"],["sentire","slyšet","sentíre"],["un attimo","moment","un áttimo"],
+    ["l'appuntamento","schůzka|termín","lappuntaménto"],["fissare","domluvit (termín)","fissáre"],["spostare","přesunout","spostáre"],["disdire","zrušit (schůzku)","dizdíre"],["essere libero","mít čas|být volný","éssere líbero"],
+    ["impegnato","zaneprázdněný","impeňáto"],["ci vediamo","uvidíme se","či vedjámo"],["più tardi","později","pjú tárdi"],["in anticipo","předem|dřív","in antíčipo"]],
+   kroky:[
+    ["Můžu mluvit s…?","{Posso parlare con Luca?} = Můžu mluvit s Lucou? {te lo passo} = předám ti ho.",[["Posso parlare con Marco?","Můžu mluvit s Markem?"],["Un attimo, te lo passo.","Moment, předám ti ho."]]],
+    ["Hodí se ti to?","{ti va bene sabato?} = hodí se ti sobota? {sei libero?} = máš čas?",[["Ti va bene alle cinque?","Hodí se ti v pět?"],["Sabato sono impegnato.","V sobotu nemám čas."]]],
+    ["Zavolám ti","{ti chiamo} = zavolám ti. {ti richiamo} = zavolám ti zpátky.",[["Ti richiamo più tardi.","Zavolám ti zpátky později."],["Non ti sento, non c'è campo.","Neslyším tě, není signál."]]]]},
+ /* ===== 24. 11.: úroveň A2, balíček 4 (15 témat) ===== */
+ { k:"a2_brigada", lvl:"A2", n:"Brigáda a první práce", g:"linear-gradient(155deg,#a9e34b,#2b8a3e)", ic:"person",
+   o:"Brigáda v létě, pohovor, směna, výplata a šéf.",
+   slova:[
+    ["il lavoro estivo","letní brigáda","il lavóro estívo"],["il colloquio","pohovor","il kollókuio"],["il curriculum","životopis","il kurríkulum"],
+    ["all'ora","za hodinu","allóra"],
+    ["assumere","přijmout (do práce)","assúmere"],["licenziare","propustit","ličencjáre"],["puntuale","dochvilný","puntuále"],["serio","spolehlivý|vážný","sérjo"],["il cliente","zákazník","il kljénte"],
+    ["servire","obsluhovat","servíre"],["consegnare","doručit|rozvážet","konseňáre"],["il contratto","smlouva","il kontrátto"],],
+   kroky:[
+    ["Co dělám","{faccio il cameriere} = dělám číšníka. {lavoro come} = pracuju jako.",[["Quest'estate faccio il cameriere.","Letos v létě dělám číšníka."],["Lavoro come aiutante in officina.","Pracuju jako pomocník v dílně."]]],
+    ["Kolik bereš?","{Quanto prendi all'ora?} = Kolik dostaneš za hodinu?",[["Prendo otto euro all'ora.","Beru osm eur za hodinu."],["Quante ore lavori al giorno?","Kolik hodin denně pracuješ?"]]],
+    ["Už jsem to dělal","{ho già lavorato} = už jsem pracoval. {ho esperienza} = mám zkušenost.",[["Ho già lavorato in un bar.","Už jsem pracoval v baru."],["Non ho esperienza, ma imparo in fretta.","Nemám zkušenost, ale rychle se učím."]]]]},
+ { k:"a2_rady", lvl:"A2", n:"Problémy a rady", g:"linear-gradient(155deg,#eebefa,#ae3ec9)", ic:"bulb",
+   o:"Co tě trápí, jak poradit kamarádovi a co bys dělal ty.",
+   slova:[
+    ["il problema","problém","il probléma"],["preoccuparsi","dělat si starosti","preokkupársi"],["il consiglio","rada","il konsíljo"],
+    ["ascoltare","poslouchat|vyslechnout","askoltáre"],["avere paura","bát se","avére paúra"],
+    ["risolvere","vyřešit","rizólvere"],["sfogarsi","vypovídat se","sfogársi"],["calmarsi","uklidnit se","kalmársi"],["non ti preoccupare","neboj se|nedělej si starosti","non ti preokkupáre"],
+    ["coraggio!","hlavu vzhůru!|odvahu!","korádžo"],["sentirsi solo","cítit se sám","sentírsi sólo"],["il segreto","tajemství","il segréto"],["sinceramente","upřímně","sinčeraménte"],],
+   kroky:[
+    ["Měl bys","{dovresti} = měl bys. {dovresti parlarne} = měl bys o tom mluvit.",[["Dovresti parlarne con tua madre.","Měl bys o tom mluvit s mámou."],["Non dovresti preoccuparti.","Neměl by sis dělat starosti."]]],
+    ["Na tvém místě","{al posto tuo} = na tvém místě. {al posto tuo farei così} = na tvém místě bych to udělal takhle.",[["Al posto tuo gli direi la verità.","Na tvém místě bych mu řekl pravdu."],["Io al posto tuo aspetterei.","Já bych na tvém místě počkal."]]],
+    ["Co se děje?","{Che succede?} nebo {Che c'è?} = Co se děje? {Cos'hai?} = Co ti je?",[["Che c'è? Sembri preoccupato.","Co se děje? Vypadáš ustaraně."],["Niente, sono solo stanco.","Nic, jsem jen unavený."]]]]},
+ { k:"a2_veda", lvl:"A2", n:"Věda a technika", g:"linear-gradient(155deg,#a5d8ff,#3b5bdb)", ic:"bulb",
+   o:"Vynálezy, roboti, vesmír, pokusy a jak věci fungují.",
+   slova:[
+    ["lo scienziato","vědec","lo šencjáto"],["l'invenzione","vynález","linvencjóne"],["inventare","vynalézt|vymyslet","inventáre"],["l'esperimento","pokus|experiment","lesperiménto"],
+    ["il robot","robot","il robót"],["l'intelligenza artificiale","umělá inteligence","lintellidžénca artifičále"],["lo spazio","vesmír|prostor","lo spácjo"],["il pianeta","planeta","il pjanéta"],
+    ["il razzo","raketa","il rácco"],["l'astronauta","astronaut","lastronáuta"],["funzionare","fungovat","funcjonáre"],["la ricerca","výzkum|hledání","la ričérka"],
+    ["scoprire","objevit","skopríre"],["la scoperta","objev","la skopérta"],["misurare","měřit","mizuráre"],["la velocità","rychlost","la veločitá"],["la tecnologia","technologie","la teknolodžía"]],
+   kroky:[
+    ["Kdo to vymyslel","{è stato inventato} = byl vynalezen. {la radio è stata inventata da Marconi} = rádio vynalezl Marconi.",[["Il telefono è stato inventato da Meucci.","Telefon vynalezl Meucci."],["La scoperta è stata fatta nel 1969.","Objev byl udělán v roce 1969."]]],
+    ["Jak to funguje?","{Come funziona?} = Jak to funguje? {serve per} = slouží k.",[["Come funziona un motore?","Jak funguje motor?"],["Questo robot serve per pulire.","Tenhle robot slouží k uklízení."]]],
+    ["Velká čísla","{mille} = tisíc, {un milione} = milion, {un miliardo} = miliarda.",[["La Terra ha più di quattro miliardi di anni.","Země má víc než čtyři miliardy let."],["Il razzo va a mille chilometri all'ora.","Raketa letí tisíc kilometrů za hodinu."]]]]},
+ { k:"a2_zpravy", lvl:"A2", n:"Zprávy a události", g:"linear-gradient(155deg,#dee2e6,#868e96)", ic:"cc",
+   o:"Co se stalo ve světě, nehoda, počasí a sport ve zprávách.",
+   slova:[
+    ["le notizie","zprávy","le notícje"],["il telegiornale","televizní zprávy","il teledžornále"],["il giornale","noviny","il džornále"],["il giornalista","novinář","il džornalísta"],
+    ["ferito","zraněný","feríto"],["la polizia","policie","la policía"],["i vigili del fuoco","hasiči","i vídžili del fuóko"],["l'incendio","požár","linčéndjo"],
+    ["il terremoto","zemětřesení","il terremóto"],["le elezioni","volby","le elecjóni"],["il governo","vláda","il govérno"],["il presidente","prezident","il prezidénte"],
+    ["secondo","podle (někoho)","sekóndo"],["vero","pravdivý|pravda","véro"],["falso","nepravdivý|falešný","fálso"],["la notizia falsa","falešná zpráva (fake news)","la notícja fálsa"],["intervistare","udělat rozhovor","intervistáre"]],
+   kroky:[
+    ["Co se stalo?","{è successo} = stalo se. {ieri è successo un incidente} = včera se stala nehoda.",[["Cos'è successo ieri?","Co se stalo včera?"],["È successo un incidente in autostrada.","Na dálnici se stala nehoda."]]],
+    ["Podle…","{secondo} = podle. {secondo me} = podle mě. {secondo il giornale} = podle novin.",[["Secondo il giornale, domani piove.","Podle novin zítra prší."],["Secondo me non è vero.","Podle mě to není pravda."]]],
+    ["Slyšel jsem, že…","{ho sentito che} = slyšel jsem, že… {ho letto che} = četl jsem, že…",[["Ho sentito che c'è stato un terremoto.","Slyšel jsem, že bylo zemětřesení."],["Ho letto che Ferrari ha vinto.","Četl jsem, že Ferrari vyhrálo."]]]]},
+ { k:"a2_budoucnost", lvl:"A2", n:"Sny a budoucnost", g:"linear-gradient(155deg,#b197fc,#5f3dc4)", ic:"star",
+   o:"Co budeš dělat, čím budeš a jaký bude svět.",
+   slova:[
+    ["sognare","snít","soňáre"],["diventare","stát se (někým)","diventáre"],
+    ["l'università","vysoká škola","luniversitá"],["trasferirsi","přestěhovat se","trasferírsi"],["all'estero","do ciziny|v cizině","allestero"],["tra dieci anni","za deset let","tra djéči ánni"],
+    ["sicuramente","určitě","sikuraménte"],["probabilmente","pravděpodobně","probabilménte"],["sperare","doufat","speráre"],["riuscire","povést se|zvládnout","riuššíre"],
+    ["l'obiettivo","cíl","lobjettívo"],["realizzare","splnit (sen)","realiddzáre"],["sposarsi","oženit se|vdát se","spozársi"],["i figli","děti (vlastní)","i fílji"],["il campione del mondo","mistr světa","il kampjóne del móndo"]],
+   kroky:[
+    ["Co bude","{farò} = udělám, {sarò} = budu, {andrò} = půjdu, {avrò} = budu mít.",[["Tra dieci anni sarò un pilota.","Za deset let budu jezdec."],["Andrò a vivere all'estero.","Odstěhuju se do ciziny."]]],
+    ["Doufám","{spero di} = doufám, že… {spero di vincere} = doufám, že vyhraju.",[["Spero di diventare campione.","Doufám, že se stanu šampionem."],["Spero di riuscirci.","Doufám, že to zvládnu."]]],
+    ["Možná, určitě","{forse} = možná, {sicuramente} = určitě, {probabilmente} = asi.",[["Forse studierò ingegneria.","Možná budu studovat techniku."],["Sicuramente correrò in Italia.","Určitě budu závodit v Itálii."]]]]},
+ { k:"a2_kdyby", lvl:"A2", n:"Co kdyby…", g:"linear-gradient(155deg,#ffc9c9,#c2255c)", ic:"chat",
+   o:"Co bys dělal, kdybys mohl. Přání a představy.",
+   slova:[
+    ["vorrei","chtěl bych","vorréi"],["potrei","mohl bych","potréi"],["dovrei","měl bych","dovréi"],["farei","udělal bych","faréi"],["andrei","šel bych|jel bych","andréi"],
+    ["comprerei","koupil bych","kompreréi"],["sarebbe","bylo by","sarébbe"],["mi piacerebbe","líbilo by se mi|rád bych","mi pjačerébbe"],["se avessi","kdybych měl","se avéssi"],["se fossi","kdybych byl","se fóssi"],
+    ["vincere la lotteria","vyhrát v loterii","vínčere la lotteríja"],["il mondo","svět","il móndo"],["girare il mondo","cestovat po světě","džiráre il móndo"],["la villa","vila","la vílla"],["volare","létat","voláre"],
+    ["invisibile","neviditelný","invizíbile"],["il superpotere","superschopnost","il superpotére"],["magari!","kéž by!","magári"],["immaginare","představit si","immadžináre"],["il desiderio","přání","il dezidérjo"],["esprimere un desiderio","přát si něco","esprímere un dezidérjo"]],
+   kroky:[
+    ["Bych","Na konci je -rei a znamená to „bych“: {vorrei} = chtěl bych, {farei} = udělal bych, {andrei} = šel bych.",[["Mi piacerebbe andare in Giappone.","Rád bych jel do Japonska."],["Farei un giro in Ferrari.","Projel bych se ve Ferrari."]]],
+    ["Kdybych…","{se avessi} = kdybych měl. {se fossi} = kdybych byl. {se avessi soldi, comprerei un kart} = kdybych měl peníze, koupil bych si kart.",[["Se avessi tanti soldi, comprerei un kart nuovo.","Kdybych měl hodně peněz, koupil bych nový kart."],["Se fossi invisibile, entrerei nei box della Ferrari.","Kdybych byl neviditelný, vlezl bych do boxů Ferrari."]]],
+    ["Kéž by!","{Magari!} = Kéž by! Řekneš to, když by něco bylo super.",[["Vinci la gara domani? Magari!","Vyhraješ zítra závod? Kéž by!"],["Magari fosse vero!","Kéž by to byla pravda!"]]]]},
+ { k:"a2_prikazy", lvl:"A2", n:"Příkazy a zákazy", g:"linear-gradient(155deg,#ff8787,#e03131)", ic:"lock",
+   o:"Pojď, dej mi, nedělej to. Pokyny, recepty a cedule.",
+   slova:[
+    ["vieni!","pojď!","vjéni"],["guarda!","podívej!","guárda"],["ascolta!","poslouchej!","askólta"],["aspetta!","počkej!","aspétta"],["dimmi","řekni mi","dímmi"],
+    ["dammi","dej mi","dámmi"],["fammi vedere","ukaž mi","fámmi vedére"],["sbrigati!","pospěš si!","zbrígati"],["stai attento!","dávej pozor!","stái atténto"],["non toccare!","nesahej!","non tokkáre"],
+    ["non correre!","neběhej!|nespěchej!","non kórrere"],["girare a destra","zahnout doprava","džiráre a déstra"],["andare dritto","jít rovně","andáre drítto"],["spegnere","vypnout","spéňere"],["accendere","zapnout","aččéndere"],
+    ["il divieto","zákaz","il divjéto"],["vietato l'ingresso","vstup zakázán","vjetáto lingrésso"],["obbligatorio","povinný","obbligatórjo"],["entra pure","klidně pojď dál","éntra púre"]],
+   kroky:[
+    ["Poroučet kamarádovi","{guarda!} = koukej! {prendi!} = vezmi! {senti!} = poslouchej!",[["Prendi il casco!","Vezmi si helmu!"],["Senti, ti devo dire una cosa.","Hele, musím ti něco říct."]]],
+    ["Nedělej to!","Zákaz = {non} + celé slovo: {non toccare!} = nesahej!",[["Non toccare il motore, è caldo!","Nesahej na motor, je horký!"],["Non dimenticare la borraccia.","Nezapomeň láhev."]]],
+    ["Dej mi to","„mi“ se přilepí na konec: {dammi} = dej mi, {aiutami} = pomoz mi, {dimmelo} = řekni mi to.",[["Aiutami, per favore!","Pomoz mi, prosím!"],["Dimmelo subito!","Řekni mi to hned!"]]]]},
+ { k:"a2_porovnani", lvl:"A2", n:"Porovnávání", g:"linear-gradient(155deg,#ffe066,#f08c00)", ic:"chart",
+   o:"Víc než, nejlepší, stejně jako. Porovnáš jezdce, auta i jídlo.",
+   slova:[
+    ["più","víc","pjú"],["meno","míň","méno"],["di","než (při porovnávání)","di"],["migliore","lepší","milljóre"],["peggiore","horší","peddžóre"],
+    ["il peggiore","nejhorší","il peddžóre"],["meglio","líp","méljo"],["peggio","hůř","péddžo"],["maggiore","větší|starší","maddžóre"],
+    ["minore","menší|mladší","minóre"],["uguale","stejný","uguále"],["diverso","jiný|rozdílný","divérso"],["tanto quanto","stejně jako","tánto kuánto"],
+    ["velocissimo","strašně rychlý","veločíssimo"],["buonissimo","výborný","buoníssimo"],["il più veloce","nejrychlejší","il pjú velóče"],["la differenza","rozdíl","la differénca"],["preferire","mít radši","preferíre"],["rispetto a","oproti|ve srovnání s","rispétto a"]],
+   kroky:[
+    ["Víc než","{più… di} = víc než. {meno… di} = míň než. {sono più veloce di te} = jsem rychlejší než ty.",[["Il mio kart è più veloce del tuo.","Můj kart je rychlejší než tvůj."],["Roma è meno fredda di Praga.","Řím je méně studený než Praha."]]],
+    ["Nej-","{il più veloce} = nejrychlejší. {la più bella} = nejhezčí.",[["Verstappen è il pilota più veloce.","Verstappen je nejrychlejší jezdec."],["È la pizza più buona del mondo.","Je to nejlepší pizza na světě."]]],
+    ["Lepší a líp","{migliore} = lepší (věc je lepší). {meglio} = líp (něco děláš líp).",[["Questa gomma è migliore.","Tahle pneumatika je lepší."],["Oggi guido meglio di ieri.","Dneska jezdím líp než včera."]]]]},
+ { k:"a2_italie", lvl:"A2", n:"Itálie: regiony a města", g:"linear-gradient(155deg,#69db7c,#e03131)", ic:"map",
+   o:"Sever a jih, slavná města, ostrovy a co kde vidět.",
+   slova:[
+    ["il nord","sever","il nord"],["il sud","jih","il sud"],["l'est","východ","lest"],["l'ovest","západ","lóvest"],["la regione","kraj|region","la redžóne"],
+    ["la capitale","hlavní město","la kapitále"],["la Sicilia","Sicílie","la sičílja"],["la Sardegna","Sardinie","la sardéňa"],["la Toscana","Toskánsko","la toskána"],
+    ["Venezia","Benátky","venécja"],["Firenze","Florencie","firénce"],["Napoli","Neapol","nápoli"],["Milano","Milán","miláno"],["Torino","Turín","toríno"],
+    ["il vulcano","sopka","il vulkáno"],["il monumento","památka","il monuménto"],["il dialetto","nářečí","il djalétto"],["gli abitanti","obyvatelé","lji abitánti"],["famoso per","slavný čím","famózo per"],["si trova","nachází se","si tróva"]],
+   kroky:[
+    ["Kde to je","{si trova} = nachází se. {nel nord} = na severu, {al sud} = na jihu.",[["Milano si trova nel nord.","Milán se nachází na severu."],["Napoli si trova al sud.","Neapol je na jihu."]]],
+    ["Čím je slavné","{è famoso per} = je slavné čím. {Napoli è famosa per la pizza} = Neapol je slavná pizzou.",[["Maranello è famoso per la Ferrari.","Maranello je slavné díky Ferrari."],["Napoli è famosa per la pizza.","Neapol je slavná pizzou."]]],
+    ["Byl jsem v…","Město: {sono stato a Roma}. Kraj nebo země: {sono stato in Toscana}.",[["Sono stato a Lonato e a Jesolo.","Byl jsem v Lonatu a v Jesolu."],["Non sono mai stato in Sicilia.","Nikdy jsem nebyl na Sicílii."]]]]},
+ { k:"a2_trh", lvl:"A2", n:"Trh a italská jídla", g:"linear-gradient(155deg,#ffd43b,#2f9e44)", ic:"bag",
+   o:"Trh, ovoce, sýry, váha, chutná jídla regionů.",
+   slova:[
+    ["la bancarella","stánek","la bankarélla"],["il chilo","kilo","il kílo"],["un etto","sto gramů","un étto"],["mezzo chilo","půl kila","méddzo kílo"],
+    ["fresco","čerstvý","frésko"],["maturo","zralý","matúro"],["assaggiare","ochutnat","assaddžáre"],["il prosciutto","šunka","il proššútto"],
+    ["la mozzarella","mozzarella","la moccarélla"],["il basilico","bazalka","il bazíliko"],["le olive","olivy","le olíve"],["i funghi","houby","i fúngi"],
+    ["le pesche","broskve","le péske"],["le fragole","jahody","le frágole"],["la focaccia","focaccia (plochý chléb)","la fokáčča"],["il risotto","rizoto","il rizótto"],["la lasagna","lasagne","la lazáňa"],["altro?","ještě něco?","áltro"]],
+   kroky:[
+    ["Kolik toho","{un etto di} = deset deka, {mezzo chilo di} = půl kila, {un chilo di} = kilo.",[["Vorrei due etti di prosciutto.","Chtěl bych dvacet deka šunky."],["Mezzo chilo di fragole, per favore.","Půl kila jahod, prosím."]]],
+    ["Toho","{ne} = toho. {ne vorrei un po'} = chtěl bych toho trochu.",[["Le pesche? Ne prendo tre.","Broskve? Vezmu si tři."],["Ne vuoi assaggiare un po'?","Chceš toho trochu ochutnat?"]]],
+    ["Ještě něco?","{Altro?} = Ještě něco? {basta così} = to stačí.",[["Altro? No, basta così, grazie.","Ještě něco? Ne, to stačí, díky."],["Nient'altro, quanto le devo?","Nic dalšího, kolik vám dlužím?"]]]]},
+ { k:"a2_f1", lvl:"A2", n:"Formule 1 a slavní jezdci", g:"linear-gradient(155deg,#ff6b6b,#212529)", ic:"trophy",
+   o:"Velká cena, kvalifikace, pit stop, mistrovství a slavní jezdci.",
+   slova:[
+    ["il Gran Premio","Velká cena","il gran prémjo"],["la Formula Uno","formule 1","la fórmula úno"],["la scuderia","stáj|tým","la skudería"],["la monoposto","monopost","la monopósto"],
+    ["il pit stop","pit stop","il pit stop"],["il cambio gomme","výměna pneumatik","il kámbjo gómme"],["la strategia","strategie","la stratedžía"],["la safety car","safety car","la séjfti kar"],
+    ["il campionato del mondo","mistrovství světa","il kampjonáto del móndo"],["il titolo","titul","il títolo"],["i punti","body","i púnti"],["il ritiro","odstoupení (ze závodu)","il ritíro"],
+    ["ritirarsi","odstoupit","ritirársi"],["l'ingegnere di pista","závodní inženýr","lindžeňére di písta"],["il tifoso","fanoušek","il tifózo"],["il circuito","okruh","il čirkúito"],],
+   kroky:[
+    ["Vyhrál","{ha vinto} = vyhrál. {ha vinto il titolo} = vyhrál titul.",[["Lauda ha vinto tre titoli.","Lauda vyhrál tři tituly."],["Chi ha vinto il Gran Premio di Monza?","Kdo vyhrál Velkou cenu v Monze?"]]],
+    ["Jezdí za…","{corre per la Ferrari} = jezdí za Ferrari. {ha corso per} = jezdil za.",[["Leclerc corre per la Ferrari.","Leclerc jezdí za Ferrari."],["Senna ha corso per la McLaren.","Senna jezdil za McLaren."]]],
+    ["Začínal na kartu","{ha cominciato con i kart} = začínal na kartu. {quando aveva otto anni} = když mu bylo osm.",[["Ha cominciato con i kart quando aveva otto anni.","Začínal na kartu, když mu bylo osm."],["Tutti i campioni hanno cominciato nel karting.","Všichni šampioni začínali v kartingu."]]]]},
+ { k:"a2_email", lvl:"A2", n:"Píšu e-mail a zprávu", g:"linear-gradient(155deg,#74c0fc,#1c7ed6)", ic:"chat",
+   o:"Oslovení, pozdrav na konci, zdvořilá žádost a odpověď.",
+   slova:[
+    ["caro","milý (v dopise)","káro"],["un saluto","pozdrav","un salúto"],["un abbraccio","objímám (na konci)","un abbráččo"],
+    ["cordiali saluti","s pozdravem","kordjáli salúti"],["l'oggetto","předmět (e-mailu)","loddžétto"],["l'allegato","příloha","lallegáto"],["allegare","přiložit","allegáre"],
+    ["la risposta","odpověď","la rispósta"],["chiedere","zeptat se|požádat","kjédere"],["ringraziare","poděkovat","ringracjáre"],["la domanda","otázka","la dománda"],
+    ["l'informazione","informace","linformacjóne"],["inoltre","navíc|dále","inóltre"],["ti scrivo perché","píšu ti, protože","ti skrívo perké"],["fammi sapere","dej mi vědět","fámmi sapére"]],
+   kroky:[
+    ["Jak začít","Kamarádovi: {Caro Luca} = Milý Luco. Cizímu dospělému: {Gentile signora} = Vážená paní.",[["Caro Luca, come stai?","Milý Luco, jak se máš?"],["Gentile signor Rossi,","Vážený pane Rossi,"]]],
+    ["Slušně poprosit","{vorrei sapere} = rád bych věděl. {potrebbe mandarmi…?} = mohl byste mi poslat…?",[["Vorrei sapere quanto costa l'iscrizione.","Rád bych věděl, kolik stojí přihláška."],["Potrebbe mandarmi il programma?","Mohl byste mi poslat program?"]]],
+    ["Jak skončit","{fammi sapere} = dej mi vědět. {a presto} = brzy ahoj. {cordiali saluti} = s pozdravem.",[["Fammi sapere se vieni. Un abbraccio!","Dej mi vědět, jestli přijdeš. Objímám!"],["Grazie mille. Cordiali saluti, Matěj","Mockrát děkuji. S pozdravem, Matěj"]]]]},
+ { k:"a2_cesta_vypraveni", lvl:"A2", n:"Moje cesta (vyprávění)", g:"linear-gradient(155deg,#ffc078,#d9480f)", ic:"znovu",
+   o:"Jak bylo a co se stalo: dva minulé časy dohromady.",
+   slova:[
+    ["c'era","byl|bylo (tam)","čéra"],["c'erano","byli|bylo (víc věcí)","čérano"],["faceva caldo","bylo horko","fačéva káldo"],["era bellissimo","bylo to nádherné","éra bellíssimo"],
+    ["mentre guidavo","když jsem řídil","méntre guidávo"],
+    ["fare una foto","vyfotit","fáre úna fóto"],
+    ["l'ultimo giorno","poslední den","lúltimo džórno"],["prima di partire","před odjezdem","príma di partíre"],["avevo paura","bál jsem se","avévo paúra"],["ero contento","byl jsem rád","éro konténto"],["indimenticabile","nezapomenutelný","indimentikábile"]],
+   kroky:[
+    ["Jaké to bylo","Když popisuješ, jaké to bylo: {era bello} = bylo to hezké, {faceva caldo} = bylo horko, {c'era} = byl tam.",[["Faceva caldo e c'era tanta gente.","Bylo horko a bylo tam hodně lidí."],["Ero stanco ma contento.","Byl jsem unavený, ale šťastný."]]],
+    ["Co se stalo","Když se něco stalo jednou: {sono arrivato} = přijel jsem, {ho visto} = viděl jsem, {abbiamo vinto} = vyhráli jsme.",[["Siamo arrivati a Lonato venerdì.","Do Lonata jsme přijeli v pátek."],["Ho visto il lago di Garda.","Viděl jsem Gardské jezero."]]],
+    ["Obojí naráz: {mentre}","{mentre} = zatímco. {mentre guidavo, ho visto un cane} = zatímco jsem řídil, uviděl jsem psa.",[["Mentre guidavo, ha cominciato a piovere.","Když jsem jel, začalo pršet."],["Mentre mangiavamo, è arrivato Luca.","Zatímco jsme jedli, přišel Luca."]]]]},
+ { k:"a2_reklamace", lvl:"A2", n:"Nákup online a reklamace", g:"linear-gradient(155deg,#99e9f2,#1098ad)", ic:"bag",
+   o:"Objednávka, doprava, velikost nesedí, vrátit a vyměnit.",
+   slova:[
+    ["ordinare","objednat","ordináre"],["l'ordine","objednávka","lórdine"],["la spedizione","doprava|zásilka","la spedicjóne"],["il corriere","kurýr","il korrjére"],
+    ["difettoso","vadný","difettózo"],
+    ["il rimborso","vrácení peněz","il rimbórso"],["la garanzia","záruka","la garáncia"],
+    ["il reso","vratka|vrácené zboží","il rézo"],["in offerta","v akci|ve slevě","in offérta"],["esaurito","vyprodaný","ezauríto"],["disponibile","dostupný|skladem","disponíbile"],["la consegna","doručení","la konséňa"],["non è ancora arrivato","ještě to nepřišlo","non é ankóra arriváto"]],
+   kroky:[
+    ["Nesedí mi to","{mi sta stretto} = je mi to těsné. {mi sta largo} = je mi to volné.",[["La giacca mi sta stretta.","Bunda je mi těsná."],["Le scarpe mi stanno larghe.","Boty jsou mi velké."]]],
+    ["Chci to vrátit","{vorrei restituire} = chtěl bych vrátit. {vorrei cambiare} = chtěl bych vyměnit.",[["Vorrei cambiare la taglia.","Chtěl bych vyměnit velikost."],["Vorrei il rimborso, il casco è difettoso.","Chtěl bych vrátit peníze, helma je vadná."]]],
+    ["Ještě nepřišlo","{non è ancora arrivato} = ještě nepřišlo. {è già arrivato} = už přišlo.",[["Il mio ordine non è ancora arrivato.","Moje objednávka ještě nepřišla."],["Il pacco è già arrivato?","Už balík přišel?"]]]]},
+ { k:"a2_zkouska", lvl:"A2", n:"Velká zkouška A2: o sobě", g:"linear-gradient(155deg,#5fe08a,#0a8f4e 55%,#e5383b)", ic:"trophy",
+   o:"Slova, která spojí celé vyprávění o sobě. Připrav se na velký rozhovor.",
+   slova:[
+    ["innanzitutto","nejdřív|především","innancitútto"],["quindi","takže|proto","kuíndi"],["però","ale|jenže","peró"],
+    ["anche se","i když","ánke se"],["infatti","totiž|a opravdu","infátti"],["per esempio","například","per ezémpjo"],
+    ["insomma","zkrátka","insómma"],["comunque","každopádně|stejně","komúnkue"],["invece","naopak|místo toho","invéče"],["ormai","už (teď)","ormái"],
+    ["mi chiamo e ho","jmenuju se a je mi","mi kjámo e o"],["mi piace molto","moc se mi líbí|moc mě baví","mi pjáče mólto"],["il mio sogno è","můj sen je","il mío sóňo é"],["da quando","od té doby, co","da kuándo"],["come si dice?","jak se to řekne?","kóme si díče"],["puoi ripetere?","můžeš to zopakovat?","puói ripétere"]],
+   kroky:[
+    ["Spoj krátké věty","{perché} = protože, {però} = ale, {quindi} = takže. S nimi z krátkých vět uděláš vyprávění.",[["Mi piace il karting perché è veloce.","Baví mě karting, protože je rychlý."],["Era tardi, quindi siamo tornati.","Bylo pozdě, takže jsme se vrátili."]]],
+    ["Od té doby, co…","{da quando} = od té doby, co… {da quando ho il kart, mi alleno sempre} = od té doby, co mám kart, pořád trénuju.",[["Faccio karting da quando avevo sette anni.","Jezdím na kartu od svých sedmi let."],["Studio italiano da novembre.","Učím se italsky od listopadu."]]],
+    ["Když nevíš slovo","{Come si dice…?} = Jak se řekne…? {Puoi parlare più piano?} = Můžeš mluvit pomaleji?",[["Come si dice volant in italiano?","Jak se italsky řekne volant?"],["Scusa, puoi parlare più piano?","Promiň, můžeš mluvit pomaleji?"]]]]}
 ];
 const PORADI = ["pozdravy","cisla","rodina","cas","kalendar","slovesa","slova","skola","barvy","popis","dum","jidlo","nakup","smer","mesto","pocasi","priroda","citim","kamaradi","kart","boxy","trat",
   "minulost","muj_den","sport","cesta","vikend","lekar","plany","telefon",
   "a2_prace","a2_obleceni","a2_domacnost","a2_vareni","a2_dovolena","a2_nazory","a2_detstvi","a2_motorsport",
-  "a2_internet","a2_povaha","a2_kultura","a2_zdravi","a2_auto","a2_pribeh","a2_ekologie"];
+  "a2_internet","a2_povaha","a2_kultura","a2_zdravi","a2_auto","a2_pribeh","a2_ekologie",
+  "a2_restaurace","a2_letiste","a2_bydleni","a2_znamky","a2_hory","a2_more","a2_svatky","a2_urady","a2_penize","a2_zvirata","a2_hry","a2_pravidla_doma","a2_dilna","a2_zavod_italie","a2_telefonovani","a2_brigada","a2_rady","a2_veda","a2_zpravy","a2_budoucnost","a2_kdyby","a2_prikazy","a2_porovnani","a2_italie","a2_trh","a2_f1","a2_email","a2_cesta_vypraveni","a2_reklamace","a2_zkouska"];
 TEMATA.sort((a, b) => PORADI.indexOf(a.k) - PORADI.indexOf(b.k));
 const KARTING = new Set(["kart","boxy","trat"]);
 const IKONY = {
@@ -1367,7 +1710,39 @@ const PLAN = [
     { n:"Zdravý život", cil:"Poradíš, co dělat pro kondici, a řekneš, co jsi změnil.", u:[{ typ:"tema", k:"a2_zdravi" }, { typ:"kviz", k:"a2_zdravi" }, { typ:"karty" }] },
     { n:"Auto a silnice", cil:"Domluvíš se na benzince i s instruktorem v autoškole.", u:[{ typ:"tema", k:"a2_auto" }, { typ:"kviz", k:"a2_auto" }, { typ:"karty" }] },
     { n:"Vyprávím příběh", cil:"Vyprávíš od začátku do konce, co se ti stalo.", u:[{ typ:"tema", k:"a2_pribeh" }, { typ:"kviz", k:"a2_pribeh" }, { typ:"karty" }] },
-    { n:"Planeta a ekologie", cil:"Řekneš, jak se třídí odpad a co by se mělo změnit.", u:[{ typ:"tema", k:"a2_ekologie" }, { typ:"kviz", k:"a2_ekologie" }, { typ:"karty" }] }]}
+    { n:"Planeta a ekologie", cil:"Řekneš, jak se třídí odpad a co by se mělo změnit.", u:[{ typ:"tema", k:"a2_ekologie" }, { typ:"kviz", k:"a2_ekologie" }, { typ:"karty" }] }]},
+  { f:"A2: Svět kolem mě", a2:true, t:[
+    { n:"Restaurace a stížnost", cil:"Objednáš celé menu a zdvořile si postěžuješ.", u:[{ typ:"tema", k:"a2_restaurace" }, { typ:"kviz", k:"a2_restaurace" }, { typ:"karty" }] },
+    { n:"Letiště a let", cil:"Odbavíš se na letišti a nahlásíš ztracený kufr.", u:[{ typ:"tema", k:"a2_letiste" }, { typ:"kviz", k:"a2_letiste" }, { typ:"karty" }] },
+    { n:"Bydlení a stěhování", cil:"Popíšeš svůj byt a nahlásíš, co se rozbilo.", u:[{ typ:"tema", k:"a2_bydleni" }, { typ:"kviz", k:"a2_bydleni" }, { typ:"karty" }] },
+    { n:"Známky a zkoušky", cil:"Řekneš, jak ti jde škola a jakou jsi dostal známku.", u:[{ typ:"tema", k:"a2_znamky" }, { typ:"kviz", k:"a2_znamky" }, { typ:"karty" }] },
+    { n:"Hory a výlety", cil:"Naplánuješ túru nebo lyže a vyprávíš, jak bylo.", u:[{ typ:"tema", k:"a2_hory" }, { typ:"kviz", k:"a2_hory" }, { typ:"karty" }] },
+    { n:"Moře a pláž", cil:"Domluvíš se na pláži a vyprávíš o dni u moře.", u:[{ typ:"tema", k:"a2_more" }, { typ:"kviz", k:"a2_more" }, { typ:"karty" }] },
+    { n:"Svátky a oslavy", cil:"Popřeješ, pozveš na oslavu a řekneš, jak slavíte.", u:[{ typ:"tema", k:"a2_svatky" }, { typ:"kviz", k:"a2_svatky" }, { typ:"karty" }] },
+    { n:"Pošta, banka a úřady", cil:"Pošleš balík a vybereš peníze.", u:[{ typ:"tema", k:"a2_urady" }, { typ:"kviz", k:"a2_urady" }, { typ:"karty" }] },
+    { n:"Peníze a kapesné", cil:"Řekneš, na co šetříš a jestli to stojí za to.", u:[{ typ:"tema", k:"a2_penize" }, { typ:"kviz", k:"a2_penize" }, { typ:"karty" }] },
+    { n:"Mazlíčci a zvířata", cil:"Popíšeš mazlíčka a jak se o něj staráš.", u:[{ typ:"tema", k:"a2_zvirata" }, { typ:"kviz", k:"a2_zvirata" }, { typ:"karty" }] },
+    { n:"Hry a videohry", cil:"Domluvíš se s kamarády na hraní a vyprávíš o hře.", u:[{ typ:"tema", k:"a2_hry" }, { typ:"kviz", k:"a2_hry" }, { typ:"karty" }] },
+    { n:"Rodina a pravidla doma", cil:"Poprosíš o svolení a domluvíš se s rodiči.", u:[{ typ:"tema", k:"a2_pravidla_doma" }, { typ:"kviz", k:"a2_pravidla_doma" }, { typ:"karty" }] },
+    { n:"Dílna a nářadí", cil:"Pracuješ s mechanikem v dílně a řekneš, co podat.", u:[{ typ:"tema", k:"a2_dilna" }, { typ:"kviz", k:"a2_dilna" }, { typ:"karty" }] },
+    { n:"Závod v Itálii", cil:"Zvládneš přihlášku, přejímku i vyprávění o závodě.", u:[{ typ:"tema", k:"a2_zavod_italie" }, { typ:"kviz", k:"a2_zavod_italie" }, { typ:"karty" }] },
+    { n:"Telefonování a domluva", cil:"Zavoláš, domluvíš schůzku a necháš vzkaz.", u:[{ typ:"tema", k:"a2_telefonovani" }, { typ:"kviz", k:"a2_telefonovani" }, { typ:"karty" }] }]},
+  { f:"A2: Domluvím se všude", a2:true, t:[
+    { n:"Brigáda a první práce", cil:"Zvládneš pohovor na brigádu a řekneš, co děláš.", u:[{ typ:"tema", k:"a2_brigada" }, { typ:"kviz", k:"a2_brigada" }, { typ:"karty" }] },
+    { n:"Problémy a rady", cil:"Poradíš kamarádovi, co dělat.", u:[{ typ:"tema", k:"a2_rady" }, { typ:"kviz", k:"a2_rady" }, { typ:"karty" }] },
+    { n:"Věda a technika", cil:"Vysvětlíš, jak něco funguje a kdo to vynalezl.", u:[{ typ:"tema", k:"a2_veda" }, { typ:"kviz", k:"a2_veda" }, { typ:"karty" }] },
+    { n:"Zprávy a události", cil:"Převyprávíš, co se stalo ve zprávách.", u:[{ typ:"tema", k:"a2_zpravy" }, { typ:"kviz", k:"a2_zpravy" }, { typ:"karty" }] },
+    { n:"Sny a budoucnost", cil:"Řekneš, co budeš dělat a čím chceš být.", u:[{ typ:"tema", k:"a2_budoucnost" }, { typ:"kviz", k:"a2_budoucnost" }, { typ:"karty" }] },
+    { n:"Co kdyby…", cil:"Řekneš, co bys dělal, kdybys mohl.", u:[{ typ:"tema", k:"a2_kdyby" }, { typ:"kviz", k:"a2_kdyby" }, { typ:"karty" }] },
+    { n:"Příkazy a zákazy", cil:"Dáš i pochopíš pokyny a zákazy.", u:[{ typ:"tema", k:"a2_prikazy" }, { typ:"kviz", k:"a2_prikazy" }, { typ:"karty" }] },
+    { n:"Porovnávání", cil:"Porovnáš jezdce, auta i jídlo.", u:[{ typ:"tema", k:"a2_porovnani" }, { typ:"kviz", k:"a2_porovnani" }, { typ:"karty" }] },
+    { n:"Itálie: regiony a města", cil:"Řekneš, kde co v Itálii je a kde jsi byl.", u:[{ typ:"tema", k:"a2_italie" }, { typ:"kviz", k:"a2_italie" }, { typ:"karty" }] },
+    { n:"Trh a italská jídla", cil:"Nakoupíš na trhu po kilech a deka.", u:[{ typ:"tema", k:"a2_trh" }, { typ:"kviz", k:"a2_trh" }, { typ:"karty" }] },
+    { n:"Formule 1 a slavní jezdci", cil:"Pobavíš se o formuli 1 a slavných jezdcích.", u:[{ typ:"tema", k:"a2_f1" }, { typ:"kviz", k:"a2_f1" }, { typ:"karty" }] },
+    { n:"Píšu e-mail a zprávu", cil:"Napíšeš e-mail kamarádovi i do závodní kanceláře.", u:[{ typ:"tema", k:"a2_email" }, { typ:"kviz", k:"a2_email" }, { typ:"karty" }] },
+    { n:"Moje cesta (vyprávění)", cil:"Vyprávíš o cestě: jak bylo a co se stalo.", u:[{ typ:"tema", k:"a2_cesta_vypraveni" }, { typ:"kviz", k:"a2_cesta_vypraveni" }, { typ:"karty" }] },
+    { n:"Nákup online a reklamace", cil:"Vrátíš nebo vyměníš věc z e-shopu.", u:[{ typ:"tema", k:"a2_reklamace" }, { typ:"kviz", k:"a2_reklamace" }, { typ:"karty" }] },
+    { n:"Velká zkouška A2: o sobě", cil:"Povídáš o sobě deset minut italsky!", u:[{ typ:"tema", k:"a2_zkouska" }, { typ:"kviz", k:"a2_zkouska" }, { typ:"karty" }] }]}
 ];
 /* Denní rozvrh 15–20 minut. Klíč = den v týdnu (0 = neděle). Bloky: [typ, minuty, popis]. */
 const ROZVRH = {
@@ -1400,6 +1775,9 @@ const SLOVA = []; TEMATA.forEach(t => t.slova.forEach((s, i) => SLOVA.push({ id:
 const SL = Object.fromEntries(SLOVA.map(w => [w.id, w]));
 const TM = Object.fromEntries(TEMATA.map(t => [t.k, t]));
 const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+/* 25. 11.: {italské slovo} ve výkladu = zelené, ťukne se a přečte italsky */
+const tx = s => esc(s).replace(/{([^{}]+)}/g, (m, w) => '<span class="itw" data-mluv="' + w + '">' + w + '</span>');
+const bezZavorek = s => String(s || "").replace(/[{}]/g, "");
 const prvniVar = s => s.split("|")[0];
 const bezPozn = s => s.replace(/\s*\([^)]*\)/g, "").trim();
 const ukaz = s => s.split("|").join(" / ");
@@ -1555,6 +1933,45 @@ function mluvP(text, rate){
     res(false);
   });
 }
+
+/* 25. 11.: bublina po ťuknutí na italské slovo: jak se čte českými písmeny + co znamená */
+function ctiCesky(it){
+  let t = String(it || "").toLowerCase().replace(/[’`´]/g, "'");
+  t = t.replace(/à/g, "á").replace(/[èé]/g, "é").replace(/[ìí]/g, "í").replace(/[òó]/g, "ó").replace(/ù/g, "ú");
+  t = t.replace(/sch/g, "sk").replace(/sci(?=[aeiouáéíóú])/g, "š").replace(/sc(?=[ieíé])/g, "š")
+       .replace(/ch/g, "k").replace(/gh/g, "g")
+       .replace(/ci(?=[aeiouáéíóú])/g, "č").replace(/c(?=[ieíé])/g, "č").replace(/c/g, "k")
+       .replace(/gli(?=[aeiouáéíóú])/g, "lj").replace(/gli/g, "lji")
+       .replace(/gi(?=[aeiouáéíóú])/g, "dž").replace(/g(?=[ieíé])/g, "dž")
+       .replace(/gn/g, "ň").replace(/qu/g, "ku").replace(/h/g, "").replace(/zz/g, "cc").replace(/z/g, "c")
+       .replace(/([aeiouáéíóú])s(?=[aeiouáéíóú])/g, "$1z")
+       .replace(/([^aeiouáéíóú\s'])i(?=[aeiouáéíóú])/g, "$1j")
+       .replace(/y/g, "j").replace(/w/g, "v").replace(/x/g, "ks");
+  return t.replace(/'/g, "").replace(/\s+/g, " ").trim();
+}
+let SLOVNIK = null;
+function najdiSlovo(it){
+  if (!SLOVNIK){ SLOVNIK = {};
+    const pridej = (k, o) => { k = norm(k); if (k && !SLOVNIK[k]) SLOVNIK[k] = o; };
+    SLOVA.forEach(w => String(w.it).split("|").forEach(v => { pridej(v, w); pridej(norm(v).replace(CLENY, ""), w); }));
+    TEMATA.forEach(t => (t.kroky || []).forEach(st => (st[2] || []).forEach(e => { if (e[0] && !/→/.test(e[0])) pridej(e[0], { it:e[0], cz:e[1] }); })));
+  }
+  const n = norm(it); return SLOVNIK[n] || SLOVNIK[n.replace(CLENY, "")] || null;
+}
+function zavriBublinu(){ document.querySelectorAll(".bub").forEach(b => b.remove()); }
+function ukazBublinu(el, it){
+  zavriBublinu(); if (!el || !it) return;
+  const w = najdiSlovo(it), cti = w && w.v && norm(w.it) === norm(it) ? w.v : ctiCesky(it);
+  const b = document.createElement("div"); b.className = "bub";
+  b.innerHTML = '<div class="bw">' + esc(it) + '</div><div class="bc"><span>čti:</span> ' + esc(cti) + '</div>' +
+    (w && w.cz ? '<div class="bt">= ' + esc(ukaz(bezPozn(w.cz))) + '</div>' : "") + '<div class="bh">Ťukni znovu a uslyšíš to ještě jednou.</div>';
+  document.body.appendChild(b);
+  const r = el.getBoundingClientRect(), bw = b.offsetWidth, bh = b.offsetHeight;
+  let x = r.left + r.width / 2 - bw / 2; x = Math.max(10, Math.min(innerWidth - bw - 10, x));
+  let y = r.top - bh - 10; if (y < 10) y = r.bottom + 10;
+  b.style.left = x + "px"; b.style.top = (y + scrollY) + "px";
+}
+addEventListener("scroll", () => { if (document.querySelector(".bub")) zavriBublinu(); }, { passive:true });
 function zastavMluveni(){ try { if (tts) tts.stop(); else if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {} }
 function mluv(text, el){
   if (!text) return;
@@ -1642,7 +2059,7 @@ function odpovez(nevim){
   const r = nevim ? { v:"spatne" } : zkontroluj(vstup, sm === "czit" ? w.it : w.cz, sm === "czit" ? "it" : "cz");
   K.odp = { v:r.v, proc:r.proc, vstup, nevim, sm };
   const ok = r.v !== "spatne";
-  if (ok) K.dobre++; else K.spatne.push(id);
+  if (ok) K.dobre++; else { if (!K.spatne.includes(id)) K.spatne.push(id); /* 24. 11.: špatná kartička se vrátí za 3 karty, dokud ji nedá správně */ if (!K.ids.slice(K.i + 1).includes(id)) K.ids.splice(Math.min(K.i + 4, K.ids.length), 0, id); }
   pridejXp(ok ? 1 : 0);
   zapis(id, ok);
   render();
@@ -1652,7 +2069,7 @@ function opravit(){
   const K = S.karty; if (!K || !K.odp || K.odp.v !== "spatne") return;
   const id = K.ids[K.i]; const s = S.p.slova[id];
   s.bad = Math.max(0, (s.bad || 1) - 1); s.ok = (s.ok || 0) + 1; s.b = 1; s.n = plusDny(dnes(), INTERVALY[1]);
-  K.dobre++; K.spatne = K.spatne.filter(x => x !== id); K.odp.v = "ok"; K.odp.opraveno = true; uloz(); render();
+  K.dobre++; K.spatne = K.spatne.filter(x => x !== id); { const j = K.ids.indexOf(id, K.i + 1); if (j > 0) K.ids.splice(j, 1); } K.odp.v = "ok"; K.odp.opraveno = true; uloz(); render();
 }
 function dalsiKarta(){ const K = S.karty; if (!K) return; K.i++; K.odp = null; K.vstup = ""; render(); fokus(); }
 function fokus(){ setTimeout(() => { const e = document.getElementById("kin"); if (e && matchMedia("(min-width:820px)").matches) e.focus(); }, 30); }
@@ -2054,7 +2471,7 @@ async function pripravTema(k){
     "Piš správnou italštinu. Podstatná jména italsky vždy se členem. Česky jednoduše, jako pro dítě.\nVrať POUZE JSON:\n" +
     '{"o":"jedna věta česky, co se v tématu naučí",' +
     '"slova":[["italsky","česky (varianty odděl znakem |)","výslovnost českými písmeny, čárka nad přízvučnou samohláskou"], … přesně 15 položek: slova i krátké užitečné fráze],' +
-    '"kroky":[["nadpis česky","vysvětlení gramatiky česky, 1 až 3 krátké věty",[["příklad italsky","česky"],["příklad italsky","česky"]]], … přesně 3 kroky]}';
+    '"kroky":[["nadpis česky","vysvětlení česky, 1 až 3 krátké věty, úplně jednoduše bez školních slov (žádné člen, rod, sloveso, infinitiv, příčestí); každé italské slovo dej do složených závorek, např. {ciao}",[["příklad italsky","česky"],["příklad italsky","česky"]]], … přesně 3 kroky]}';
   try {
     const d = await sample.json(zadani, { modelTier:"complex" });
     pridejTemaAI(k, d);
@@ -2281,7 +2698,7 @@ function lxOdpoved(ok, info){
   const L = LX(), e = L.ex[L.i];
   L.odp = Object.assign({ ok }, info || {});
   if (ok){ L.combo++; L.maxCombo = Math.max(L.maxCombo, L.combo); }
-  else { L.chyb++; L.combo = 0; if (!L.spatne.some(x => x.it === (e.w || e.s).it)) L.spatne.push(e.w || e.s); if (!e.opak){ L.ex.push(Object.assign({}, e, { opak:true, moz:e.moz ? mix(e.moz) : e.moz, tl:e.tl ? mix(e.tl) : e.tl })); } }
+  else { L.chyb++; L.combo = 0; if (!L.spatne.some(x => x.it === (e.w || e.s).it)) L.spatne.push(e.w || e.s); /* 24. 11.: chyba se vrací za 2 cvičení pořád dokola, dokud to Matěj nedá správně (mikrofon jen jednou) */ if (e.typ !== "mluv" || !e.opak){ L.ex.splice(Math.min(L.i + 3, L.ex.length), 0, Object.assign({}, e, { opak:true, moz:e.moz ? mix(e.moz) : e.moz, tl:e.tl ? mix(e.tl) : e.tl })); } }
   if (e.w) zapis(e.w.id, ok); else { S.p.dny[dnes()] = (S.p.dny[dnes()] || 0) + 1; uloz(); }
   render();
   const spr = e.w ? e.w.it : e.s ? e.s.it : "";
@@ -2343,7 +2760,7 @@ function lxDalsi(){
 }
 function lxKonec(){
   const L = LX(); L.konec = true;
-  const prvni = L.ex.slice(0, L.celkem), hodn = Math.max(1, prvni.filter(e => e.typ !== "nove" && e.typ !== "tip").length), presnost = Math.round((hodn - Math.min(L.chyb, hodn)) / hodn * 100);
+  const prvni = L.ex.filter(e => !e.opak), hodn = Math.max(1, prvni.filter(e => e.typ !== "nove" && e.typ !== "tip").length), presnost = Math.round((hodn - Math.min(L.chyb, hodn)) / hodn * 100);
   L.xp = 10 + (L.chyb === 0 ? 5 : 0) + Math.min(5, Math.floor(L.maxCombo / 3)); L.presnost = presnost; void prvni;
   S.p.cesta = S.p.cesta || {}; const c = S.p.cesta[L.k] = S.p.cesta[L.k] || { l:[] }; c.l = c.l || []; c.l[L.li] = true;
   { const d = dnes(); S.p.lekceDen = S.p.lekceDen || {}; S.p.lekceDen[d] = (S.p.lekceDen[d] || 0) + 1; }
@@ -2361,7 +2778,7 @@ async function lxProc(){
   L.procNacita = true; L.proc = ""; render();
   try {
     const r = await sample("Matěj (7. třída) se učí italsky, je začátečník. Ve cvičení měl správně odpovědět: „" + spr + "“. On odpověděl: „" + (L.odp.jeho || "nic") + "“.\n" +
-      "Vysvětli mu česky ve 2 až 3 krátkých větách, v čem je chyba a jak si to snadno zapamatovat. Žádný úvod, žádné formátování.", { modelTier:"quick", onText:({ text }) => { if (LX() === L){ L.proc = text; const el = document.getElementById("lproc"); if (el) el.textContent = text; } } });
+      "Vysvětli mu česky ve 2 až 3 krátkých větách, v čem je chyba a jak si to snadno zapamatovat. Piš úplně jednoduše, jako kamarádovi, bez školních slov (žádné člen, rod, sloveso, infinitiv, příčestí, časování). Každé italské slovo nebo frázi dej do složených závorek, např. {ciao}. Žádný úvod, žádné jiné formátování.", { modelTier:"quick", onText:({ text }) => { if (LX() === L){ L.proc = text; const el = document.getElementById("lproc"); if (el) el.textContent = bezZavorek(text); } } });
     if (LX() === L){ L.proc = r.text; L.procNacita = false; render(); }
   } catch (er) { if (LX() === L){ L.proc = "Vysvětlení se teď nepovedlo načíst."; L.procNacita = false; render(); } }
 }
@@ -2388,7 +2805,7 @@ function vLekce(){
       '<p class="foot" style="text-align:center">Poslechni si ho a zkus ho říct nahlas. Hned ho procvičíš.</p>';
   } else if (e.typ === "tip"){
     const st = e.krok;
-    h += '<div class="tipcard"><span class="tag">Tip z gramatiky</span><h2>' + esc(st[0]) + '</h2><p>' + esc(st[1]) + '</p>' +
+    h += '<div class="tipcard"><span class="tag">Tip z gramatiky</span><h2>' + tx(st[0]) + '</h2><p>' + tx(st[1]) + '</p>' +
       (st[2] || []).map(x => '<div class="ex">' + spk(x[0]) + '<span class="t"><b>' + esc(x[0]) + '</b><span>' + esc(x[1]) + '</span></span></div>').join("") + '</div>';
   } else if (e.typ === "vyber" || e.typ === "vyberIt"){
     h += '<div class="lzad">' + (e.typ === "vyber" ? "Co to znamená?" : "Jak se to řekne italsky?") + '</div>' +
@@ -2425,7 +2842,7 @@ function vLekce(){
     const spr = e.w ? e.w.it + " = " + ukaz(bezPozn(e.w.cz)) : e.s ? e.s.it + " = " + e.s.cz : "";
     h += '<div class="lres ' + (L.odp.ok ? "ok" : "bad") + '">' + (spr && (e.w || e.s) ? spk(e.w ? e.w.it : e.s.it) : "") + '<span class="t"><b>' + (L.odp.ok ? (L.combo >= 5 ? "Skvělé, " + L.combo + "× v řadě!" : ["Výborně!","Správně!","Bravo!","Perfetto!"][L.i % 4]) : "Správně je:") + '</b>' +
       (e.typ !== "dvojice" ? '<span>' + esc(spr) + '</span>' : "") + (L.odp.proc ? '<i>' + esc(L.odp.proc) + '</i>' : "") +
-      (L.proc || L.procNacita ? '<i id="lproc">' + esc(L.proc || "Přemýšlím…") + '</i>' : "") + '</span></div>' +
+      (L.proc || L.procNacita ? '<i id="lproc">' + (L.proc ? tx(L.proc) : "Přemýšlím…") + '</i>' : "") + '</span></div>' +
       '<div class="row2">' + (!L.odp.ok && !L.proc && !L.procNacita ? '<button class="btn gray" data-lx="proc">Proč?</button>' : "") + '<button class="btn" data-lx="dalsi" id="ldalsi">Pokračovat</button></div>';
   } else if (e.typ === "nove" || e.typ === "tip"){
     h += '<button class="btn wide" data-lx="dalsi" id="ldalsi">' + (e.typ === "nove" ? "Rozumím, procvičit" : "Rozumím") + '</button>';
@@ -2453,7 +2870,7 @@ function klikLekce(d, b){
     return true;
   }
   if (d.lvyb && !L.odp){ L.vyb = d.lvyb; render(); if (e.typ === "vyberIt") mluvP(SL[d.lvyb].it); return true; }
-  if (d.tl != null && !L.odp){ const ti = Number(d.tl); if (!L.skl.includes(ti)){ L.skl.push(ti); render(); } return true; }
+  if (d.tl != null && !L.odp){ const ti = Number(d.tl); if (!L.skl.includes(ti)){ L.skl.push(ti); render(); mluvP(e.tl[ti]); } return true; }
   if (d.skl != null && !L.odp){ L.skl.splice(Number(d.skl), 1); render(); return true; }
   if (d.par && !L.odp){
     const strana = d.par[0], id = d.par.slice(1); if (L.par.hot.includes(id)) return true;
@@ -2728,7 +3145,7 @@ function vTema(){
       return '<div class="row">' + spk(s[0]) + '<span class="t"><b>' + esc(s[0]) + '</b><span>' + esc(ukaz(s[1])) + '</span><i>čti: ' + esc(s[2]) + '</i></span>' + pill + '</div>'; }).join("") + '</div>' +
       '<button class="btn wide" data-uc="' + k + '">' + ic("play").replace("<svg", '<svg style="width:15px;height:15px;fill:currentColor"') + 'Učit se kartičky</button>';
   } else if (S.ttab === "jak"){
-    h += '<div class="sec">' + T.kroky.map((st, n) => '<div class="step"><div class="sthead"><i style="background:' + T.g + '">' + (n + 1) + '</i><b>' + esc(st[0]) + '</b></div><p>' + esc(st[1]) + '</p>' +
+    h += '<div class="sec">' + T.kroky.map((st, n) => '<div class="step"><div class="sthead"><i style="background:' + T.g + '">' + (n + 1) + '</i><b>' + tx(st[0]) + '</b></div><p>' + tx(st[1]) + '</p>' +
       st[2].map(e => '<div class="ex">' + spk(e[0]) + '<span class="t"><b>' + esc(e[0]) + '</b><span>' + esc(e[1]) + '</span></span></div>').join("") + '</div>').join("") +
       '<button class="btn wide tint" data-ttab="kviz">Vyzkoušej se v kvízu</button></div>';
   } else h += vKviz();
@@ -2886,6 +3303,15 @@ function render(){
 
 /* ===================== ovládání ===================== */
 document.addEventListener("click", e => {
+  /* 25. 11.: ťuknutí na italské slovo ho přečte nahlas */
+  const itw = e.target.closest(".itw"); if (itw){ mluv(itw.dataset.mluv, itw); ukazBublinu(itw, itw.dataset.mluv); return; }
+  if (e.target.closest(".bub")) return;
+  zavriBublinu();
+  if (!e.target.closest("button, input, textarea, a")){
+    const box = e.target.closest(".row, .ex, .newcard, .lprompt, .lres, .ccard, .msg.ai .it");
+    const sp = box && box.querySelector(".spk[data-mluv]");
+    if (sp && e.target.closest("b, .w, .lq, .q, .t, .it")){ mluv(sp.dataset.mluv, sp); if (box.matches(".ex")) ukazBublinu(e.target.closest("b, .t") || box, sp.dataset.mluv); return; }
+  }
   const fj = e.target.closest("[data-fajfka]");
   if (fj){ const [iso, txt] = fj.dataset.fajfka.split("|"); S.p.den = S.p.den || {}; const o = S.p.den[iso] = S.p.den[iso] || {}; const k = "r:" + txt;
     if (o[k]) delete o[k]; else { o[k] = 1; toast("Splněno!"); }
@@ -2992,7 +3418,7 @@ async function samotest(){
     if (pret || siroke.length) chyby.push(t + ": přečnívá " + siroke.join(","));
   }
   /* plán */
-  ok(TYDNY.length === 16, "plan ma " + TYDNY.length + " tydnu");
+  ok(TYDNY.length === 26, "plan ma " + TYDNY.length + " tydnu");
   ok(new Set([0, 1, 2].map(i => temaVTydnu(1, i))).size === 3, "tyden 1 ma 3 temata");
   ok(DEN_PROGRAM.slice(0, 5).every(p => p.every(b => b[0] !== "uzel" || (b[4] != null && TM[temaVTydnu(1, b[4])]))), "kazda lekce v programu ma tema");
   ok(bonusKarta().includes('data-bonus="karty"') && bonusKarta().includes('data-bonus="poslech"'), "bonus karta");

@@ -114,6 +114,38 @@ button.row:active{background:var(--fill)}
 .spk.on{background:var(--accent);color:#fff}
 .itw{color:var(--accent);font-weight:600;text-decoration:underline dotted;text-underline-offset:3px;cursor:pointer;border-radius:6px;padding:0 2px;margin:0 -2px;transition:background .15s}
 .itw.on,.itw:active{background:var(--accent-soft)}
+/* 25. 11.: hezčí lekce, přetahování, kartičky tahem */
+#app.cvic > :not(.lfoot){animation:cvicIn .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes cvicIn{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+.lzad,#app .lzad{align-self:flex-start;background:var(--accent-soft);color:var(--accent);padding:5px 12px;border-radius:99px;letter-spacing:.04em}
+.tl{font-size:19px;padding:11px 16px;border-radius:14px;box-shadow:inset 0 0 0 1.5px var(--line),0 3px 0 var(--line);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.ans{min-height:72px;border-radius:18px;border:2px dashed var(--line);padding:12px;background:var(--card);transition:background .15s,border-color .15s}
+.ans.nad{border-color:var(--accent);background:var(--accent-soft)}
+.pairs .pr{touch-action:none;user-select:none;-webkit-user-select:none;font-size:17px;cursor:grab}
+.pr.cil{box-shadow:inset 0 0 0 2px var(--accent);background:var(--accent-soft)}
+.tazeny{position:fixed;z-index:200;pointer-events:none;transform:translate(-50%,-50%) scale(1.08) rotate(-2deg);box-shadow:0 14px 30px rgba(0,0,0,.25)!important;opacity:.96;margin:0;box-sizing:border-box}
+.napo{border-radius:16px;padding:12px 14px;background:var(--warn-soft);display:flex;flex-direction:column;gap:2px}
+.napo span{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--warn)}
+.napo b{font-size:24px;letter-spacing:.06em;font-family:var(--font-d)}
+.napo i{font-style:normal;color:var(--fg2);font-size:15px}
+.tahhint{text-align:center;font-size:12.5px;color:var(--muted);margin-top:-2px}
+@media (hover:hover) and (pointer:fine){.tahhint{display:none}}
+.lres.ok{animation:pop .35s}
+.lbar .mbar i{box-shadow:0 0 12px rgba(52,199,89,.45)}
+.swwrap{position:relative;height:340px}
+.swcard{position:absolute;inset:0;border-radius:28px;background:var(--card);box-shadow:0 12px 34px rgba(0,0,0,.12),inset 0 0 0 .5px var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.swcard.drag{transition:none}
+.swcard.pod{transform:scale(.94) translateY(16px);opacity:.55;pointer-events:none}
+.swcard .q{font-family:var(--font-d);font-size:32px;font-weight:700;line-height:1.2;text-wrap:balance}
+.swcard .pr2{color:var(--accent);font-size:15px;font-weight:500}
+.swcard .cz{font-size:23px;font-weight:600;color:var(--fg2);animation:pop .3s}
+.swcard .stamp{position:absolute;top:22px;font-weight:800;font-size:20px;padding:4px 12px;border-radius:10px;border:3px solid;opacity:0;letter-spacing:.05em}
+.swcard .stamp.ano{left:20px;color:var(--ok);transform:rotate(-12deg)}
+.swcard .stamp.ne{right:20px;color:var(--bad);transform:rotate(12deg)}
+.swbtns{display:flex;justify-content:center;gap:32px}
+.swbtn{width:70px;height:70px;border-radius:50%;border:0;display:grid;place-items:center;font-size:30px;font-weight:800;background:var(--card);box-shadow:0 6px 18px rgba(0,0,0,.12),inset 0 0 0 .5px var(--line);transition:transform .12s}
+.swbtn.ne{color:var(--bad)} .swbtn.ano{color:var(--ok)}
+.swbtn:active{transform:scale(.88)}
 .bub{position:absolute;z-index:999;max-width:280px;min-width:160px;padding:12px 14px;border-radius:16px;background:var(--solid,#fff);color:var(--fg);box-shadow:0 10px 30px rgba(0,0,0,.25);animation:bubIn .15s ease-out}
 @keyframes bubIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
 .bub .bw{font-weight:700;font-size:20px;color:var(--accent)}
@@ -1793,6 +1825,7 @@ function lev(a, b){
   for (let i = 1; i <= m; i++){ const c = [i]; for (let j = 1; j <= n; j++) c[j] = Math.min(p[j] + 1, c[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); p = c; }
   return p[n];
 }
+function levVolne(a, b){ let p = Array.from({ length:b.length + 1 }, (_, j) => j); for (let i = 1; i <= a.length; i++){ const c = [i]; for (let j = 1; j <= b.length; j++) c[j] = Math.min(p[j] + 1, c[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); p = c; } return p[b.length]; }
 /* Kontrola napsané odpovědi. Vrací "ok", "skoro" (chybí přízvuk, člen nebo jeden překlep) nebo "spatne". */
 function zkontroluj(vstup, spravne, jazyk){
   const x = norm(vstup); if (!x) return { v:"spatne" };
@@ -1805,8 +1838,20 @@ function zkontroluj(vstup, spravne, jazyk){
       const xc = x.replace(CLENY, ""), ac = a.replace(CLENY, "");
       if (xc !== x || ac !== a){ if (bezDiakr(xc) === bezDiakr(ac)){ if (nej.v !== "skoro") nej = { v:"skoro", proc:"Nezapomeň na člen: " + bezPozn(s) }; continue; } }
     }
-    const d = lev(bezDiakr(x), bezDiakr(a));
-    if (d <= 1 && a.length >= 4 && nej.v !== "skoro") nej = { v:"skoro", proc:"Malý překlep. Správně: " + bezPozn(s) };
+    /* 25. 11.: mírnější kontrola. Česky stačí, že je to správné slovo (děkuju = děkuji, jiné pořadí, překlep, něco navíc).
+       Italsky se překlep nebo jiné pořadí počítá jako „Skoro“ (= správně, jen s upozorněním). */
+    const hovor = t => bezDiakr(t).replace(/uju\b/g, "uji").replace(/ujou\b/g, "uji").replace(/ej\b/g, "y").replace(/[-']/g, " ").replace(/\s+/g, " ").trim();
+    const xs = hovor(x), as = hovor(a), serad = t => t.split(" ").sort().join(" ");
+    const d = levVolne(xs, as), tolerance = Math.max(1, Math.floor(as.length / (jazyk === "cz" ? 5 : 6)));
+    if (jazyk === "cz"){
+      if (xs === as || serad(xs) === serad(as)) return { v:"ok" };
+      if (as.length >= 3 && d <= tolerance) return { v:"ok" };
+      if (as.length >= 4 && (xs.split(" ").includes(as) || (" " + xs + " ").includes(" " + as + " "))) return { v:"ok" };
+      continue;
+    }
+    if (nej.v === "skoro") continue;
+    if (serad(xs) === serad(as)) nej = { v:"skoro", proc:"Jiné pořadí slov. Správně: " + bezPozn(s) };
+    else if (as.length >= 3 && levVolne(xs, as) <= tolerance) nej = { v:"skoro", proc:"Malý překlep. Správně: " + bezPozn(s) };
   }
   return nej;
 }
@@ -2058,7 +2103,7 @@ function odpovez(nevim){
   const vstup = nevim ? "" : (document.getElementById("kin") || {}).value || K.vstup;
   const r = nevim ? { v:"spatne" } : zkontroluj(vstup, sm === "czit" ? w.it : w.cz, sm === "czit" ? "it" : "cz");
   K.odp = { v:r.v, proc:r.proc, vstup, nevim, sm };
-  const ok = r.v !== "spatne";
+  const ok = r.v !== "spatne"; zvuk(ok);
   if (ok) K.dobre++; else { if (!K.spatne.includes(id)) K.spatne.push(id); /* 24. 11.: špatná kartička se vrátí za 3 karty, dokud ji nedá správně */ if (!K.ids.slice(K.i + 1).includes(id)) K.ids.splice(Math.min(K.i + 4, K.ids.length), 0, id); }
   pridejXp(ok ? 1 : 0);
   zapis(id, ok);
@@ -2670,7 +2715,30 @@ function moznosti(w, W){ return mix([w].concat(mix(W.filter(x => x.id !== w.id &
 function dlazdice(s, k){
   const t = tokeny(s.it), maly = new Set(t.map(x => norm(x)));
   const jine = []; vetyTematu(k).concat(slovaTematu(k)).forEach(x => tokeny(x.it).forEach(y => { if (!maly.has(norm(y)) && y.length > 1 && !jine.some(z => norm(z) === norm(y))) jine.push(y); }));
-  return mix(t.concat(mix(jine).slice(0, Math.min(3, Math.max(2, 7 - t.length)))));
+  return mix(t.concat(mix(jine).slice(0, Math.min(2, Math.max(1, 5 - t.length)))));   /* 25. 11.: méně falešných dílků = lehčí */
+}
+/* 25. 11.: slovíčka, která Matějovi nešla v jiných tématech (vracejí se i v dalších lekcích, dokud je neumí) */
+function slabaSlova(k, n){
+  return SLOVA.filter(w => w.t !== k && TM[w.t] && stat(w.id) && (stat(w.id).bad || 0) > 0 && (stat(w.id).b || 0) < 2)
+    .sort((a, b) => (stat(b.id).bad - stat(a.id).bad) || ((stat(a.id).l || "") > (stat(b.id).l || "") ? 1 : -1)).slice(0, n)
+    .map(w => { const x = slovaTematu(w.t).find(y => y.id === w.id); return x && Object.assign(x, { t:w.t }); }).filter(Boolean);
+}
+function napovedaHtml(w, n){
+  const t = prvniVar(bezPozn(w.itPlne)).replace(/\.\.\.|…/g, "").trim();
+  const txt = n >= 3 ? t : t.split(" ").map(x => { const k = n === 1 ? 1 : Math.ceil(x.length / 2); return x.slice(0, k) + "·".repeat(Math.max(0, x.length - k)); }).join(" ");
+  return '<div class="napo"><span>Nápověda ' + Math.min(n, 3) + '/3</span><b>' + esc(txt) + '</b>' + (n >= 2 && w.v ? '<i>čti: ' + esc(w.v) + '</i>' : "") + '</div>';
+}
+let AC = null;
+function zvuk(ok){
+  if (S.test) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume();
+    const t = AC.currentTime, tony = ok ? [[660, 0], [990, .09]] : [[240, 0], [180, .13]];
+    tony.forEach(([fr, d]) => { const o = AC.createOscillator(), g = AC.createGain(); o.type = ok ? "sine" : "triangle"; o.frequency.value = fr;
+      g.gain.setValueAtTime(.0001, t + d); g.gain.exponentialRampToValueAtTime(.16, t + d + .015); g.gain.exponentialRampToValueAtTime(.0001, t + d + .2);
+      o.connect(g); g.connect(AC.destination); o.start(t + d); o.stop(t + d + .22); });
+    if (navigator.vibrate) navigator.vibrate(ok ? 15 : [30, 40, 30]);
+  } catch (e) {}
 }
 function novaLekce(k, li){
   const W = slovaTematu(k), pul = Math.ceil(W.length / 2);
@@ -2690,13 +2758,14 @@ function novaLekce(k, li){
   if (V[1]) ex.push({ typ:"skladej", s:V[1], tl:dlazdice(V[1], k) });
   if (sub[1]) ex.push({ typ:"preloz", w:sub[1] });
   if (V[2]) ex.push(dikt || srMuze() ? { typ:"mluv", s:V[2] } : { typ:"skladej", s:V[2], tl:dlazdice(V[2], k) });
+  slabaSlova(k, 3).forEach((w, n) => ex.splice(Math.min(ex.length, 3 + n * 4), 0, { typ:n % 2 ? "vyberIt" : "vyber", w, moz:moznosti(w, slovaTematu(w.t)), stare:true }));
   return { k, li, ex, i:0, chyb:0, combo:0, maxCombo:0, start:Date.now(), odp:null, vyb:null, skl:[], par:{ sel:null, hot:[], bad:null }, vstup:"", mluv:{ stav:"", text:"" }, celkem:ex.length,
     slova:sub, spatne:[] };
 }
 const LX = () => S.lx;
 function lxOdpoved(ok, info){
   const L = LX(), e = L.ex[L.i];
-  L.odp = Object.assign({ ok }, info || {});
+  L.odp = Object.assign({ ok }, info || {}); zvuk(ok);
   if (ok){ L.combo++; L.maxCombo = Math.max(L.maxCombo, L.combo); }
   else { L.chyb++; L.combo = 0; if (!L.spatne.some(x => x.it === (e.w || e.s).it)) L.spatne.push(e.w || e.s); /* 24. 11.: chyba se vrací za 2 cvičení pořád dokola, dokud to Matěj nedá správně (mikrofon jen jednou) */ if (e.typ !== "mluv" || !e.opak){ L.ex.splice(Math.min(L.i + 3, L.ex.length), 0, Object.assign({}, e, { opak:true, moz:e.moz ? mix(e.moz) : e.moz, tl:e.tl ? mix(e.tl) : e.tl })); } }
   if (e.w) zapis(e.w.id, ok); else { S.p.dny[dnes()] = (S.p.dny[dnes()] || 0) + 1; uloz(); }
@@ -2752,7 +2821,7 @@ function lxVyhodnot(){
 function lxDalsi(){
   const L = LX(); if (!L) return;
   { const e0 = L.ex[L.i]; if (e0 && e0.typ === "tip" && jeTemaTydne(L.k)) oznac("jak"); if (e0 && e0.typ === "nove" && jeTemaTydne(L.k)) oznac("slova"); }
-  L.i++; L.odp = null; L.vyb = null; L.skl = []; L.par = { sel:null, hot:[], bad:null }; L.vstup = ""; L.mluv = { stav:"", text:"" }; L.proc = ""; L.procNacita = false;
+  L.i++; L.odp = null; L.vyb = null; L.skl = []; L.par = { sel:null, hot:[], bad:null }; L.vstup = ""; L.mluv = { stav:"", text:"" }; L.proc = ""; L.procNacita = false; L.napo = 0;
   if (L.i >= L.ex.length) lxKonec();
   render(); scrollTo(0, 0);
   const e = L.ex[L.i]; if (e && (e.typ === "vyber" || e.typ === "poslech" || e.typ === "nove")) setTimeout(() => mluvP(e.w.it), 250);
@@ -2798,6 +2867,7 @@ function vLekce(){
   let h = '<div class="lbar"><button class="x" data-lx="zavri" aria-label="Ukončit lekci">' + ic("x") + '</button><div class="mbar"><i style="width:' + hotovo + '%;background:' + T.g + '"></i></div>' +
     (L.combo >= 3 ? '<span class="combo">' + L.combo + '× kombo</span>' : "") + '</div>';
   if (e.opak) h += '<span class="pill p-ucim" style="align-self:flex-start">Ještě jednou: tady jsi chyboval</span>';
+  if (e.stare && !e.opak) h += '<span class="pill p-ucim" style="align-self:flex-start">Opakování: tohle ti dřív nešlo</span>';
   const kontrola = !L.odp;
   if (e.typ === "nove"){
     h += '<div class="newcard"><span class="tag">Nové slovo</span>' + spk(e.w.it, true) + '<div class="w">' + esc(e.w.itPlne.replace(/\|/g, " / ")) + '</div><div class="c">' + esc(ukaz(bezPozn(e.w.cz))) + '</div><div class="v">čti: ' + esc(e.w.v) + '</div>' +
@@ -2814,7 +2884,7 @@ function vLekce(){
         return '<button class="opt' + cls + '" data-lvyb="' + w.id + '"' + (L.odp ? " disabled" : "") + ' style="' + (cls === " sel" ? "box-shadow:inset 0 0 0 2px var(--accent);background:var(--accent-soft)" : "") + '"><span class="k">' + (n + 1) + '</span>' + esc(e.typ === "vyber" ? prvniVar(bezPozn(w.cz)) : w.it) + '</button>'; }).join("") + '</div>';
   } else if (e.typ === "dvojice"){
     const lev = e.levy || (e.levy = mix(e.ws)), pr = e.pravy || (e.pravy = mix(e.ws));
-    h += '<div class="lzad">Spoj dvojice</div><div class="lq">Ťukni na italské slovo a pak na jeho překlad.</div><div class="pairs">';
+    h += '<div class="lzad">Spoj dvojice</div><div class="lq">Ťukni na italské slovo a pak na překlad, nebo ho na překlad přetáhni.</div><div class="pairs">';
     for (let n = 0; n < lev.length; n++){
       const a = lev[n], b = pr[n];
       const ca = (L.par.hot.includes(a.id) ? " hotovo" : "") + (L.par.sel === "L" + a.id ? " sel" : "") + (L.par.bad === "L" + a.id ? " bad" : "");
@@ -2825,7 +2895,7 @@ function vLekce(){
   } else if (e.typ === "skladej"){
     h += '<div class="lzad">Slož větu italsky</div><div class="lq">' + esc(e.s.cz) + '</div>' +
       '<div class="ans">' + L.skl.map((ti, n) => '<button class="tl" data-skl="' + n + '"' + (L.odp ? " disabled" : "") + '>' + esc(e.tl[ti]) + '</button>').join("") + '</div>' +
-      '<div class="bank">' + e.tl.map((t, ti) => '<button class="tl' + (L.skl.includes(ti) ? " pouzito" : "") + '" data-tl="' + ti + '"' + (L.odp ? " disabled" : "") + '>' + esc(t) + '</button>').join("") + '</div>';
+      '<div class="bank">' + e.tl.map((t, ti) => '<button class="tl' + (L.skl.includes(ti) ? " pouzito" : "") + '" data-tl="' + ti + '"' + (L.odp ? " disabled" : "") + '>' + esc(t) + '</button>').join("") + '</div>' + (L.odp ? "" : '<p class="foot" style="text-align:center">Ťukni na dílek, nebo ho přetáhni do rámečku.</p>');
   } else if (e.typ === "poslech" || e.typ === "preloz"){
     h += '<div class="lzad">' + (e.typ === "poslech" ? "Napiš, co slyšíš" : "Přelož do italštiny") + '</div>' +
       (e.typ === "poslech" ? '<div class="lprompt" style="justify-content:center">' + spk(e.w.it, true) + '<button class="btn sm tint" data-lx="pomalu">Pomalu</button></div>' : '<div class="lq">' + esc(ukaz(bezPozn(e.w.cz))) + '</div>') +
@@ -2837,19 +2907,21 @@ function vLekce(){
       '<button class="bigmic' + (M.stav === "posloucham" ? " live" : "") + '" data-lx="mic"' + (L.odp || M.stav === "vyhodnocuji" ? " disabled" : "") + ' aria-label="Mluvit">' + ic("mic") + '</button>' +
       '<div class="slysim" id="lslysim">' + (M.stav === "posloucham" ? esc(M.text + " " + (M.partial || "")) || "Mluv…" : M.stav === "vyhodnocuji" ? "Vyhodnocuji…" : M.chyba ? esc(M.chyba) : "Ťukni na mikrofon, řekni větu a ťukni znovu.") + '</div>';
   }
+  if ((e.typ === "poslech" || e.typ === "preloz") && L.napo && !L.odp) h += napovedaHtml(e.w, L.napo);
   h += '<div class="lfoot' + (L.odp ? (L.odp.ok ? " ok" : " bad") : "") + '"><div class="in">';
   if (L.odp){
     const spr = e.w ? e.w.it + " = " + ukaz(bezPozn(e.w.cz)) : e.s ? e.s.it + " = " + e.s.cz : "";
     h += '<div class="lres ' + (L.odp.ok ? "ok" : "bad") + '">' + (spr && (e.w || e.s) ? spk(e.w ? e.w.it : e.s.it) : "") + '<span class="t"><b>' + (L.odp.ok ? (L.combo >= 5 ? "Skvělé, " + L.combo + "× v řadě!" : ["Výborně!","Správně!","Bravo!","Perfetto!"][L.i % 4]) : "Správně je:") + '</b>' +
       (e.typ !== "dvojice" ? '<span>' + esc(spr) + '</span>' : "") + (L.odp.proc ? '<i>' + esc(L.odp.proc) + '</i>' : "") +
       (L.proc || L.procNacita ? '<i id="lproc">' + (L.proc ? tx(L.proc) : "Přemýšlím…") + '</i>' : "") + '</span></div>' +
-      '<div class="row2">' + (!L.odp.ok && !L.proc && !L.procNacita ? '<button class="btn gray" data-lx="proc">Proč?</button>' : "") + '<button class="btn" data-lx="dalsi" id="ldalsi">Pokračovat</button></div>';
+      '<div class="row2">' + (!L.odp.ok && !L.proc && !L.procNacita ? '<button class="btn gray" data-lx="proc">Proč?</button>' : "") + '<button class="btn" data-lx="dalsi" id="ldalsi">Pokračovat</button></div><div class="tahhint">nebo táhni prstem doleva</div>';
   } else if (e.typ === "nove" || e.typ === "tip"){
     h += '<button class="btn wide" data-lx="dalsi" id="ldalsi">' + (e.typ === "nove" ? "Rozumím, procvičit" : "Rozumím") + '</button>';
   } else if (e.typ === "mluv"){
     h += '<button class="btn wide gray" data-lx="preskoc">Teď nemůžu mluvit</button>';
   } else if (e.typ !== "dvojice"){
     const muze = (e.typ === "vyber" || e.typ === "vyberIt") ? !!L.vyb : e.typ === "skladej" ? L.skl.length > 0 : true;
+    if (e.typ === "poslech" || e.typ === "preloz") h += '<div class="row2"><button class="btn gray" data-lx="napoveda"' + ((L.napo || 0) >= 3 ? " disabled" : "") + '>Nápověda</button><button class="btn gray" data-lx="nevim">Nevím</button></div>';
     h += '<button class="btn wide" data-lx="zkontroluj"' + (muze ? "" : " disabled") + '>Zkontrolovat</button>';
   } else h += '<p class="muted" style="text-align:center;font-size:15px">Spoj všechny dvojice.</p>';
   h += '</div></div>';
@@ -2866,6 +2938,8 @@ function klikLekce(d, b){
     else if (a === "proc") lxProc();
     else if (a === "pomalu") mluvP(e.w.it, .65);
     else if (a === "mic") lxMluv();
+    else if (a === "napoveda"){ L.napo = Math.min(3, (L.napo || 0) + 1); render(); }
+    else if (a === "nevim"){ if (!L.odp) lxOdpoved(false, { jeho:"" }); }
     else if (a === "preskoc"){ if (dikt && L.mluv.stav === "posloucham") dikt.stop().catch(() => {}); L.ex.splice(L.i, 1); L.celkem = Math.min(L.celkem, L.ex.length); L.i--; lxDalsi(); }
     return true;
   }
@@ -3172,6 +3246,29 @@ function vKviz(){
     '<button class="btn wide" data-kdalsi="1">' + (Q.i === Q.otazky.length - 1 ? "Výsledek" : "Další otázka") + '</button>';
   return h;
 }
+function vSwipe(K){
+  const id = K.ids[K.i], w = SL[id], T = TM[w.t], dal = K.ids[K.i + 1] && SL[K.ids[K.i + 1]];
+  const karta = (x, pod, otoc) => '<div class="swcard' + (pod ? " pod" : "") + '"' + (pod ? "" : ' id="swc"') + '><span class="stamp ano">UMÍM</span><span class="stamp ne">NEUMÍM</span>' +
+    (pod ? "" : spk(x.it, true)) + '<div class="q">' + esc(x.it) + '</div><div class="pr2">čti: ' + esc(x.v) + '</div>' +
+    (otoc ? '<div class="cz">' + esc(ukaz(bezPozn(x.cz))) + '</div>' : '<div class="muted" style="font-size:14px">Ťukni na kartičku a uvidíš překlad</div>') + '</div>';
+  return '<div class="top"><div><div class="eyebrow">' + esc(T.n) + '</div><h1>Kartičky</h1></div><button class="btn sm gray" data-konec="1">Ukončit</button></div>' +
+    '<div class="prog"><div class="pt"><span>' + (K.i + 1) + ' z ' + K.ids.length + '</span><span>' + K.dobre + ' umím</span></div><div class="mbar"><i style="width:' + (K.i / K.ids.length * 100) + '%;background:' + T.g + '"></i></div></div>' +
+    '<div class="swwrap">' + (dal ? karta(dal, true, false) : "") + karta(w, false, K.otoc) + '</div>' +
+    '<div class="swbtns"><button class="swbtn ne" data-sw-ne="1" aria-label="Neumím">✕</button><button class="swbtn ano" data-sw-ano="1" aria-label="Umím">✓</button></div>' +
+    '<p class="foot" style="text-align:center">Táhni doprava = umím, doleva = neumím. Co neumíš, vrátí se za chvilku znovu.</p>';
+}
+function swipeRozhodni(ok){
+  const K = S.karty; if (!K || !K.swipe || K.i >= K.ids.length) return;
+  const id = K.ids[K.i]; zvuk(ok);
+  if (ok) K.dobre++; else { if (!K.spatne.includes(id)) K.spatne.push(id); if (!K.ids.slice(K.i + 1).includes(id)) K.ids.splice(Math.min(K.i + 4, K.ids.length), 0, id); }
+  pridejXp(ok ? 1 : 0); zapis(id, ok);
+  K.i++; K.otoc = false; render();
+  const n = K.ids[K.i]; if (n && SL[n]) setTimeout(() => mluvP(SL[n].it), 250);
+}
+function swipeTlacitko(ok){
+  const c = document.getElementById("swc");
+  if (c){ c.style.transform = "translate(" + (ok ? 1 : -1) * innerWidth + "px,0) rotate(" + (ok ? 25 : -25) + "deg)"; setTimeout(() => swipeRozhodni(ok), 180); } else swipeRozhodni(ok);
+}
 function vKarticky(){
   const K = S.karty;
   if (!K){
@@ -3179,7 +3276,7 @@ function vKarticky(){
     return '<div class="top"><div><div class="eyebrow">Píšeš odpověď, nejde podvádět</div><h1>Kartičky</h1></div></div>' +
       '<div class="goalcard glass"><div class="ring">' + ring(dnesKaret(), CIL_DNE, "var(--accent)") + '<div class="v">' + Math.min(dnesKaret(), 99) + '<small>dnes</small></div></div>' +
       '<div class="t"><b>' + (due ? due + " slovíček k opakování" : "Nová slovíčka") + '</b><span>' + (due ? "Nejdřív zopakuješ, co ti nešlo. Pak přidám nová z tématu " + esc(akt.n) + "." : "Přidám nová slovíčka z tématu " + esc(akt.n) + ".") + '</span>' +
-      '<button class="btn sm" data-start="1" style="align-self:flex-start">Začít (10 kartiček)</button></div></div>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" data-start="1">Psaním (10)</button><button class="btn sm tint" data-start="1" data-sw="1">Tahem, rychle (10)</button></div></div></div>' +
       '<p class="foot">Co ti nejde, vrátí se zítra. Co umíš, uvidíš zase za pár dní. Chybějící přízvuk nebo malý překlep je „Skoro“ a počítá se.</p>' +
       '<div class="sec"><div class="sec-h"><h3>Podle tématu</h3></div><div class="list">' + TEMATA.map(t => '<button class="row" data-uc="' + t.k + '"><span class="sq" style="background:' + t.g + '">' + ic(t.ic) + '</span><span class="t"><b>' + esc(t.n) + '</b><span>umíš ' + procTema(t.k) + ' %</span></span>' + chev() + '</button>').join("") + '</div></div>';
   }
@@ -3190,6 +3287,7 @@ function vKarticky(){
       (K.spatne.length ? '<p class="muted">Tyhle se vrátí zítra:</p><div class="list" style="width:100%;text-align:left">' + K.spatne.map(id => '<div class="row">' + spk(SL[id].it) + '<span class="t"><b>' + esc(SL[id].it) + '</b><span>' + esc(ukaz(SL[id].cz)) + '</span></span></div>').join("") + '</div>' : '<p class="muted">Všechno správně!</p>') +
       '<div style="display:flex;flex-direction:column;gap:10px;width:100%"><button class="btn wide" data-start="' + (K.tema || 1) + '">Dalších 10</button><button class="btn wide tint" data-konec="1">Hotovo</button></div></div>';
   }
+  if (K.swipe) return vSwipe(K);
   const id = K.ids[K.i], w = SL[id], sm = K.odp ? K.odp.sm : smer(id), T = TM[w.t];
   let h = '<div class="top"><div><div class="eyebrow">' + esc(T.n) + '</div><h1>Kartičky</h1></div><button class="btn sm gray" data-konec="1">Ukončit</button></div>' +
     '<div class="prog"><div class="pt"><span>' + (K.i + 1) + ' z ' + K.ids.length + '</span><span>' + K.dobre + ' správně</span></div><div class="mbar"><i style="width:' + (K.i / K.ids.length * 100) + '%;background:' + T.g + '"></i></div></div>' +
@@ -3200,7 +3298,7 @@ function vKarticky(){
       '<div class="two"><button type="button" class="btn gray" data-nevim="1">Nevím</button><button type="submit" class="btn">Zkontrolovat</button></div></form>';
   } else {
     const o = K.odp, spr = sm === "czit" ? w.it : ukaz(bezPozn(w.cz));
-    const nad = o.v === "ok" ? (o.opraveno ? "Dobře, počítám to" : "Správně!") : o.v === "skoro" ? "Skoro!" : o.nevim ? "Nevadí, tady je to" : "Vedle";
+    const nad = o.v === "ok" ? (o.opraveno ? "Dobře, počítám to" : "Správně!") : o.v === "skoro" ? "Dobře, jen drobnost" : o.nevim ? "Nevadí, tady je to" : "Vedle";
     h += '<div class="verdict ' + (o.v === "spatne" ? "bad" : o.v) + '">' + spk(w.it) + '<span class="t"><b>' + nad + '</b><span>' + esc(w.it) + ' = ' + esc(ukaz(bezPozn(w.cz))) + '</span>' +
       (o.proc ? '<i>' + esc(o.proc) + '</i>' : o.v === "spatne" && o.vstup ? '<i>Napsal jsi: ' + esc(o.vstup) + '</i>' : '<i>čti: ' + esc(w.v) + '</i>') + '</span></div>' +
       '<button class="btn wide" id="dalsi" data-dalsi="1">Další</button>' +
@@ -3298,6 +3396,7 @@ function render(){
   const app = document.getElementById("app");
   app.innerHTML = S.lx ? vLekce() : S.tab === "dnes" ? vDnes() : S.tab === "temata" ? (S.tema ? vTema() : S.seznam ? vTemata() : vCesta()) : S.tab === "ja" ? (S.jaMode === "pokrok" ? vPokrok() : S.jaMode === "plan" ? vPlan() : vHarmonogram()) : S.tab === "karticky" ? vKarticky() : S.tab === "rozhovor" ? vRozhovor() : vPokrok();
   if (animuj && !S.test){ app.classList.remove("vstup"); void app.offsetWidth; app.classList.add("vstup"); }
+  { const lk = S.lx ? S.lx.i + (S.lx.konec ? "k" : "") : ""; if (S.lx && !animuj && lk !== S._lxKey && !S.test){ app.classList.remove("cvic"); void app.offsetWidth; app.classList.add("cvic"); } S._lxKey = lk; }
   if (!S.test && !S.lx && S.dbStav !== "nacitam") hlidejDen();
 }
 
@@ -3345,7 +3444,8 @@ document.addEventListener("click", e => {
   if (d.zpet){ S.tema = null; render(); return; }
   if (d.ttab){ S.ttab = d.ttab; if (jeTemaTydne(S.tema) && d.ttab !== "kviz") oznac(d.ttab); render(); return; }
   if (d.uc){ S.p.akt = d.uc; uloz(); novaSada(d.uc); S.tab = "karticky"; render(); scrollTo(0, 0); fokus(); return; }
-  if (d.start){ novaSada(d.start === "1" ? null : d.start); render(); fokus(); return; }
+  if (d.swAno || d.swNe){ swipeTlacitko(!!d.swAno); return; }
+  if (d.start){ const sw = d.sw === "1" || (!!S.karty && !!S.karty.swipe && d.sw == null && S.karty.i >= S.karty.ids.length); novaSada(d.start === "1" ? null : d.start); S.karty.swipe = sw; render(); if (sw){ const w = SL[S.karty.ids[0]]; if (w) mluvP(w.it); } else fokus(); return; }
   if (d.konec){ S.karty = null; render(); return; }
   if (d.nevim){ odpovez(true); return; }
   if (d.dalsi){ dalsiKarta(); return; }
@@ -3600,34 +3700,114 @@ try {
 })();
 </script>
 <script>
-/* Jako na iPhonu: táhni prstem doprava a vrátíš se o krok zpátky (stejně jako tlačítko Zpět). */
+/* 25. 11.: tahání prstem jako na iPhonu.
+   Doprava = zpět (když je tlačítko Zpět). Na hlavních obrazovkách doleva/doprava = další/předchozí záložka.
+   V lekci po odpovědi doleva = další cvičení. Kartičky tahem a přetahování dílků řeší vlastní kód níž. */
 (() => {
-  let x0 = null, y0 = 0, t0 = 0, tah = false;
+  let x0 = null, y0 = 0, t0 = 0, tah = false, rezim = null;
   const app = () => document.getElementById("app");
   const zpet = () => document.querySelector("#app .backbtn");
-  const vynech = el => el && el.closest("input,textarea,.shelf,.chips,.scen,.seg,.pairs,.bank,.ans,.kr,.composer");
+  const vynech = el => el && el.closest("input,textarea,.shelf,.chips,.scen,.seg,.pairs,.bank,.ans,.kr,.composer,.swwrap,.tl,.pr,#call");
+  const casti = () => { const x = app(); return S.lx ? [...x.children].filter(c => !c.classList.contains("lfoot")) : [x]; };
+  const posun = (px, op, tr) => casti().forEach(c => { c.style.transition = tr || "none"; c.style.transform = px ? "translateX(" + px + "px)" : ""; c.style.opacity = op == null ? "" : String(op); });
+  const lekceDal = () => S.lx && !S.lx.konec && (S.lx.odp || ["nove","tip"].includes((S.lx.ex[S.lx.i] || {}).typ));
+  const poradi = () => TABS.map(t => t[0]);
   addEventListener("touchstart", e => {
-    x0 = null; tah = false;
-    if (e.touches.length !== 1 || !zpet() || vynech(e.target)) return;
-    const t = e.touches[0]; if (t.clientX > innerWidth * .6) return;
+    x0 = null; tah = false; rezim = null;
+    if (e.touches.length !== 1 || vynech(e.target) || S.hovor) return;
+    const t = e.touches[0];
+    if (S.lx){ if (!lekceDal()) return; rezim = "lekce"; }
+    else if (zpet()){ if (t.clientX > innerWidth * .6) return; rezim = "zpet"; }
+    else if (S.karty && S.tab === "karticky" && S.karty.i < S.karty.ids.length) return;
+    else rezim = "tab";
     x0 = t.clientX; y0 = t.clientY; t0 = Date.now();
   }, { passive:true });
   addEventListener("touchmove", e => {
     if (x0 == null) return;
     const t = e.touches[0], dx = t.clientX - x0, dy = Math.abs(t.clientY - y0);
-    if (!tah){ if (dy > 18 && dy > dx){ x0 = null; return; } if (dx > 14 && dx > dy * 1.5) tah = true; else return; }
-    const a = app(); a.style.transition = "none"; a.style.transform = "translateX(" + Math.max(0, dx) + "px)"; a.style.opacity = String(1 - Math.min(Math.max(dx, 0) / innerWidth, .5));
+    if (!tah){ if (dy > 18 && dy > Math.abs(dx)){ x0 = null; return; } if (Math.abs(dx) > 14 && Math.abs(dx) > dy * 1.5) tah = true; else return; }
+    let v = dx;
+    if (rezim === "zpet") v = Math.max(0, dx);
+    if (rezim === "lekce") v = Math.min(0, dx);
+    if (rezim === "tab"){ const i = poradi().indexOf(S.tab); if ((i <= 0 && dx > 0) || (i >= poradi().length - 1 && dx < 0)) v = dx / 4; }
+    posun(v, 1 - Math.min(Math.abs(v) / innerWidth, .5));
   }, { passive:true });
   addEventListener("touchend", e => {
     if (x0 == null) return;
-    const dx = e.changedTouches[0].clientX - x0, a = app(), rychle = Date.now() - t0 < 300;
+    const dx = e.changedTouches[0].clientX - x0, rychle = Date.now() - t0 < 300;
     x0 = null; if (!tah) return; tah = false;
-    a.style.transition = "transform .22s cubic-bezier(.2,.8,.2,1), opacity .22s";
-    if (dx > innerWidth * .3 || (rychle && dx > 60)){
-      a.style.transform = "translateX(" + innerWidth + "px)"; a.style.opacity = "0";
-      setTimeout(() => { const b = zpet(); a.style.transition = "none"; a.style.transform = ""; a.style.opacity = ""; if (b) b.click(); }, 200);
-    } else { a.style.transform = ""; a.style.opacity = ""; }
+    const tr = "transform .2s cubic-bezier(.2,.8,.2,1), opacity .2s";
+    const pres = Math.abs(dx) > innerWidth * .28 || (rychle && Math.abs(dx) > 60);
+    let akce = null;
+    if (pres){
+      if (rezim === "zpet" && dx > 0) akce = () => { const b = zpet(); if (b) b.click(); };
+      if (rezim === "lekce" && dx < 0) akce = () => lxDalsi();
+      if (rezim === "tab"){ const P = poradi(), i = P.indexOf(S.tab), j = i + (dx < 0 ? 1 : -1);
+        if (i >= 0 && j >= 0 && j < P.length) akce = () => { S.tab = P[j]; if (P[j] === "temata") S.tema = null; render(); scrollTo(0, 0); if (P[j] === "rozhovor") dolu(); }; }
+    }
+    if (akce){ posun(dx > 0 ? innerWidth : -innerWidth, 0, tr); setTimeout(() => { posun(0, null); akce(); }, 190); }
+    else posun(0, null, tr);
   });
+})();
+/* Kartičky tahem (jako Tinder): doprava = umím, doleva = neumím, ťuknutí = otočit */
+(() => {
+  let sw = null;
+  addEventListener("pointerdown", e => {
+    const c = e.target.closest && e.target.closest("#swc"); if (!c || e.target.closest(".spk")) return;
+    sw = { c, x:e.clientX, y:e.clientY, dx:0, moved:false }; c.classList.add("drag");
+    try { c.setPointerCapture(e.pointerId); } catch (er) {}
+  });
+  addEventListener("pointermove", e => {
+    if (!sw) return; sw.dx = e.clientX - sw.x; const dy = e.clientY - sw.y;
+    if (Math.abs(sw.dx) > 6 || Math.abs(dy) > 6) sw.moved = true;
+    sw.c.style.transform = "translate(" + sw.dx + "px," + dy * .3 + "px) rotate(" + sw.dx / 18 + "deg)";
+    const op = Math.min(1, Math.abs(sw.dx) / 90);
+    sw.c.querySelector(".stamp.ano").style.opacity = sw.dx > 0 ? op : 0; sw.c.querySelector(".stamp.ne").style.opacity = sw.dx < 0 ? op : 0;
+  });
+  const konec = () => {
+    if (!sw) return; const s = sw; sw = null; s.c.classList.remove("drag");
+    if (Math.abs(s.dx) > 90){ s.c.style.transform = "translate(" + (s.dx > 0 ? 1 : -1) * innerWidth + "px,0) rotate(" + (s.dx > 0 ? 25 : -25) + "deg)"; setTimeout(() => swipeRozhodni(s.dx > 0), 180); }
+    else { s.c.style.transform = ""; s.c.querySelectorAll(".stamp").forEach(x => x.style.opacity = 0); if (!s.moved && S.karty){ S.karty.otoc = !S.karty.otoc; render(); } }
+  };
+  addEventListener("pointerup", konec); addEventListener("pointercancel", konec);
+})();
+/* Přetahování v lekci: dílky věty do odpovědi (a zpátky) a slovo na jeho překlad. Ťukání funguje dál. */
+(() => {
+  let tz = null, potlac = false;
+  const cisti = () => document.querySelectorAll(".ans.nad,.pr.cil").forEach(x => x.classList.remove("nad", "cil"));
+  addEventListener("pointerdown", e => {
+    if (!S.lx || S.lx.odp || !e.target.closest) return;
+    const el = e.target.closest(".bank .tl:not(.pouzito), .ans .tl, .pairs .pr:not(.hotovo)"); if (!el || el.disabled) return;
+    tz = { el, x:e.clientX, y:e.clientY, kopie:null };
+  });
+  addEventListener("pointermove", e => {
+    if (!tz) return;
+    const dx = e.clientX - tz.x, dy = e.clientY - tz.y;
+    if (!tz.kopie){
+      if (Math.hypot(dx, dy) < 8) return;
+      const r = tz.el.getBoundingClientRect(), k = tz.el.cloneNode(true);
+      k.classList.add("tazeny"); k.style.width = r.width + "px"; k.style.height = r.height + "px"; document.body.appendChild(k);
+      tz.kopie = k; tz.el.style.opacity = ".3";
+    }
+    tz.kopie.style.left = e.clientX + "px"; tz.kopie.style.top = e.clientY + "px";
+    cisti(); const pod = document.elementFromPoint(e.clientX, e.clientY);
+    if (tz.el.dataset.tl != null){ const a = pod && pod.closest(".ans"); if (a) a.classList.add("nad"); }
+    if (tz.el.dataset.par){ const p = pod && pod.closest(".pr"); if (p && p !== tz.el && p.dataset.par && p.dataset.par[0] !== tz.el.dataset.par[0]) p.classList.add("cil"); }
+  });
+  const pust = e => {
+    if (!tz) return; const t = tz; tz = null; if (!t.kopie) return;
+    t.kopie.remove(); t.el.style.opacity = ""; cisti();
+    potlac = true; setTimeout(() => { potlac = false; }, 400);
+    const L = S.lx; if (!L || L.odp) return;
+    const pod = e && e.type === "pointerup" ? document.elementFromPoint(e.clientX, e.clientY) : null, d = t.el.dataset;
+    if (d.tl != null){ if (pod && pod.closest(".ans") || (e && e.clientY < t.y - 40)) klikLekce({ tl:d.tl }); else render(); }
+    else if (d.skl != null){ if (!pod || !pod.closest(".ans")) klikLekce({ skl:d.skl }); else render(); }
+    else if (d.par){ const p = pod && pod.closest(".pr");
+      if (p && p.dataset.par && p.dataset.par[0] !== d.par[0] && !p.classList.contains("hotovo")){ L.par.sel = null; klikLekce({ par:d.par }); if (S.lx === L && !L.odp) klikLekce({ par:p.dataset.par }); }
+      else render(); }
+  };
+  addEventListener("pointerup", pust); addEventListener("pointercancel", pust);
+  addEventListener("click", e => { if (potlac){ e.stopPropagation(); e.preventDefault(); potlac = false; } }, true);
 })();
 </script>
 
